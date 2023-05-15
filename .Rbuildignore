@@ -1,3 +1,7 @@
 ^parsleyapp\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
+^\.Rhistory$
+^\.DS_Store$
+^z_buildfile\.R$
+^z_.*$
