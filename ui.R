@@ -3,11 +3,8 @@
 # ui ----
 
 library(shiny)
-library(ggplot2)
 library(dplyr)
 library(DT)
-# library(shinypop) # for nx_report_error and nx_report_warning # not working
-# library(readr) # for read_delim (csv etc files) # also not working (using utils::read.csv)
 library(bslib)
 
 ui <- navbarPage(

@@ -13,3 +13,10 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
+Imports: 
+    bslib,
+    dplyr,
+    DT,
+    shiny,
+    stringi,
+    tidyr
