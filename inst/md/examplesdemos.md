@@ -11,7 +11,7 @@ A wide variety of example data is provided with the app to serve as an illustrat
 **Example data**
 
 <div style="text-align: center;">
-<img src="guide_greenfluorescence_platelayout.png" width = "400">
+<img src="www/guide_greenfluorescence_platelayout.png" width = "400">
 </div>
 <br>
 
@@ -61,7 +61,7 @@ vq=hd720: 720p; best quality, buffers slowest -->
 
 <div style="text-align: center;">
 <br>
-<img src="guide_absorbancespectrum_platelayout.png" width = "400">
+<img src="www/guide_absorbancespectrum_platelayout.png" width = "400">
 <br>
 </div>
 
@@ -87,7 +87,7 @@ An absorbance spectrum scan was carried out on this plate in a Tecan Spark plate
 
 <div style="text-align: center;">
 <br>
-<img src="guide_timecourse_platelayout.png" width = "400">
+<img src="www/guide_timecourse_platelayout.png" width = "400">
 <br>
 </div>
 

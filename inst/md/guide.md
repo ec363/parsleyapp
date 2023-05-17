@@ -14,7 +14,7 @@ There are three main steps to parsing plate reader data with Parsley. First, you
 
 Navigate to the 'Build Your Own Parser' tab (left hand link in the top navigation bar) to get started.
 
-<img src="0_parsley.png" style="width:700px; border: 1px solid gray;">
+<img src="www/0_parsley.png" style="width:700px; border: 1px solid gray;">
 <br>
 
 <br>
@@ -30,7 +30,7 @@ Navigate to the 'Build Your Own Parser' tab (left hand link in the top navigatio
 To illustrate how Parsley works for the purposes of this guide, we will use a simplified version of the first example dataset provided with the app (**'Green fluorescence data (rows)'**). Here, a dilution series of the green fluorescent small molecule fluorescein (11 dilutions) was prepared in a 96-well plate, with the highest concentration placed on the left (A1), the lowest on the right (A11) and with buffer blanks in column 12 (A12). 
 
 <div style="text-align: center;">
-<img src="guide_greenfluorescence_rowA_platelayout2.png" style = "width:350px; border: 1px solid  gray;">
+<img src="www/guide_greenfluorescence_rowA_platelayout2.png" style = "width:350px; border: 1px solid  gray;">
 </div>
 <br>
 
@@ -38,7 +38,7 @@ This plate was measured for fluorescence intensity in the green fluorescence cha
 
 The image below shows how such data might look in Excel after export from a plate reader: this is our Raw Data.
 
-<img src = "0_rawdatacsv.png" style = "width:700px; border: 1px solid  gray;">
+<img src="www/0_rawdatacsv.png" style = "width:700px; border: 1px solid  gray;">
 <br>
 
 <br>
@@ -57,7 +57,7 @@ Most plate readers export files in Excel (.xlsx) format, so make sure you first 
 
 To upload a file, select 'Upload CSV', find your CSV file and click 'Submit'. A successful upload will result in the name of your file appearing below the Submit button, and the entire CSV contents appearing at the bottom of the page. Even if the file is very wide or long, you should be able to scroll to view the entire file.
 
-<img src = "13_rawdata_submitfile.png" style = "width:700px; border: 1px solid  gray;">
+<img src="www/13_rawdata_submitfile.png" style = "width:700px; border: 1px solid  gray;">
 <br><br>
 
 When we upload our fluorescein data, we can see that the correct file name appeared under 'Uploaded file name' and also that the entirety of the data is visible at the bottom of the page.
@@ -93,13 +93,13 @@ There are few rules for how to create Metadata files, but they are strict:
 For example, the Metadata for our fluorescein dilution series might look like this (when assembled in Excel):
 
 <div style="text-align: center;">
-<img src="0_metadatacsv.png" style="width:350px; border: 1px solid gray;">
+<img src="www/0_metadatacsv.png" style="width:350px; border: 1px solid gray;">
 </div>
 <br>
 
 On saving this as a CSV and uploading it to Parsley, we should notice once again that the upload triggered the display the _file name_ of the uploaded file below the Submit button, and the _contents_ of that file at the bottom of the page. Unlike the Raw Data file, we might also notice that Metadata is not displayed in an interactive format.
 
-<img src="21_metadata_submitfile.png" style="width:700px; border: 1px solid gray;">
+<img src="www/21_metadata_submitfile.png" style="width:700px; border: 1px solid gray;">
 <br>
 
 <br>
@@ -137,7 +137,7 @@ Step 1 enables the app to get a broad idea of the kind of data you want to parse
 
 <br>
 <!-- <img src="31_step1_datatypes.png" style="width:700px; border: 1px solid gray"> -->
-<img src="31_step1_datatypes.png" style="width:700px;">
+<img src="www/31_step1_datatypes.png" style="width:700px;">
 <br><br>
 
 <!-- You can find out more about data types under Help > Definitions. -->
@@ -150,7 +150,7 @@ Step 1 enables the app to get a broad idea of the kind of data you want to parse
 
 <br>
 <!-- <img src="31_step1_dataformats.png" style="width:700px; border: 1px solid gray"> -->
-<img src="31_step1_dataformats4.png" style="width:700px;">
+<img src="www/31_step1_dataformats4.png" style="width:700px;">
 <br><br>
 
 Select the Data type and Data format appropriate for your data and click Set.
@@ -159,12 +159,12 @@ In our fluorescein example, we choose Standard for the Data Type and Data in Row
 
 When we click Set, a Data Specifications tab appears behind the Raw Data tab. The View button can be used to toggle between the Raw Data and Data Specifications tabs.
 
-<img src="31_step1_2_chooseoptions_set.png" style="width:700px; border: 1px solid gray;">
+<img src="www/31_step1_2_chooseoptions_set.png" style="width:700px; border: 1px solid gray;">
 <br><br>
 
 Clicking the View button or selecting the Data Specifications tab directly, we can see that the app feeds back to us on our earlier choices. The choices made at each subsequent step, and resultant intermediate data values, will also appear in this tab.
 
-<img src="31_step1_3_chooseoptions_set_view.png" style="width:700px; border: 1px solid gray;">
+<img src="www/31_step1_3_chooseoptions_set_view.png" style="width:700px; border: 1px solid gray;">
 <br><br>
 
 Use the View button to toggle back to the Raw Data tab.
@@ -206,12 +206,12 @@ Enter the reading names. First, choose how to input them: they can either be sel
 <!-- _In the example, I select the cells corresponding to the two measurement channel names (in the correct order first to last)._ -->
 For our fluorescein data, we select the cells corresponding to the two reading names: 'GG2_gain40' and 'GG2_gain50' (in the correct order first to last).
 
-<img src="32_step2_2_chooseoptions_selectcells.png" style="width:700px; border: 1px solid gray;">
+<img src="www/32_step2_2_chooseoptions_selectcells.png" style="width:700px; border: 1px solid gray;">
 <br><br>
 
 Click Set and View.
 
-<img src="32_step2_3_set_view.png" style="width:700px; border: 1px solid gray;">
+<img src="www/32_step2_3_set_view.png" style="width:700px; border: 1px solid gray;">
 <br><br>
 
 For our fluorescein data, we can see that the app has extracted the correct names in the correct order.
@@ -244,7 +244,7 @@ You should see the following instructions:
 
 In our fluorescein example, we select the first and last cell of the first reading (the green fluorescence reading at gain 40). As the first reading corresponds to the first row of data, we select the cells with the first and last data values in the top row. We do not select the leftmost cell as that is a timepoint. We do not attempt to select multiple rows, as these would correspond to multiple readings.
 
-<img src="33_step3_1_selectcells.png" style="width:700px; border: 1px solid gray;">
+<img src="www/33_step3_1_selectcells.png" style="width:700px; border: 1px solid gray;">
 <br><br>
 
 > <i class="fa-solid fa-triangle-exclamation"></i>  Selections on large data files can be slow.
@@ -257,7 +257,7 @@ If you make a mistake at this step, an Error message will show. The most common 
 
 Click View.
 
-<img src="33_step3_2_set_view.png" style="width:700px; border: 1px solid gray;">
+<img src="www/33_step3_2_set_view.png" style="width:700px; border: 1px solid gray;">
 <br><br>
 
 In our fluorescein example, we can see that the app has correctly extracted the data for the first fluorescence reading!
@@ -289,7 +289,7 @@ In order to locate the cells containing the data from every single reading, the 
 For the purposes of this app, we define 'spacing' as 'How many rows separate the data in the first and second readings?' Where the readings are in consecutive rows, the 2nd reading is located in the row below the 1st reading, ie. in the row '1st reading + 1'. This is defined as a spacing of '1'. Where there is a gap of one blank row between readings, the 2nd reading would be in the row '1st reading + 2', so spacing is '2', and so on.
 
 <div style = "text-align: center;">
-<img src = "34_step4_spacings.png" style = "width:467px;">
+<img src="www/34_step4_spacings.png" style = "width:467px;">
 </div>
 <br>
 
@@ -307,12 +307,12 @@ If your data contains only 1 reading, you already have all the data! You can 'sk
 
 In the fluorescein example, we choose '1' as the data for the 2nd reading is in the row directly below the first, so they are consecutive rows.
 
-<img src="34_step4_1_chooseoptions.png" style="width:700px; border: 1px solid gray;">
+<img src="www/34_step4_1_chooseoptions.png" style="width:700px; border: 1px solid gray;">
 <br><br>
 
 Click Set and a new tab called Cropped Data should appear behind the Raw Data and Data Spectifications tabs. Click View Cropped Data to view the Total Data as it has been 'cropped' out from the Raw Data file.
 
-<img src="34_step4_2_set_viewcropped.png" style="width:700px; border: 1px solid gray;">
+<img src="www/34_step4_2_set_viewcropped.png" style="width:700px; border: 1px solid gray;">
 <br><br>
 
 In the fluorescein example, we can see that the data extraction is correct and complete. All of the data has been extracted from the Raw Data file, and no empty or non-data cells remain in the Cropped Data.
@@ -354,7 +354,7 @@ In our fluorescein example, we know that the wells were A1 to A12 with no wells 
 Click Set and View.
 
 <div style="text-align: center;">
-<img src="35_step5_2b_set_view_dataspecsonly.png" style="width:467px; border: 1px solid gray;">
+<img src="www/35_step5_2b_set_view_dataspecsonly.png" style="width:467px; border: 1px solid gray;">
 </div>
 <br>
 
@@ -363,7 +363,7 @@ In our fluorescein example, we can see that it correctly worked out the wells us
 Click View Cropped Data.
 
 <div style="text-align: center;">
-<img src="35_step5_3b_set_viewcroppeddata_croppeddataonly.png" style="width:467px; border: 1px solid gray;">
+<img src="www/35_step5_3b_set_viewcroppeddata_croppeddataonly.png" style="width:467px; border: 1px solid gray;">
 </div>
 <br>
 
@@ -385,7 +385,7 @@ Step 6 allows you to check your Metadata.
 
 Click View Metadata to check the Metadata is correct. Guidance is provided in the [Metadata section of this Guide](#stepB). Check that your Metadata contains a column called 'well' and that the well labels in that column exactly matches the well labels in your Cropped Data. Metadata can be cleared and re-uploaded if necessary using the section on the top right.
 
-<img src="36_step6_viewmeta.png" style="width:700px; border: 1px solid gray;">
+<img src="www/36_step6_viewmeta.png" style="width:700px; border: 1px solid gray;">
 <br><br>
 
 In our fluorescein example, we can see that the uploaded Metadata is in the correct format. (Note that the metadata here represents the entire fluorescein dilution (which was conducted in duplicate in rows A and B), even though we only used row A in the examples above for clarity.)
@@ -404,7 +404,7 @@ Step 7 completes the data parsing by joining the Cropped Data with the Metadata.
 
 Click the Parse Data button. A Parsed Data tab should appear.
 
-<img src="37_step7_1_parsedata.png" style="width:700px; border: 1px solid gray;">
+<img src="www/37_step7_1_parsedata.png" style="width:700px; border: 1px solid gray;">
 <br><br>
 
 In our fluorescein example, we can see that it correctly joined the metadata to the data. As noted in step 6, for the purposes of this Guide we have only worked with the data from row A here, even though we provided it with the metadata for both rows A and B. You can see it joined the data with the correct rows.
@@ -428,7 +428,7 @@ Most of the steps for parsing Spectrum Data are identical to those for [Standard
 For this section, we will use the 4th example dataset provided with the app (**'Absorbance spectrum data (cols)'**). Here, a dilution series of the green fluorescent small molecule fluorescein (11 dilutions) was prepared in a 96-well plate, with the highest concentration placed on the left (A1), the lowest on the right (A11) and with buffer blanks in column 12 (A12). 
 
 <div style="text-align: center;">
-<img src="guide_greenfluorescence_rowA_platelayout2.png" style = "width:350px; border: 1px solid  gray;">
+<img src="www/guide_greenfluorescence_rowA_platelayout2.png" style = "width:350px; border: 1px solid  gray;">
 </div>
 <br>
 
@@ -439,7 +439,7 @@ An absorbance spectrum scan was carried out on this plate in a Tecan Spark plate
 The one place where Spectrum Data differs from Standard Data is in Step 2. Instead of asking users to manually select or input hundreds of reading names corresponding to all the wavelengths used in a spectral scan, the app works out these numbers based on a small number of inputs: the minimum and maximum wavelengths used and the interval (ie. what is the difference, in nm, between the first and second wavelengths). As above, these can be checked with the View button.
 
 <div style="text-align: center;">
-<img src="spectrum_step2_1_selection.png" style = "width:233px; border: 1px solid  gray;">
+<img src="www/spectrum_step2_1_selection.png" style = "width:233px; border: 1px solid  gray;">
 </div>
 <br>
 
@@ -449,7 +449,7 @@ As the wavelengths in Spectrum Data are effectively the readings, it is importan
 
 In our fluorescein example, this means that in Step 3, the appropriate choice of cells is the first and last cell from the _200nm wavelength reading_. (Note that fact that the orientation of the selections here differs from the one in Standard Data's Step 2 above **not because** the data type is Spectrum Data, but **because the data here is in _column_ format** where each reading is a separate column. In the example Standard Data above, the data is in _row_ format, where each reading is a separate row.)
 
-<img src="spectrum_step3_1_cellselection.png" style = "width:700px; border: 1px solid gray;">
+<img src="www/spectrum_step3_1_cellselection.png" style = "width:700px; border: 1px solid gray;">
 <br><br>
 
 <br>
@@ -467,7 +467,7 @@ Timecourse Data is similar to Standard Data but somewhat more complicated, as ea
 For this section, we will use a simplified version of the 6th example dataset provided with the app (**'Timecourse data (rows)'**). In this experiment, an inducer titration of an mCherry expression vector was carried out. We have truncated the data to only include row B, in which three inducer concentrations were tested, each in triplicate (B2-B4, B5-B7, B8-B10) next to a media blank (B11).
 
 <div style="text-align: center;">
-<img src="guide_timecourse_platelayout_rowA.png" style = "width:350px; border: 1px solid  gray;">
+<img src="www/guide_timecourse_platelayout_rowA.png" style = "width:350px; border: 1px solid  gray;">
 </div>
 <br>
 
@@ -492,7 +492,7 @@ For the mCherry timecourse example, we input '32' expected timepoints, as we kno
 On clicking Set, we are presented with the following Warning:
 
 <div style="text-align: center;">
-<img src="timecourse_step2b_2_set_warning.png" style = "width:350px; border: 1px solid  gray;">
+<img src="www/timecourse_step2b_2_set_warning.png" style = "width:350px; border: 1px solid  gray;">
 </div>
 <br>
 
@@ -500,7 +500,7 @@ Note that this is just a warning - not an error. It does not prevent you proceed
 
 Click View to double check the timepoints Parsley has calculated are correct.
 
-<img src="timecourse_step2b_3_set_view.png" style = "width:700px; border: 1px solid gray;">
+<img src="www/timecourse_step2b_3_set_view.png" style = "width:700px; border: 1px solid gray;">
 <br><br>
 
 <a name="timecourseestep3"> **Step3: Data from first reading** </a>
@@ -509,13 +509,13 @@ For Timecourse Data, Step 3 is similar to Standard Data, with the important note
 
 For our mCherry example, we select the first and last cells corresponding to the first (0 min) timepoint of the first reading (OD600).
 
-<img src="timecourse_step3_1_cellselection.png" style = "width:700px; border: 1px solid gray;">
+<img src="www/timecourse_step3_1_cellselection.png" style = "width:700px; border: 1px solid gray;">
 <br><br>
 
 On clicking Set and View, we can see that the app has correctly extracted all the data from the first reading (all the OD600 data).
 
 <div style="text-align: center;">
-<img src="timecourse_step3_2_set_view.png" style = "width:467px; border: 1px solid gray;">
+<img src="www/timecourse_step3_2_set_view.png" style = "width:467px; border: 1px solid gray;">
 </div>
 <br>
 
@@ -526,19 +526,19 @@ As Step 4 requests spacing information between consecutive **readings**, it is i
 For our mCherry example, there are no gaps between the last row of the OD600 readings and the first row of the red fluorescence readings. However, we don't input '1' here, we input '32', since 32 rows separate the **first timepoint of the first reading** and the **first timepoint of the second reading**.
 
 <div style="text-align: center;">
-<img src="timecourse_step4_1_choose.png" style = "width:233; border: 1px solid gray;">
+<img src="www/timecourse_step4_1_choose.png" style = "width:233; border: 1px solid gray;">
 </div>
 <br>
 
 Clicking Set and View Cropped Data, we can see that the table includes a 'time' column.
 
-<img src="timecourse_step4_2_set_viewcropped.png" style = "width:700px; border: 1px solid gray;">
+<img src="www/timecourse_step4_2_set_viewcropped.png" style = "width:700px; border: 1px solid gray;">
 <br><br>
 
 Scrolling down to the boundary between two of the readings, we can verify that Parsley calculated the spacing correctly, as there is a clear distinction between values labelled as OD600 readings and those labelled as red fluorescence readings, as expected.
 
 <div style="text-align: center;">
-<img src="timecourse_step4_3_viewcropped_edges.png" style = "width:467px; border: 1px solid gray;">
+<img src="www/timecourse_step4_3_viewcropped_edges.png" style = "width:467px; border: 1px solid gray;">
 </div>
 <br>
 
