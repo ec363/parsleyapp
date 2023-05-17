@@ -17,6 +17,7 @@ Imports:
     bslib,
     dplyr,
     DT,
+    pkgload,
     rlang,
     shiny,
     stringi,

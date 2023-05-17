@@ -5,3 +5,5 @@
 ^\.DS_Store$
 ^z_buildfile\.R$
 ^z_.*$
+^app\.R$
+^rsconnect$
