@@ -1,34 +1,43 @@
-# parsley app
+#' app_ui
+#'
+#' ui function
+#'
+#' @param request internal parameter for shiny
+#' @import shiny
+#' @noRd
 
 # ui ----
 
-library(shiny)
-library(dplyr)
-library(DT)
-library(bslib)
+# library(shiny)
+# library(dplyr)
+# library(DT)
+# library(bslib)
 
-ui <- navbarPage(
-  
+app_ui <- function(request) { # shiny as package requires ui as function ###
+  navbarPage(
+
+  # ui <- navbarPage(
+
   title = "Parsley",
   id = "navbarpage",
   selected = "byop", # use 'value' if 'value' exists! # reqd for waiter.
-  
+
   # Theme:
   # theme = shinythemes::shinytheme("paper"),
-  theme = bs_theme(bootswatch = "flatly"),
+  theme = bslib::bs_theme(bootswatch = "flatly"), ###
   # NB. bslib has issue with DT displaying BELOW sidebar unless the sidebarpanel and mainpanel are wrapped in sidebarLayout
-  
+
   # Top Tab 1: Build Your Own Parser -------------------------------------------------------------------------------------
-  
+
   tabPanel("Build Your Own Parser", icon = icon("gear"),
            value = "byop", # reqd for tab switching
-           
+
            ## Data input panel (TOP)
            fluidRow(
-             
+
              # Column1
              column(4,
-                    
+
                     strong("How to Build a Parser:"), br(), br(),
                     p(strong("Raw Data:"), "Upload a raw data file from your plate reader experiment in CSV format."),
                     conditionalPanel(
@@ -39,16 +48,16 @@ ui <- navbarPage(
                       condition = "input.submit_examplemetadata_button != '0' || input.submit_metadatafile_button != '0'",
                       p(strong("Data Specification:"), "Follow the instructions below to build the parser for your plate reader data file.")
                     )
-                    
+
              ),
              # Column2
              column(4,
-                    
+
                     strong("Raw Data:"), br(), br(),
-                    radioButtons("data_input", 
+                    radioButtons("data_input",
                                  label = NULL, # NULL < "" in terms of space
                                  choices = list("Load example" = 1, "Upload CSV" = 2), selected = 1),
-                    
+
                     # Conditional Sub-Panels depending on Data Input Type
                     # Example Data
                     conditionalPanel(
@@ -56,7 +65,7 @@ ui <- navbarPage(
                       p("Example data:"),
                       selectInput("select_exampledata",
                                   label = NULL,
-                                  list("1 - Green fluorescence data (rows)" = "data_green_rows", 
+                                  list("1 - Green fluorescence data (rows)" = "data_green_rows",
                                        "2 - Green fluorescence data (cols)" = "data_green_cols",
                                        "3 - Green fluorescence data (matrix)" = "data_green_matrix",
                                        "4 - Absorbance spectrum data (cols)" = "data_absorbance_spectrum_cols",
@@ -70,7 +79,7 @@ ui <- navbarPage(
                     # Single file upload
                     conditionalPanel(
                       condition = "input.data_input=='2'",
-                      fileInput("upload_data", 
+                      fileInput("upload_data",
                                 label = NULL,
                                 multiple = FALSE), # explanation: inputId = upload_data, label = NULL
                       # selectInput("upload_delim", "Delimiter:", # inputId = upload_delim, label = Delimiter
@@ -88,20 +97,20 @@ ui <- navbarPage(
                         verbatimTextOutput("myFileName")
                       )
                     ) # single file upload
-                    
+
              ),
              # Column3
              column(4,
-                    
+
                     # Metadata upload
                     conditionalPanel(
                       condition = "input.submit_exampledata_button != '0' || input.submit_datafile_button != '0'",
-                      
+
                       strong("Metadata:"), br(), br(),
-                      radioButtons("metadata_input", 
+                      radioButtons("metadata_input",
                                    label = NULL,
                                    choices = list("Load example" = 1, "Upload CSV" = 2), selected = 1),
-                      
+
                       # Conditional Sub-Panels depending on Data Input Type
                       # Example metadata
                       conditionalPanel(
@@ -118,7 +127,7 @@ ui <- navbarPage(
                       # Upload metadata
                       conditionalPanel(
                         condition = "input.metadata_input == '2'",
-                        fileInput("upload_metadata", 
+                        fileInput("upload_metadata",
                                   label = NULL,
                                   multiple = FALSE),
                         # selectInput("metadata_delim", "Delimiter:",
@@ -137,36 +146,36 @@ ui <- navbarPage(
                         )
                       ) # metdata upload
                     ) # conditional panel for metadata
-                    
+
              ) # column3
-             
+
            ), # fluidrow, top row
-           
+
            hr(),
-           
+
            ## Main UI revealed when data is uploaded ---------------------------------------------------------
            conditionalPanel(
              condition = "input.submit_exampledata_button != '0' || input.submit_datafile_button != '0'",
-             
+
              # shinythemes version:
              # sidebarPanel(),
              # mainPanel(),
-             
+
              # # bslib theme version: (without this mainpanel is served under sidebarpanel)
              # sidebarLayout(
              #   sidebarPanel(),
              #   mainPanel()
              # ),
-             
+
              sidebarLayout(
-               
+
                ## Left hand sidebar -------------------------------------------------------------------------------------
                sidebarPanel(
                  width = 4,
-                 style = "height: 90vh; overflow-y: auto; padding-top: 10px; padding-bottom: 10px;", 
+                 style = "height: 90vh; overflow-y: auto; padding-top: 10px; padding-bottom: 10px;",
                  # css to make scrollbar for the sidebar # https://www.r-bloggers.com/2022/06/scrollbar-for-the-shiny-sidebar/
                  # padding 10px allows sidebar text to be in line w mainpanel text (think default is 20px)
-                 
+
                  # Temporary placeholder text for sidebar before start button is pressed
                  conditionalPanel(
                    condition = "input.start_building_button == '0'", # before start button is pressed
@@ -178,28 +187,28 @@ ui <- navbarPage(
                    p(icon("circle-exclamation"), " Be careful: clicking on the column names of any of these data tables reorders those columns.
                  As this action cannot be undone and interferes with a number of steps, it is best to re-upload files if you accidentally click on the column names."),
                    p("Once both data and metadata are uploaded, you can begin building the parser.")
-                   
+
                  ),
-                 
+
                  # Build Parser button - visible after metadata - but only visible until pressed
                  conditionalPanel(
                    condition = "(input.submit_examplemetadata_button != '0' || input.submit_metadatafile_button != '0') && input.start_building_button == '0'",
-                   
+
                    hr(),
                    actionButton("start_building_button",
                                 "Build Parser",
                                 icon = icon("gear"), class = "btn-success"),
                  ),
-                 
+
                  # Rest of sidebarpanel - reveal after 'build parser' button is pressed
                  conditionalPanel(
                    condition = "input.start_building_button != '0'",
-                   
+
                    strong("Data specification"), br(), br(),
                    p("Proceed through the sections in order. Follow the instructions under each step, then click 'Set'.
                  Check the submitted values and their results with 'View' to toggle the 'Data specifications' tab.
                When satisfied, 'Lock' the section to mark it as complete, before proceeding to the next one."), hr(),
-                   
+
                    # Step 1 -----
                    strong("1) Data format"), br(),
                    p("Choose data type and format."),
@@ -217,33 +226,33 @@ ui <- navbarPage(
                                     "Data in Columns (Wells in Rows)" = "dataformat_columns",
                                     "Data in Matrix format" = "dataformat_matrix"),
                                selected = "dataformat_null"),
-                   
+
                    actionButton("submit_dataformat_button", "Set", class = "btn-primary"),
                    actionButton("view_dataspecs_button1", "View", class = "btn-info"),
-                   
+
                    ## "Mark as complete" v2 - actionbutton whose icon is updated when clicked
                    actionButton("step1_checkbox_button",
                                 label = NULL, icon("lock-open"),
                                 class = "btn-default"),
-                   
+
                    br(), br(),
-                   
+
                    # Steps 2-7 -----
                    conditionalPanel(
                      condition = "input.step1_checkbox_button %2 == 1",
-                     
+
                      # Step 2 -----
                      strong("2) Reading names"), br(),
-                     
+
                      # STD AND TIMECOURSE
                      conditionalPanel(
                        condition = "input.datatype == 'datatype_standard' || input.datatype == 'datatype_timecourse'",
-                       
+
                        p("Specify the number and names of all the readings taken."),
                        p(icon("circle-info"), "Readings from a plate reader are typically absorbance or fluorescence measurements.
-                       The reading names are the labels you want to give each reading. These will become column names in the parsed data. 
+                       The reading names are the labels you want to give each reading. These will become column names in the parsed data.
                      As such, it's important that the names are unique (no duplicates), and that they do not contain spaces or punctuation, although underscores (_) are OK."),
-                       
+
                        numericInput("channel_number", label = "# Readings", value = 1, min = 1, max = NA), # reading notation changed (but only for ui text, haven't changed server objects)
 
                        selectInput("channel_names_input", label = "Reading names specification",
@@ -263,39 +272,39 @@ ui <- navbarPage(
                          textInput("channel_names_manual_input", label = NULL,
                                    placeholder = "eg: OD600, 700, GFP, G1G2_060")
                        )
-                       
+
                      ),
                      # SPECTRA
                      conditionalPanel(
                        condition = "input.datatype == 'datatype_spectrum'",
-                       
+
                        p("Enter spectrum wavelength settings."),
-                       
+
                        numericInput("wav_min", label = "min (eg. 200nm)", value = 200, min = 1, max = NA),
                        numericInput("wav_max", label = "max (eg. 1000nm)", value = 1000, min = 1, max = NA),
                        numericInput("wav_interval", label = "interval (eg. 1nm)", value = 1, min = 1, max = NA)
                      ),
-                     
+
                      actionButton("submit_channelnames_button", "Set", class = "btn-primary"),
                      actionButton("view_dataspecs_button2", "View", class = "btn-info"),
                      actionButton("step2_checkbox_button",
                                   label = NULL, icon("lock-open"),
                                   class = "btn-default"),
                      br(), br(),
-                     
+
                      # Step 2B - Timecourse settings ------
                      conditionalPanel(
                        condition = "input.datatype == 'datatype_timecourse'",
-                       
+
                        strong("2b) Timecourse settings"), br(),
                        p("Enter timecourse settings."),
-                       
+
                        # for timecourse data:
                        numericInput("timecourse_firsttimepoint", label = "First timepoint (min)", value = 0, min = 0, max = NA),
                        numericInput("timecourse_duration", label = "Duration  (min)", value = 960, min = 1, max = NA),
                        numericInput("timecourse_interval", label = "Interval  (min)", value = 30, min = 1, max = NA),
                        numericInput("timepoint_number_expected", label = "# Timepoints expected", value = 32, min = 1, max = NA),
-                       
+
                        actionButton("submit_timepointvars_button", "Set", class = "btn-primary"),
                        actionButton("view_dataspecs_button2b", "View", class = "btn-info"),
                        actionButton("step2b_checkbox_button",
@@ -303,7 +312,7 @@ ui <- navbarPage(
                                     class = "btn-default"),
                        br(), br()
                      ),
-                     
+
                      # Step 3 -------
                      strong("3) Data from first reading"), br(),
                      conditionalPanel(
@@ -325,21 +334,21 @@ ui <- navbarPage(
                        p(icon("circle-info"), "The app assumes consecutive timepoints within a single channel are grouped together in consecutive rows or columns without breaks."),
                        p(icon("triangle-exclamation"), "Selections on large data files can be slow.")
                      ),
-                     
+
                      actionButton("submit_firstchanneldata_button", "Set", class = "btn-primary"),
                      actionButton("view_dataspecs_button3", "View", class = "btn-info"),
                      actionButton("step3_checkbox_button",
                                   label = NULL, icon("lock-open"),
                                   class = "btn-default"),
                      br(), br(),
-                     
+
                      # Step 4 -----
                      strong("4) Total data"), br(),
                      p("Enter the spacing between data in consecutive readings, to allow the app to find and extract the data from all readings.
                      If data contains only 1 reading, the number below will be ignored."),
                      conditionalPanel(
                        condition = "input.dataformat == 'dataformat_rows' && input.datatype == 'datatype_standard'",
-                       p(icon("circle-info"), "How many rows separate the data in the first and second readings? 
+                       p(icon("circle-info"), "How many rows separate the data in the first and second readings?
                          (Data in consecutive rows = 1; Data with 1 blank row between channels = 2.)")
                      ),
                      conditionalPanel(
@@ -363,21 +372,21 @@ ui <- navbarPage(
                        p(icon("circle-info"), "How many columns separate the first timepoint of the first reading and the first timepoint of the second reading?
                        For 10 timepoints: Data without gaps = 10; Data with 1 blank column between readings = 11.")
                      ),
-                     
+
                      numericInput("channeldataspacing", label = NULL,
                                   value = 1, min = 1, max = NA),
-                     
+
                      actionButton("submit_channeldataspacing_button", "Set", class = "btn-primary"),
                      actionButton("view_dataspecs_button4", "View", class = "btn-info"),
                      actionButton("step4_checkbox_button",
                                   label = NULL, icon("lock-open"),
                                   class = "btn-default"),
-                     
+
                      # VIEW CROPPED DATA
                      actionButton("view_croppeddata_button4", "View Cropped Data", class = "btn-success"),
                      # success = green, secondary = white, warning = yellow etc https://getbootstrap.com/docs/4.0/components/buttons/
                      br(), br(),
-                     
+
                      # Step 5 -----
                      strong("5) Well numbering"), br(),
                      p("Select starting well and orientation of data."),
@@ -430,18 +439,18 @@ ui <- navbarPage(
                        p(icon("hand-pointer"), "Select cells containing well numbering information.
                        As above, select the first and last cell of row/column of well numbers (as appropriate)."),
                      ),
-                     
+
                      actionButton("submit_readingorientation_button", "Set", class = "btn-primary"),
                      actionButton("view_dataspecs_button5", "View", class = "btn-info"),
                      actionButton("step5_checkbox_button",
                                   label = NULL, icon("lock-open"),
                                   class = "btn-default"),
-                     
+
                      # VIEW CROPPED DATA
                      actionButton("view_croppeddata_button5", "View Cropped Data", class = "btn-success"),
                      # success = green, secondary = white, warning = yellow etc https://getbootstrap.com/docs/4.0/components/buttons/
                      br(), br(),
-                     
+
                      # Step 6 -----
                      strong("6) Join metadata"), br(),
                      p("Make sure a metadata file in the correct format has been uploaded above."),
@@ -450,22 +459,22 @@ ui <- navbarPage(
                                   label = NULL, icon("lock-open"),
                                   class = "btn-default"),
                      br(), br(),
-                     
+
                      ## Step 7 - Parse -----
                      strong("7) Parse data"), br(),
                      actionButton("submit_parsedata_button", "Parse Data", class = "btn-primary"),
-                     
+
                      # RESET
                      actionButton("reset_dataspecs_button", "Reset all"), br(), br(),
-                     
+
                      # DOWNLOAD
                      conditionalPanel(
                        condition = "input.submit_parsedata_button > 0",
                        downloadButton("download_table_CSV", "Download parsed data (CSV)", class = "btn-primary")
                      )
-                     
+
                    ) # steps 2-6 conditional on step1 checkbox
-                   
+
                    # # TESTS FOR TROUBLESHOOTING:
                    # br(), br(), hr(),
                    #
@@ -474,28 +483,28 @@ ui <- navbarPage(
                    # h6("Current click:"), # not essential
                    # verbatimTextOutput('CurrentClick'),
                    # br()
-                   
+
                  ) # conditionalpanel for Start Building Parser button
-                 
+
                ), # sidebar
-               
+
                # Main (data) panel -------------------------------------------------------------------------------------
                mainPanel(
                  width = 8, # width should be rest!
-                 
+
                  tabsetPanel(id = "byop_mainpaneldata_tabset", # needed for updating view on tabset
-                             tabPanel("Raw Data", 
+                             tabPanel("Raw Data",
                                       value = "rawdata_tab", # needed for updating view on tabset
-                                      
+
                                       br(),
-                                      
+
                                       ## Raw data
                                       DT::dataTableOutput('RawDataTable')
-                                      
-                             ), 
+
+                             ),
                              tabPanel("Data Specs", # Data Specs Tab ----
                                       value = "dataspecs_tab", # needed for updating view on tabset
-                                      
+
                                       # Step1
                                       conditionalPanel(
                                         condition = "input.submit_dataformat_button > 0",
@@ -506,16 +515,16 @@ ui <- navbarPage(
                                         "Data Format:", br(),
                                         verbatimTextOutput("dataformat_printed")
                                       ),
-                                      
+
                                       # Step2
                                       conditionalPanel(
                                         condition = "input.submit_channelnames_button > 0",
-                                        
+
                                         strong("Step 2: Reading names"), br(),
                                       ),
                                       conditionalPanel(
                                         condition = "input.submit_channelnames_button > 0 && (input.datatype == 'datatype_standard' || input.datatype == 'datatype_timecourse')",
-                                        
+
                                         "Number of readings:", br(),
                                         verbatimTextOutput("channel_number"),
                                         "Reading names:", br(),
@@ -523,7 +532,7 @@ ui <- navbarPage(
                                       ),
                                       conditionalPanel(
                                         condition = "input.submit_channelnames_button > 0 && input.datatype == 'datatype_spectrum'",
-                                        
+
                                         "Min wavelength (nm):", br(),
                                         verbatimTextOutput("wav_min_printed"),
                                         "Max wavelength (nm):", br(),
@@ -531,11 +540,11 @@ ui <- navbarPage(
                                         "Interval (nm):", br(),
                                         verbatimTextOutput("wav_interval_printed"),
                                       ),
-                                      
+
                                       # Step 2B
                                       conditionalPanel(
                                         condition = "input.submit_timepointvars_button > 0", # submit_timepointvars_button only revealed when timecourse
-                                        
+
                                         strong("Step 2B: Timecourse settings"), br(),
                                         "First timepoint (min):", br(),
                                         verbatimTextOutput("timecourse_firsttimepoint"),
@@ -549,33 +558,33 @@ ui <- navbarPage(
                                         verbatimTextOutput("timepoint_number"),
                                         "List of timepoints:", br(),
                                         verbatimTextOutput("list_of_timepoints")
-                                        
+
                                       ),
-                                      
+
                                       # Step3
                                       conditionalPanel(
                                         condition = "input.submit_firstchanneldata_button > 0",
-                                        
+
                                         strong("Step 3: Data from first reading"), br(),
                                         "Data from first reading:", br(),
                                         DT::dataTableOutput('FirstChannelDataTable'), br() # first channel data
-                                        
+
                                       ),
-                                      
+
                                       # Step4
                                       conditionalPanel(
                                         condition = "input.submit_channeldataspacing_button > 0",
-                                        
+
                                         strong("Step 4: Total data"), br(),
                                         "Spacing between readings:", br(),
                                         verbatimTextOutput("channeldataspacing_printed")
-                                        
+
                                       ),
-                                      
+
                                       # Step5
                                       conditionalPanel(
                                         condition = "input.submit_readingorientation_button > 0",
-                                        
+
                                         strong("Step 5: Well numbering"), br(),
                                         "Starting well:", br(),
                                         verbatimTextOutput("starting_well_printed"),
@@ -584,57 +593,57 @@ ui <- navbarPage(
                                         "Used wells:", br(),
                                         verbatimTextOutput("used_wells_printed")
                                       ),
-                                      
+
                                       br(), br()
-                             ), 
+                             ),
                              tabPanel("Cropped Data",
                                       value = "rawdata_cropped_tab", # needed for updating view on tabset
-                                      
+
                                       br(),
-                                      
+
                                       # data
                                       DT::dataTableOutput('TotalDataTable'), br(),
-                                      
+
                                       br(), br()
                              ),
                              tabPanel("Metadata",
                                       value = "metadata_tab", # needed for updating view on tabset
-                                      
+
                                       br(),
-                                      
+
                                       conditionalPanel(
-                                        condition = "input.submit_examplemetadata_button == '0' && input.submit_metadatafile_button == '0'", 
+                                        condition = "input.submit_examplemetadata_button == '0' && input.submit_metadatafile_button == '0'",
                                         "Upload Metadata."
                                       ),
-                                      
+
                                       ## Metadata
                                       DT::dataTableOutput('MetaDataTable'),
-                                      
+
                                       br(), br()
                              ),
                              tabPanel("Parsed Data",
                                       value = "parseddata_tab", # needed for updating view on tabset
-                                      
+
                                       br(),
-                                      
+
                                       ## Parsed Data
                                       DT::dataTableOutput('ParsedDataTable'),
-                                      
+
                                       br(), br()
                              )
                  ) # tabsetPanel in the mainPanel
-                 
+
                ) # mainPanel
-               
+
              ) # sidebarLayout
-             
+
            ), # conditionalPanel (on uploading data)
-           
+
   ), # Top Tab 1
-  
+
   tabPanel("Guide", icon = icon("map"), # question
            value = "guide", # reqd for tab switching
-           
+
            # style for left sidebar
            tags$head(
              tags$style("
@@ -647,16 +656,16 @@ ui <- navbarPage(
            sidebarLayout(
              sidebarPanel(
                id = "guidesidebar", # id required for tags above
-               
+
                # css for Contents sidebar # moved this up to tags$head()
                # style = "
                # position: fixed;
                # background-color: transparent; border: none;
                # padding-top: 0px; padding-bottom: 0px;",
-               # position: fixed; # means sidebar always visible even if you scroll down. 
+               # position: fixed; # means sidebar always visible even if you scroll down.
                # nb. the shiny arg position = "fixed" does not achieve this!
                # padding top/bottom 0: there to make top of sidebar and mainpanel line up
-               
+
                width = 3, # 3/12
                uiOutput("guidecontents_text")
              ),
@@ -667,12 +676,12 @@ ui <- navbarPage(
                uiOutput("guide_text")
              )
            )
-           
+
   ), # Guide
-  
+
   tabPanel("Demos", icon = icon("play"), # question
            value = "demos", # reqd for tab switching
-           
+
            # style for left sidebar
            tags$head(
              tags$style("
@@ -695,12 +704,12 @@ ui <- navbarPage(
                uiOutput("examplesdemos_text")
              )
            )
-           
+
   ), # Demos
-  
+
   tabPanel("Help", icon = icon("circle-question"), # question
            value = "help", # reqd for tab switching
-           
+
            # style for left sidebar
            tags$head(
              tags$style("
@@ -723,12 +732,12 @@ ui <- navbarPage(
                uiOutput("help_text")
              )
            )
-           
+
   ), # Help
-  
+
   tabPanel("News", icon = icon("newspaper"),
            value = "news", # reqd for tab switching
-           
+
            # style for left sidebar
            tags$head(
              tags$style("
@@ -751,14 +760,14 @@ ui <- navbarPage(
                uiOutput("news_text")
              )
            )
-           
+
   ), # News
-  
+
   tabPanel("About", icon = icon("circle-info"), # info
            value = "about", # reqd for tab switching
-           
+
            # images must be in www subdirectory # https://stat545.com/shiny-tutorial.html#add-images
-           
+
            # style for left sidebar
            tags$head(
              tags$style("
@@ -781,6 +790,8 @@ ui <- navbarPage(
                uiOutput("about_text")
              )
            )
-           
+
   ) # About
 ) # navbarpage
+
+} # ui function ###
