@@ -17,6 +17,8 @@ Imports:
     bslib,
     dplyr,
     DT,
+    rlang,
     shiny,
     stringi,
-    tidyr
+    tidyr,
+    utils
