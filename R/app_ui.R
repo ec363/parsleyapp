@@ -13,7 +13,7 @@
 # library(DT)
 # library(bslib)
 
-app_ui <- function(request) { # shiny as package requires ui as function ###
+app_ui <- function(request) { # shiny as package requires ui as function
   navbarPage(
 
   # ui <- navbarPage(
@@ -24,7 +24,7 @@ app_ui <- function(request) { # shiny as package requires ui as function ###
 
   # Theme:
   # theme = shinythemes::shinytheme("paper"),
-  theme = bslib::bs_theme(bootswatch = "flatly"), ###
+  theme = bslib::bs_theme(bootswatch = "flatly"),
   # NB. bslib has issue with DT displaying BELOW sidebar unless the sidebarpanel and mainpanel are wrapped in sidebarLayout
 
   # Top Tab 1: Build Your Own Parser -------------------------------------------------------------------------------------
@@ -794,4 +794,4 @@ app_ui <- function(request) { # shiny as package requires ui as function ###
   ) # About
 ) # navbarpage
 
-} # ui function ###
+} # ui function

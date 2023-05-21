@@ -10,7 +10,7 @@
 
 # server -------------------------------------------------------------------------------------
 
-app_server <- function(input, output, session) { # shiny as package function ###
+app_server <- function(input, output, session) { # shiny as package function
 # server <- function(input, output, session) {
 
   # To prevent RStudio crash on app closure
@@ -25,14 +25,14 @@ app_server <- function(input, output, session) { # shiny as package function ###
   # About
   # about_text <- readLines("about.md")
   about_text_path <- system.file("md/about.md", package = "parsleyapp") ###
-  about_text <- readLines(about_text_path) ###
+  about_text <- readLines(about_text_path)
   output$about_text <- renderUI({
     markdown(about_text)
   })
 
   # aboutcontents_text <- readLines("aboutcontents.md")
   aboutcontents_text_path <- system.file("md/aboutcontents.md", package = "parsleyapp") ###
-  aboutcontents_text <- readLines(aboutcontents_text_path) ###
+  aboutcontents_text <- readLines(aboutcontents_text_path)
   output$aboutcontents_text <- renderUI({
     markdown(aboutcontents_text)
   })
@@ -40,14 +40,14 @@ app_server <- function(input, output, session) { # shiny as package function ###
   # Guide
   # guide_text <- readLines("guide.md")
   guide_text_path <- system.file("md/guide.md", package = "parsleyapp") ###
-  guide_text <- readLines(guide_text_path) ###
+  guide_text <- readLines(guide_text_path)
   output$guide_text <- renderUI({
     markdown(guide_text)
   })
 
   # guidecontents_text <- readLines("guidecontents.md")
   guidecontents_text_path <- system.file("md/guidecontents.md", package = "parsleyapp") ###
-  guidecontents_text <- readLines(guidecontents_text_path) ###
+  guidecontents_text <- readLines(guidecontents_text_path)
   output$guidecontents_text <- renderUI({
     markdown(guidecontents_text)
   })
@@ -55,14 +55,14 @@ app_server <- function(input, output, session) { # shiny as package function ###
   # Demos
   # examplesdemos_text <- readLines("examplesdemos.md")
   examplesdemos_text_path <- system.file("md/examplesdemos.md", package = "parsleyapp") ###
-  examplesdemos_text <- readLines(examplesdemos_text_path) ###
+  examplesdemos_text <- readLines(examplesdemos_text_path)
   output$examplesdemos_text <- renderUI({
     markdown(examplesdemos_text)
   })
 
   # examplesdemos_contents_text <- readLines("examplesdemos_contents.md")
   examplesdemos_contents_text_path <- system.file("md/examplesdemos_contents.md", package = "parsleyapp") ###
-  examplesdemos_contents_text <- readLines(examplesdemos_contents_text_path) ###
+  examplesdemos_contents_text <- readLines(examplesdemos_contents_text_path)
   output$examplesdemos_contents_text <- renderUI({
     markdown(examplesdemos_contents_text)
   })
@@ -70,14 +70,14 @@ app_server <- function(input, output, session) { # shiny as package function ###
   # Troubleshooting
   # help_text <- readLines("help.md")
   help_text_path <- system.file("md/help.md", package = "parsleyapp") ###
-  help_text <- readLines(help_text_path) ###
+  help_text <- readLines(help_text_path)
   output$help_text <- renderUI({
     markdown(help_text)
   })
 
   # helpcontents_text <- readLines("helpcontents.md")
   helpcontents_text_path <- system.file("md/helpcontents.md", package = "parsleyapp") ###
-  helpcontents_text <- readLines(helpcontents_text_path) ###
+  helpcontents_text <- readLines(helpcontents_text_path)
   output$helpcontents_text <- renderUI({
     markdown(helpcontents_text)
   })
@@ -85,22 +85,22 @@ app_server <- function(input, output, session) { # shiny as package function ###
   # News
   # news_text <- readLines("news.md")
   news_text_path <- system.file("md/news.md", package = "parsleyapp") ###
-  news_text <- readLines(news_text_path) ###
+  news_text <- readLines(news_text_path)
   output$news_text <- renderUI({
     markdown(news_text)
   })
 
   # newscontents_text <- readLines("newscontents.md")
   newscontents_text_path <- system.file("md/newscontents.md", package = "parsleyapp") ###
-  newscontents_text <- readLines(newscontents_text_path) ###
+  newscontents_text <- readLines(newscontents_text_path)
   output$newscontents_text <- renderUI({
     markdown(newscontents_text)
   })
 
   # DATAFRAME: New data objects as reactiveValues() and observeEvent()s ----
 
-  ### Note on notation: df_shiny$data is equivalent to df_shiny[["data"]] - like subsetting a list. Same with inputs.
-  ### Details: reconfiguring df_shiny as reactiveValues(data = NULL) and using observeEvent(condition, df_shiny$data = something) to update it each time
+  ## Note on notation: df_shiny$data is equivalent to df_shiny[["data"]] - like subsetting a list. Same with inputs.
+  ## Details: reconfiguring df_shiny as reactiveValues(data = NULL) and using observeEvent(condition, df_shiny$data = something) to update it each time
   # instead of having the whole df_shiny dataframe as one big reactive object.
   # Should work nicer because parts of it can then be updated without updating the whole thing.
   df_shiny <- reactiveValues(
@@ -121,7 +121,7 @@ app_server <- function(input, output, session) { # shiny as package function ###
 
   # LOADING DATA ----
 
-  ### Be careful with observeEvent: it just looks for input$something EXISTING, not its value.
+  ## Be careful with observeEvent: it just looks for input$something EXISTING, not its value.
   # So instead of observeEvent(input$something==1, {}), use: observeEvent(input$something, {}) and it will trigger every time input$something changes.
   # eg. input$action_button starts off with value 0 and then increases by 1 (and triggers event) every time it is pressed.
   # Note that the observeEvent expression in {} is called using isolate().
@@ -158,9 +158,8 @@ app_server <- function(input, output, session) { # shiny as package function ###
 
       # LOAD
       # 1. Update all data
-      # filepathtouse <- file.path("data", paste0(input$select_exampledata, ".csv")) ###
       filepathtouse <- system.file("extdata", paste0(input$select_exampledata, ".csv"), package = "parsleyapp") ###
-      df_shiny$alldata <- utils::read.csv(filepathtouse, header = FALSE) ### ###
+      df_shiny$alldata <- utils::read.csv(filepathtouse, header = FALSE)
       # print(names(df_shiny$alldata)) # check # (notation is df_shiny$alldata, not df_shiny$alldata().)
 
     }) # end withprogress
@@ -236,17 +235,17 @@ app_server <- function(input, output, session) { # shiny as package function ###
       # Reading the file:
       isolate({
 
-        # Error handling when you try and upload the wrong file type: # 1. trycatch catches error ###
+        # Error handling when you try and upload the wrong file type: # 1. trycatch catches error
         tryCatch({
 
           # read.csv
-          data <- utils::read.csv(file_in$datapath, header = FALSE) ###
+          data <- utils::read.csv(file_in$datapath, header = FALSE)
           # print(head(data)) # check
 
         }, # end first {} block in tryCatch
         error = function(err) { message(err) },
         warning = function(warn) { message(warn) }
-        ) # end tryCatch ###
+        ) # end tryCatch
         # Error handling when you try and upload the wrong file type: # 2. req() stops rest of function
         req(is.data.frame(data)) # read_delim produces tibbles. tibble::is_tibble(data) also works.
 
@@ -267,7 +266,7 @@ app_server <- function(input, output, session) { # shiny as package function ###
 
     withProgress(message = 'Clearing data...', value = 0, {
 
-      ### RESET DATA DFS
+      ## RESET DATA DFS
       # 1. alldata to be reset
       df_shiny$alldata = NULL
       # 3. Reset first channel data # moved to df_dataspecs
@@ -353,9 +352,8 @@ app_server <- function(input, output, session) { # shiny as package function ###
 
       # LOAD
       # 1. Update metadata
-      # filepathtouse <- file.path("data", paste0(input$select_examplemetadata, ".csv")) ###
       filepathtouse <- system.file("extdata", paste0(input$select_examplemetadata, ".csv"), package = "parsleyapp") ###
-      df_shiny$metadata <- utils::read.csv(filepathtouse) ###
+      df_shiny$metadata <- utils::read.csv(filepathtouse)
       # print(names(df_shiny$metadata)) # check # works
 
     }) # end withprogress
@@ -413,17 +411,17 @@ app_server <- function(input, output, session) { # shiny as package function ###
       # Reading the file:
       isolate({
 
-        # Error handling when you try and upload the wrong file type: # 1. trycatch catches error ###
+        # Error handling when you try and upload the wrong file type: # 1. trycatch catches error
         tryCatch({
 
           # read.csv
-          data <- utils::read.csv(file_in$datapath, header = TRUE) # metadata should always have header (ie 1st row = colnames) ###
+          data <- utils::read.csv(file_in$datapath, header = TRUE) # metadata should always have header (ie 1st row = colnames)
           # print(head(data)) # check
 
         }, # end first {} block in tryCatch
         error = function(err) { message(err) },
         warning = function(warn) { message(warn) }
-        ) # end tryCatch ###
+        ) # end tryCatch
         # Error handling when you try and upload the wrong file type: # 2. req() stops rest of function
         req(is.data.frame(data)) # read_delim produces tibbles. tibble::is_tibble(data) also works.
 
@@ -503,11 +501,11 @@ app_server <- function(input, output, session) { # shiny as package function ###
     # Remove error message from DT output after clearing data
     if(is.null(df_shiny$alldata)){
       df_temp <- data.frame(v1 = c(NA))
-      DT::datatable(df_temp) ###
+      DT::datatable(df_temp)
       return()
     }
 
-    DT::datatable(df_shiny$alldata, # raw_data ###
+    DT::datatable(df_shiny$alldata, # raw_data
               escape = TRUE, # default but impt. 'escapes' html content of tables.
               selection = list(target = 'cell'),
               rownames = FALSE, # remove row numbering
@@ -541,7 +539,7 @@ app_server <- function(input, output, session) { # shiny as package function ###
   # FirstChannelDataTable - first row/column
   output$FirstChannelDataTable = DT::renderDataTable({
 
-    DT::datatable(df_dataspecs$firstchanneldata, ###
+    DT::datatable(df_dataspecs$firstchanneldata,
               escape = TRUE, # default but impt. 'escapes' html content of tables.
               rownames = FALSE, # remove row numbering
               class = "compact", # removes row highlighting and compacts rows a bit
@@ -560,7 +558,7 @@ app_server <- function(input, output, session) { # shiny as package function ###
   # TotalDataTable - all cells w numeric data - for Cropped Data Tab page
   output$TotalDataTable = DT::renderDataTable({
 
-    DT::datatable(df_shiny$totaldata, ###
+    DT::datatable(df_shiny$totaldata,
               escape = TRUE, # default but impt. 'escapes' html content of tables.
               rownames = TRUE, # keep row numbering - required to show reading names post step 5
               class = "compact", # removes row highlighting and compacts rows a bit
@@ -577,7 +575,7 @@ app_server <- function(input, output, session) { # shiny as package function ###
   # metadata table ----
   output$MetaDataTable = DT::renderDataTable({
 
-    DT::datatable(df_shiny$metadata, ###
+    DT::datatable(df_shiny$metadata,
               escape = TRUE, # default but impt. 'escapes' html content of tables.
               rownames = FALSE, # remove row numbering
               class = "compact", # removes row highlighting and compacts rows a bit
@@ -594,7 +592,7 @@ app_server <- function(input, output, session) { # shiny as package function ###
   # parsed data table ----
   output$ParsedDataTable = DT::renderDataTable({
 
-    DT::datatable(df_shiny$parseddata, ###
+    DT::datatable(df_shiny$parseddata,
               escape = TRUE, # default but impt. 'escapes' html content of tables.
               # selection = list(target = 'cell'),
               rownames = FALSE, # remove row numbering
@@ -1141,7 +1139,7 @@ app_server <- function(input, output, session) { # shiny as package function ###
 
       if(df_dataspecs$dataformat == "dataformat_matrix"){ # data in matrix
 
-        ### v1. First channel data: Select A1 and H12 (whole matrix). [Could consider an alternative version that selects A1-A12 only first.]
+        ## v1. First channel data: Select A1 and H12 (whole matrix). [Could consider an alternative version that selects A1-A12 only first.]
         # stop if selection is NOT >1 rows and >1 columns ??
         if( ((row_beg != row_end-7) | (col_beg != col_end-11)) & ((row_beg != row_end-11) | (col_beg != col_end-7)) ){
           # first half checks for 8-row*12col format: required when matrices are printed in horizontal format: rows as A1, A2, A3
@@ -2211,7 +2209,7 @@ app_server <- function(input, output, session) { # shiny as package function ###
         # then pivot - get timepoints down from colnames
         datablock <- df_shiny$totaldata %>%
           # dplyr::mutate_at(-c("channel", "well"), as.numeric) %>% # mutate() by itself fails. this works. https://www.statology.org/convert-multiple-columns-to-numeric-dplyr/
-          dplyr::mutate_at(dplyr::vars(-c("channel", "well")), as.numeric) %>% # mutate_at(-c("channel", "well"), as.numeric) failed here ###
+          dplyr::mutate_at(dplyr::vars(-c("channel", "well")), as.numeric) %>% # mutate_at(-c("channel", "well"), as.numeric) failed here
           tidyr::pivot_longer(cols = -c("channel", "well"), names_to = "time",
                               names_prefix = "timepoint_", values_to = "value")
 
@@ -2473,7 +2471,7 @@ app_server <- function(input, output, session) { # shiny as package function ###
     },
     content <- function(file) { # just leave in "file", this is default and does refer to your file that will be made
       df <- df_shiny$parseddata
-      utils::write.csv(df, file, row.names = FALSE) ###
+      utils::write.csv(df, file, row.names = FALSE)
     },
     contentType = "test/csv" # from downloadHandler help page
   )
