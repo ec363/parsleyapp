@@ -392,56 +392,119 @@ app_ui <- function(request) { # shiny as package requires ui as function
 
                      # Step 5 -----
                      strong("5) Well numbering"), br(),
-                     p("Select starting well and orientation of data."),
-                     p(icon("circle-info"), "The app assumes use of a 96-well plate (A1-H12) configuration with no wells missing.
-                     If the well order doesn't conform to either given orientation (A1->A12 or A1->H1), or if wells are missing, choose 'Custom' well orientation."),
-                     # starting well
-                     selectInput("starting_well", label = NULL, # NULL < "" in terms of space
-                                 # list("A1" = "A01", "A2" = "A02", "A3" = "A03", "A4" = "A04", "A5" = "A05", "A6" = "A06",
-                                 #      "A7" = "A07", "A8" = "A08", "A9" = "A09", "A10" = "A10", "A11" = "A11", "A12" = "A12",
-                                 #      "B1" = "B01", "B2" = "B02", "B3" = "B03", "B4" = "B04", "B5" = "B05", "B6" = "B06",
-                                 #      "B7" = "B07", "B8" = "B08", "B9" = "B09", "B10" = "B10", "B11" = "B11", "B12" = "B12",
-                                 #      "C1" = "C01", "C2" = "C02", "C3" = "C03", "C4" = "C04", "C5" = "C05", "C6" = "C06",
-                                 #      "C7" = "C07", "C8" = "C08", "C9" = "C09", "C10" = "C10", "C11" = "C11", "C12" = "C12",
-                                 #      "D1" = "D01", "D2" = "D02", "D3" = "D03", "D4" = "D04", "D5" = "D05", "D6" = "D06",
-                                 #      "D7" = "D07", "D8" = "D08", "D9" = "D09", "D10" = "D10", "D11" = "D11", "D12" = "D12",
-                                 #      "E1" = "E01", "E2" = "E02", "E3" = "E03", "E4" = "E04", "E5" = "E05", "E6" = "E06",
-                                 #      "E7" = "E07", "E8" = "E08", "E9" = "E09", "E10" = "E10", "E11" = "E11", "E12" = "E12",
-                                 #      "F1" = "F01", "F2" = "F02", "F3" = "F03", "F4" = "F04", "F5" = "F05", "F6" = "F06",
-                                 #      "F7" = "F07", "F8" = "F08", "F9" = "F09", "F10" = "F10", "F11" = "F11", "F12" = "F12",
-                                 #      "G1" = "G01", "G2" = "G02", "G3" = "G03", "G4" = "G04", "G5" = "G05", "G6" = "G06",
-                                 #      "G7" = "G07", "G8" = "G08", "G9" = "G09", "G10" = "G10", "G11" = "G11", "G12" = "G12",
-                                 #      "H1" = "H01", "H2" = "H02", "H3" = "H03", "H4" = "H04", "H5" = "H05", "H6" = "H06",
-                                 #      "H7" = "H07", "H8" = "H08", "H9" = "H09", "H10" = "H10", "H11" = "H11", "H12" = "H12"),
-                                 list("A1" = "A1", "A2" = "A2", "A3" = "A3", "A4" = "A4", "A5" = "A5", "A6" = "A6",
-                                      "A7" = "A7", "A8" = "A8", "A9" = "A9", "A10" = "A10", "A11" = "A11", "A12" = "A12",
-                                      "B1" = "B1", "B2" = "B2", "B3" = "B3", "B4" = "B4", "B5" = "B5", "B6" = "B6",
-                                      "B7" = "B7", "B8" = "B8", "B9" = "B9", "B10" = "B10", "B11" = "B11", "B12" = "B12",
-                                      "C1" = "C1", "C2" = "C2", "C3" = "C3", "C4" = "C4", "C5" = "C5", "C6" = "C6",
-                                      "C7" = "C7", "C8" = "C8", "C9" = "C9", "C10" = "C10", "C11" = "C11", "C12" = "C12",
-                                      "D1" = "D1", "D2" = "D2", "D3" = "D3", "D4" = "D4", "D5" = "D5", "D6" = "D6",
-                                      "D7" = "D7", "D8" = "D8", "D9" = "D9", "D10" = "D10", "D11" = "D11", "D12" = "D12",
-                                      "E1" = "E1", "E2" = "E2", "E3" = "E3", "E4" = "E4", "E5" = "E5", "E6" = "E6",
-                                      "E7" = "E7", "E8" = "E8", "E9" = "E9", "E10" = "E10", "E11" = "E11", "E12" = "E12",
-                                      "F1" = "F1", "F2" = "F2", "F3" = "F3", "F4" = "F4", "F5" = "F5", "F6" = "F6",
-                                      "F7" = "F7", "F8" = "F8", "F9" = "F9", "F10" = "F10", "F11" = "F11", "F12" = "F12",
-                                      "G1" = "G1", "G2" = "G2", "G3" = "G3", "G4" = "G4", "G5" = "G5", "G6" = "G6",
-                                      "G7" = "G7", "G8" = "G8", "G9" = "G9", "G10" = "G10", "G11" = "G11", "G12" = "G12",
-                                      "H1" = "H1", "H2" = "H2", "H3" = "H3", "H4" = "H4", "H5" = "H5", "H6" = "H6",
-                                      "H7" = "H7", "H8" = "H8", "H9" = "H9", "H10" = "H10", "H11" = "H11", "H12" = "H12"),
-                                 # display name = code name
-                                 selected = "A1"),
+
+                     # # v1 ### well
+                     # p("Select starting well and orientation of data."),
+                     # p(icon("circle-info"), "The app assumes use of a 96-well plate (A1-H12) configuration with no wells missing.
+                     # If the well order doesn't conform to either given orientation (A1->A12 or A1->H1), or if wells are missing, choose 'Custom' well orientation."),
+                     # # starting well
+                     # selectInput("starting_well", label = NULL, # NULL < "" in terms of space
+                     #             # list("A1" = "A01", "A2" = "A02", "A3" = "A03", "A4" = "A04", "A5" = "A05", "A6" = "A06",
+                     #             #      "A7" = "A07", "A8" = "A08", "A9" = "A09", "A10" = "A10", "A11" = "A11", "A12" = "A12",
+                     #             #      "B1" = "B01", "B2" = "B02", "B3" = "B03", "B4" = "B04", "B5" = "B05", "B6" = "B06",
+                     #             #      "B7" = "B07", "B8" = "B08", "B9" = "B09", "B10" = "B10", "B11" = "B11", "B12" = "B12",
+                     #             #      "C1" = "C01", "C2" = "C02", "C3" = "C03", "C4" = "C04", "C5" = "C05", "C6" = "C06",
+                     #             #      "C7" = "C07", "C8" = "C08", "C9" = "C09", "C10" = "C10", "C11" = "C11", "C12" = "C12",
+                     #             #      "D1" = "D01", "D2" = "D02", "D3" = "D03", "D4" = "D04", "D5" = "D05", "D6" = "D06",
+                     #             #      "D7" = "D07", "D8" = "D08", "D9" = "D09", "D10" = "D10", "D11" = "D11", "D12" = "D12",
+                     #             #      "E1" = "E01", "E2" = "E02", "E3" = "E03", "E4" = "E04", "E5" = "E05", "E6" = "E06",
+                     #             #      "E7" = "E07", "E8" = "E08", "E9" = "E09", "E10" = "E10", "E11" = "E11", "E12" = "E12",
+                     #             #      "F1" = "F01", "F2" = "F02", "F3" = "F03", "F4" = "F04", "F5" = "F05", "F6" = "F06",
+                     #             #      "F7" = "F07", "F8" = "F08", "F9" = "F09", "F10" = "F10", "F11" = "F11", "F12" = "F12",
+                     #             #      "G1" = "G01", "G2" = "G02", "G3" = "G03", "G4" = "G04", "G5" = "G05", "G6" = "G06",
+                     #             #      "G7" = "G07", "G8" = "G08", "G9" = "G09", "G10" = "G10", "G11" = "G11", "G12" = "G12",
+                     #             #      "H1" = "H01", "H2" = "H02", "H3" = "H03", "H4" = "H04", "H5" = "H05", "H6" = "H06",
+                     #             #      "H7" = "H07", "H8" = "H08", "H9" = "H09", "H10" = "H10", "H11" = "H11", "H12" = "H12"),
+                     #             list("A1" = "A1", "A2" = "A2", "A3" = "A3", "A4" = "A4", "A5" = "A5", "A6" = "A6",
+                     #                  "A7" = "A7", "A8" = "A8", "A9" = "A9", "A10" = "A10", "A11" = "A11", "A12" = "A12",
+                     #                  "B1" = "B1", "B2" = "B2", "B3" = "B3", "B4" = "B4", "B5" = "B5", "B6" = "B6",
+                     #                  "B7" = "B7", "B8" = "B8", "B9" = "B9", "B10" = "B10", "B11" = "B11", "B12" = "B12",
+                     #                  "C1" = "C1", "C2" = "C2", "C3" = "C3", "C4" = "C4", "C5" = "C5", "C6" = "C6",
+                     #                  "C7" = "C7", "C8" = "C8", "C9" = "C9", "C10" = "C10", "C11" = "C11", "C12" = "C12",
+                     #                  "D1" = "D1", "D2" = "D2", "D3" = "D3", "D4" = "D4", "D5" = "D5", "D6" = "D6",
+                     #                  "D7" = "D7", "D8" = "D8", "D9" = "D9", "D10" = "D10", "D11" = "D11", "D12" = "D12",
+                     #                  "E1" = "E1", "E2" = "E2", "E3" = "E3", "E4" = "E4", "E5" = "E5", "E6" = "E6",
+                     #                  "E7" = "E7", "E8" = "E8", "E9" = "E9", "E10" = "E10", "E11" = "E11", "E12" = "E12",
+                     #                  "F1" = "F1", "F2" = "F2", "F3" = "F3", "F4" = "F4", "F5" = "F5", "F6" = "F6",
+                     #                  "F7" = "F7", "F8" = "F8", "F9" = "F9", "F10" = "F10", "F11" = "F11", "F12" = "F12",
+                     #                  "G1" = "G1", "G2" = "G2", "G3" = "G3", "G4" = "G4", "G5" = "G5", "G6" = "G6",
+                     #                  "G7" = "G7", "G8" = "G8", "G9" = "G9", "G10" = "G10", "G11" = "G11", "G12" = "G12",
+                     #                  "H1" = "H1", "H2" = "H2", "H3" = "H3", "H4" = "H4", "H5" = "H5", "H6" = "H6",
+                     #                  "H7" = "H7", "H8" = "H8", "H9" = "H9", "H10" = "H10", "H11" = "H11", "H12" = "H12"),
+                     #             # display name = code name
+                     #             selected = "A1"),
+                     # # orientation A1->A12, B1->B12 etc. # A1->H1, A2->H2 etc.
+                     # selectInput("readingorientation", label = NULL,
+                     #             list("A1->A12" = "A1->A12",
+                     #                  "A1->H1" = "A1->H1",
+                     #                  "Custom" = "custom"), # display name = code name
+                     #             selected = "A1->A12"),
+                     # conditionalPanel(
+                     #   condition = "input.readingorientation == 'custom'",
+                     #   p(icon("hand-pointer"), "Select cells containing well numbering information.
+                     #   As above, select the first and last cell of row/column of well numbers (as appropriate)."),
+                     # ),
+
+                     # v2 expanding custom well abilities - orientation first, then starting well ### well
+                     p("Select well orientation and starting well."), ### well
+                     p(icon("circle-info"), "Presets correspond to standard 96-well plates and assume no wells are missing.
+                     Where a different multiwell plate is used, or if wells are missing, choose 'Custom'."),
+
                      # orientation A1->A12, B1->B12 etc. # A1->H1, A2->H2 etc.
-                     selectInput("readingorientation", label = NULL,
-                                 list("A1->A12" = "A1->A12",
-                                      "A1->H1" = "A1->H1",
-                                      "Custom" = "custom"), # display name = code name
+                     selectInput("readingorientation",
+                                 # label = NULL, ### well
+                                 label = "Well orientation", ### well
+                                 list("96-well: A1->A12" = "A1->A12", ### well
+                                      "96-well: A1->H1" = "A1->H1", ### well
+                                      "Custom" = "custom"
+                                 ), # display name = code name
                                  selected = "A1->A12"),
                      conditionalPanel(
                        condition = "input.readingorientation == 'custom'",
                        p(icon("hand-pointer"), "Select cells containing well numbering information.
                        As above, select the first and last cell of row/column of well numbers (as appropriate)."),
                      ),
+                     # starting well
+                     conditionalPanel(  ### well
+                       condition = "input.readingorientation != 'custom'", ### well
+                       selectInput("starting_well",
+                                   # label = NULL, ### well
+                                   label = "Starting well", ### well
+                                   # list("A1" = "A01", "A2" = "A02", "A3" = "A03", "A4" = "A04", "A5" = "A05", "A6" = "A06",
+                                   #      "A7" = "A07", "A8" = "A08", "A9" = "A09", "A10" = "A10", "A11" = "A11", "A12" = "A12",
+                                   #      "B1" = "B01", "B2" = "B02", "B3" = "B03", "B4" = "B04", "B5" = "B05", "B6" = "B06",
+                                   #      "B7" = "B07", "B8" = "B08", "B9" = "B09", "B10" = "B10", "B11" = "B11", "B12" = "B12",
+                                   #      "C1" = "C01", "C2" = "C02", "C3" = "C03", "C4" = "C04", "C5" = "C05", "C6" = "C06",
+                                   #      "C7" = "C07", "C8" = "C08", "C9" = "C09", "C10" = "C10", "C11" = "C11", "C12" = "C12",
+                                   #      "D1" = "D01", "D2" = "D02", "D3" = "D03", "D4" = "D04", "D5" = "D05", "D6" = "D06",
+                                   #      "D7" = "D07", "D8" = "D08", "D9" = "D09", "D10" = "D10", "D11" = "D11", "D12" = "D12",
+                                   #      "E1" = "E01", "E2" = "E02", "E3" = "E03", "E4" = "E04", "E5" = "E05", "E6" = "E06",
+                                   #      "E7" = "E07", "E8" = "E08", "E9" = "E09", "E10" = "E10", "E11" = "E11", "E12" = "E12",
+                                   #      "F1" = "F01", "F2" = "F02", "F3" = "F03", "F4" = "F04", "F5" = "F05", "F6" = "F06",
+                                   #      "F7" = "F07", "F8" = "F08", "F9" = "F09", "F10" = "F10", "F11" = "F11", "F12" = "F12",
+                                   #      "G1" = "G01", "G2" = "G02", "G3" = "G03", "G4" = "G04", "G5" = "G05", "G6" = "G06",
+                                   #      "G7" = "G07", "G8" = "G08", "G9" = "G09", "G10" = "G10", "G11" = "G11", "G12" = "G12",
+                                   #      "H1" = "H01", "H2" = "H02", "H3" = "H03", "H4" = "H04", "H5" = "H05", "H6" = "H06",
+                                   #      "H7" = "H07", "H8" = "H08", "H9" = "H09", "H10" = "H10", "H11" = "H11", "H12" = "H12"),
+                                   list("A1" = "A1", "A2" = "A2", "A3" = "A3", "A4" = "A4", "A5" = "A5", "A6" = "A6",
+                                        "A7" = "A7", "A8" = "A8", "A9" = "A9", "A10" = "A10", "A11" = "A11", "A12" = "A12",
+                                        "B1" = "B1", "B2" = "B2", "B3" = "B3", "B4" = "B4", "B5" = "B5", "B6" = "B6",
+                                        "B7" = "B7", "B8" = "B8", "B9" = "B9", "B10" = "B10", "B11" = "B11", "B12" = "B12",
+                                        "C1" = "C1", "C2" = "C2", "C3" = "C3", "C4" = "C4", "C5" = "C5", "C6" = "C6",
+                                        "C7" = "C7", "C8" = "C8", "C9" = "C9", "C10" = "C10", "C11" = "C11", "C12" = "C12",
+                                        "D1" = "D1", "D2" = "D2", "D3" = "D3", "D4" = "D4", "D5" = "D5", "D6" = "D6",
+                                        "D7" = "D7", "D8" = "D8", "D9" = "D9", "D10" = "D10", "D11" = "D11", "D12" = "D12",
+                                        "E1" = "E1", "E2" = "E2", "E3" = "E3", "E4" = "E4", "E5" = "E5", "E6" = "E6",
+                                        "E7" = "E7", "E8" = "E8", "E9" = "E9", "E10" = "E10", "E11" = "E11", "E12" = "E12",
+                                        "F1" = "F1", "F2" = "F2", "F3" = "F3", "F4" = "F4", "F5" = "F5", "F6" = "F6",
+                                        "F7" = "F7", "F8" = "F8", "F9" = "F9", "F10" = "F10", "F11" = "F11", "F12" = "F12",
+                                        "G1" = "G1", "G2" = "G2", "G3" = "G3", "G4" = "G4", "G5" = "G5", "G6" = "G6",
+                                        "G7" = "G7", "G8" = "G8", "G9" = "G9", "G10" = "G10", "G11" = "G11", "G12" = "G12",
+                                        "H1" = "H1", "H2" = "H2", "H3" = "H3", "H4" = "H4", "H5" = "H5", "H6" = "H6",
+                                        "H7" = "H7", "H8" = "H8", "H9" = "H9", "H10" = "H10", "H11" = "H11", "H12" = "H12"),
+                                   # display name = code name
+                                   selected = "A1"),
+                     ), ### well
 
                      actionButton("submit_readingorientation_button", "Set", class = "btn-primary"),
                      actionButton("view_dataspecs_button5", "View", class = "btn-info"),

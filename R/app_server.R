@@ -1832,16 +1832,17 @@ app_server <- function(input, output, session) { # shiny as package function
     print("n_wells:")
     print(n_wells)
 
-    # Starting well:
-    df_dataspecs$starting_well <- input$starting_well # save value # may not need this bc don't need it in future steps
-    print("starting_well:")
-    print(df_dataspecs$starting_well)
+    # # Starting well: ### well: moved down into "not custom" section
+    # df_dataspecs$starting_well <- input$starting_well # save value # may not need this bc don't need it in future steps
+    # print("starting_well:")
+    # print(df_dataspecs$starting_well)
 
     # Reading orientation:
     df_dataspecs$readingorientation <- input$readingorientation # save value # may not need this bc don't need it in future steps
     print("readingorientation:")
     print(df_dataspecs$readingorientation)
 
+    # reading orientation presets ### well ----
     if(df_dataspecs$readingorientation == "A1->A12"){
 
       # # list of wells
@@ -1897,6 +1898,24 @@ app_server <- function(input, output, session) { # shiny as package function
 
     }
 
+    if(df_dataspecs$readingorientation != "custom"){ ### well
+
+      # Starting well: ### well: moved from above
+      df_dataspecs$starting_well <- input$starting_well # save value # may not need this bc don't need it in future steps
+      print("starting_well:")
+      print(df_dataspecs$starting_well)
+
+      # Which wells of the listofwells are the used wells? ### well: moved from below
+      starting_well_idx <- which(listofwells == df_dataspecs$starting_well)
+      print("starting_well_idx:")
+      print(starting_well_idx)
+      df_dataspecs$used_wells <- listofwells[starting_well_idx:(starting_well_idx+n_wells-1)]
+      print("used wells:")
+      print(df_dataspecs$used_wells)
+
+    } ### well
+
+    # reading orientation custom ### well ----
     if(df_dataspecs$readingorientation == "custom"){
 
       all_selected_cells <- input$RawDataTable_cells_selected
@@ -2012,43 +2031,51 @@ app_server <- function(input, output, session) { # shiny as package function
 
       }
 
-      # Checks
-      if(!any(grepl(df_dataspecs$starting_well, listofwells))){
-        # if any of the wells matches starting well, TRUE
-        # ! negates it, so if() fires when NONE of wells match starting well
-        message("Error: Selected wells does not contain named starting well.")
-        showModal(modalDialog(title = "Error", "Selected wells does not contain named starting well.", easyClose = TRUE ))
-        df_dataspecs$starting_well <- NULL
-        df_dataspecs$readingorientation <- NULL
-        df_dataspecs$used_wells <- NULL
-        df_shiny$totaldata <- NULL
-        return()
-        # [] This judges "A11" as containing "A1". Think about later.
-      }
+      # # Checks ### well: remove because custom could start 'C01' or 'well_15'
+      # if(!any(grepl(df_dataspecs$starting_well, listofwells))){
+      #   # if any of the wells matches starting well, TRUE
+      #   # ! negates it, so if() fires when NONE of wells match starting well
+      #   message("Error: Selected wells does not contain named starting well.")
+      #   showModal(modalDialog(title = "Error", "Selected wells does not contain named starting well.", easyClose = TRUE ))
+      #   df_dataspecs$starting_well <- NULL
+      #   df_dataspecs$readingorientation <- NULL
+      #   df_dataspecs$used_wells <- NULL
+      #   df_shiny$totaldata <- NULL
+      #   return()
+      #   # [] This judges "A11" as containing "A1". Think about later.
+      # }
+
+      # Which wells of the listofwells are the used wells? ### well: moved from below
+      # starting_well_idx is first cell selected: removed 'searching' for starting_well_idx in listofwells
+      # df_dataspecs$used_wells <- listofwells[starting_well_idx:(starting_well_idx+n_wells-1)]
+      df_dataspecs$used_wells <- listofwells
+      print("used wells:")
+      print(df_dataspecs$used_wells)
 
     } # custom wells
 
-    # Which wells of the listofwells are the used wells?
-    starting_well_idx <- which(listofwells == df_dataspecs$starting_well)
-    print("starting_well_idx:")
-    print(starting_well_idx)
+    # # Which wells of the listofwells are the used wells? ### well: moved up into "not custom"
+    # starting_well_idx <- which(listofwells == df_dataspecs$starting_well)
+    # print("starting_well_idx:")
+    # print(starting_well_idx)
 
-    # Checks for empty cells at beginning
-    if(df_dataspecs$readingorientation == "custom" & starting_well_idx != 1){
-      # for custom wells, starting well MUST be first well
-      # otherwise next line throws undefined columns error
-      message("Error: Starting well must be first cell selected in Custom well selection.")
-      showModal(modalDialog(title = "Error", "Starting well must be first cell selected in Custom well selection.", easyClose = TRUE ))
-      df_dataspecs$starting_well <- NULL
-      df_dataspecs$readingorientation <- NULL
-      df_dataspecs$used_wells <- NULL
-      df_shiny$totaldata <- NULL
-      return()
-    }
+    # # Checks for empty cells at beginning ### well: don't need if custom doesn't require specified starting well
+    # if(df_dataspecs$readingorientation == "custom" & starting_well_idx != 1){
+    #   # for custom wells, starting well MUST be first well
+    #   # otherwise next line throws undefined columns error
+    #   message("Error: Starting well must be first cell selected in Custom well selection.")
+    #   showModal(modalDialog(title = "Error", "Starting well must be first cell selected in Custom well selection.", easyClose = TRUE ))
+    #   df_dataspecs$starting_well <- NULL
+    #   df_dataspecs$readingorientation <- NULL
+    #   df_dataspecs$used_wells <- NULL
+    #   df_shiny$totaldata <- NULL
+    #   return()
+    # }
 
-    df_dataspecs$used_wells <- listofwells[starting_well_idx:(starting_well_idx+n_wells-1)]
-    print("used wells:")
-    print(df_dataspecs$used_wells)
+    # ### well: moved up into "not custom"
+    # df_dataspecs$used_wells <- listofwells[starting_well_idx:(starting_well_idx+n_wells-1)]
+    # print("used wells:")
+    # print(df_dataspecs$used_wells)
 
     # Checks for empty cells (couldn't do above as "" catches evthg, whereas here empty cells are now NA)
     if(any(is.na(df_dataspecs$used_wells))){
