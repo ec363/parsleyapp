@@ -239,9 +239,21 @@ app_server <- function(input, output, session) { # shiny as package function
         # Error handling when you try and upload the wrong file type: # 1. trycatch catches error
         tryCatch({
 
-          # read.csv
-          data <- utils::read.csv(file_in$datapath, header = FALSE)
-          # print(head(data)) # check
+          if(input$upload_data_delim == ","){ ### delim
+
+            # read.csv
+            data <- utils::read.csv(file_in$datapath, header = FALSE) ###
+            # print(head(data)) # check
+
+          } ### delim
+
+          if(input$upload_data_delim != ","){ ### delim
+
+            # read.table
+            data <- utils::read.table(file_in$datapath, header = FALSE,
+                                      sep = input$upload_data_delim)
+
+          } ### delim
 
         }, # end first {} block in tryCatch
         error = function(err) { message(err) },

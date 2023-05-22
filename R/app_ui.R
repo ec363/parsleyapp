@@ -82,12 +82,13 @@ app_ui <- function(request) { # shiny as package requires ui as function
                       fileInput("upload_data",
                                 label = NULL,
                                 multiple = FALSE), # explanation: inputId = upload_data, label = NULL
-                      # selectInput("upload_delim", "Delimiter:", # inputId = upload_delim, label = Delimiter
-                      #             list("Comma" = ",",
-                      #                  "Tab" = "\t",
-                      #                  "Semicolon" = ";",
-                      #                  "Space" = " "),
-                      #             selected = "Comma"),
+                      selectInput("upload_data_delim", "Delimiter (File type)", ### delim
+                                  list("Comma (CSV)" = ",",
+                                       "Semicolon (CSV)" = ";",
+                                       "Tab (TSV)" = "\t"
+                                       # "Space" = " "
+                                       ),
+                                  selected = "Comma (CSV)"),
                       actionButton("submit_datafile_button", "Submit", class = "btn-primary"),
                       actionButton("reset_datafile_button", "Clear"), # Reset button akin to https://shiny.rstudio.com/articles/action-buttons.html
                       conditionalPanel(
