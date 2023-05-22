@@ -119,7 +119,9 @@ app_ui <- function(request) { # shiny as package requires ui as function
                         selectInput("select_examplemetadata",
                                     label = NULL,
                                     list("1 - Green fluorescence data" = "metadata_green",
-                                         "2 - Timecourse data" = "metadata_timecourse"),
+                                         "2 - Timecourse data" = "metadata_timecourse",
+                                         "Skip metadata" = "metadata_skip" ### meta
+                                         ),
                                     selected = "metadata_green"),
                         actionButton("submit_examplemetadata_button", "Submit", class = "btn-primary"),
                         actionButton("reset_examplemetadata_button", "Clear")
@@ -453,7 +455,9 @@ app_ui <- function(request) { # shiny as package requires ui as function
 
                      # Step 6 -----
                      strong("6) Join metadata"), br(),
-                     p("Make sure a metadata file in the correct format has been uploaded above."),
+                     # p("Make sure a metadata file in the correct format has been uploaded above."), ### meta
+                     p("Make sure a metadata file in the correct format has been uploaded above (unless you selected to skip the metadata).
+                       Make sure the 'wells' column of the file contains entries for each well in the Cropped Data (in exactly the same notation)."), ### meta
                      actionButton("view_metadata_button", "View Metadata", class = "btn-success"), # btn-info
                      actionButton("step6_checkbox_button",
                                   label = NULL, icon("lock-open"),

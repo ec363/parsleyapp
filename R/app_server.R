@@ -113,6 +113,7 @@ app_server <- function(input, output, session) { # shiny as package function
 
     # 4. metadata is plate layout
     metadata = NULL,
+    metadata_skip = FALSE, ### meta
 
     # 5. parsed data
     parseddata = NULL
@@ -339,29 +340,56 @@ app_server <- function(input, output, session) { # shiny as package function
   # Metadata Input 1: Load example metadata ----
   observeEvent(input$submit_examplemetadata_button, {
 
-    withProgress(message = 'Loading metadata...', value = 0, {
+    # if skipping metadata: ### meta
+    if(input$select_examplemetadata == "metadata_skip"){ ### meta
 
-      # RESET
+      ## RESET
       # Update ReactiveValues
       # some of this is redundant, but best to be thorough
       # when you press submit, you are expecting data to be overwritten - the user expects a clear and resubmit. so clear all first:
       # 1. Reset metadata
       df_shiny$metadata = NULL
+      df_shiny$metadata_skip = FALSE ### meta
       # Also Reset parsed data (in case this has already taken place w a previous metadata)
       df_shiny$parseddata = NULL
 
-      # LOAD
-      # 1. Update metadata
-      filepathtouse <- system.file("extdata", paste0(input$select_examplemetadata, ".csv"), package = "parsleyapp") ###
-      df_shiny$metadata <- utils::read.csv(filepathtouse)
-      # print(names(df_shiny$metadata)) # check # works
+      ## 1. Don't add metadata
+      df_shiny$metadata_skip = TRUE ### meta
+      df_shiny$metadata <- data.frame(metadata = "No metadata has been uploaded.") ### meta
 
-    }) # end withprogress
+      # Show Metadata Tab
+      showTab(inputId = "byop_mainpaneldata_tabset", target = "metadata_tab", select = TRUE)
+    }
 
-    # Show Metadata Tab
-    showTab(inputId = "byop_mainpaneldata_tabset", target = "metadata_tab", select = TRUE)
+    if(input$select_examplemetadata != "metadata_skip"){ ### meta
+
+      withProgress(message = 'Loading metadata...', value = 0, {
+
+        # RESET
+        # Update ReactiveValues
+        # some of this is redundant, but best to be thorough
+        # when you press submit, you are expecting data to be overwritten - the user expects a clear and resubmit. so clear all first:
+        # 1. Reset metadata
+        df_shiny$metadata = NULL
+        df_shiny$metadata_skip = FALSE ### meta
+        # Also Reset parsed data (in case this has already taken place w a previous metadata)
+        df_shiny$parseddata = NULL
+
+        # LOAD
+        # 1. Update metadata
+        filepathtouse <- system.file("extdata", paste0(input$select_examplemetadata, ".csv"), package = "parsleyapp") ###
+        df_shiny$metadata <- utils::read.csv(filepathtouse)
+        # print(names(df_shiny$metadata)) # check # works
+
+      }) # end withprogress
+
+      # Show Metadata Tab
+      showTab(inputId = "byop_mainpaneldata_tabset", target = "metadata_tab", select = TRUE)
+
+    } ### meta
 
   })
+
   # Metadata Input 1: Reset
   observeEvent(input$reset_examplemetadata_button, {
 
@@ -369,6 +397,7 @@ app_server <- function(input, output, session) { # shiny as package function
 
       # 1. Reset metadata
       df_shiny$metadata = NULL
+      df_shiny$metadata_skip = FALSE ### meta
       # Also Reset parsed data (in case this has already taken place w a previous metadata)
       df_shiny$parseddata = NULL
 
@@ -396,6 +425,7 @@ app_server <- function(input, output, session) { # shiny as package function
       # when you press submit, you are expecting data to be overwritten - the user expects a clear and resubmit. so clear all first:
       # 1. Reset metadata
       df_shiny$metadata = NULL
+      df_shiny$metadata_skip = FALSE ### meta
       # Also Reset parsed data (in case this has already taken place w a previous metadata)
       df_shiny$parseddata = NULL
 
@@ -444,6 +474,7 @@ app_server <- function(input, output, session) { # shiny as package function
 
       # 1. Reset metadata
       df_shiny$metadata = NULL
+      df_shiny$metadata_skip = FALSE ### meta
       # Also Reset parsed data (in case this has already taken place w a previous metadata)
       df_shiny$parseddata = NULL
 
@@ -2110,7 +2141,8 @@ app_server <- function(input, output, session) { # shiny as package function
     }
 
     # Check that metadata has 'well' column
-    if(!any(grepl("well", colnames(df_shiny$metadata)))){ ### R CMD check doesn't like the fact that I assume a well column. But there's a check here!
+    if( (isFALSE(df_shiny$metadata_skip)) ### meta
+        & (!any(grepl("well", colnames(df_shiny$metadata)))) ){ ### R CMD check doesn't like the fact that I assume a well column. But there's a check here!
       message("Error: Can't merge Data and Metadata when Metadata does not contain a 'well' column.")
       showModal(modalDialog(title = "Error", "Can't merge Data and Metadata when Metadata does not contain a 'well' column.", easyClose = TRUE ))
       return()
@@ -2225,13 +2257,21 @@ app_server <- function(input, output, session) { # shiny as package function
     print(datablock)
 
     ## Bind with plate layout metadata
-    parseddata <- dplyr::left_join(df_shiny$metadata, datablock, by = "well")
-    ### R CMD check doesn't like the fact that I assume a well column. But there's a check at the top!
+    if(isFALSE(df_shiny$metadata_skip)){ ### meta
+      parseddata <- dplyr::left_join(df_shiny$metadata, datablock, by = "well")
+      ### R CMD check doesn't like the fact that I assume a well column. But there's a check at the top!
 
-    ## Make row and column columns
-    parseddata$row <- substr(x = parseddata$well, start = 1, stop = 1)
-    parseddata$column <- as.numeric(substr(x = parseddata$well, start = 2, stop = nchar(parseddata$well)))
-    parseddata <- dplyr::arrange_at(parseddata, dplyr::vars(.data$row, .data$column))
+      ## Make row and column columns
+      parseddata$row <- substr(x = parseddata$well, start = 1, stop = 1)
+      parseddata$column <- as.numeric(substr(x = parseddata$well, start = 2, stop = nchar(parseddata$well)))
+      parseddata <- dplyr::arrange_at(parseddata, dplyr::vars(.data$row, .data$column))
+    } else {
+
+      ## Skip metadata joining, and simply return tidied dataframe ### meta
+      parseddata <- datablock
+
+    } ### meta
+
 
     # SAVE
     df_shiny$parseddata <- parseddata # to save and to display as DT
