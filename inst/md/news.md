@@ -2,6 +2,23 @@
 
 <br>
 
+##### <a name="0.1.2"> Version 0.1.2 </a>
+<hr>
+
+Release: May 2023
+
+- Minor improvements to functionality.
+	- Added ability to skip addition of metadata to allow data extraction + tidying without metadata joining.
+	- Expanded data import from comma-separated value (CSV) format only to data that is delimited by semi-colons or tabs (tab-separated data, or .tsv).
+	- Removed requirement for 'custom' well list to include a well in 'A1'/'H12' format.
+- Minor wording changes in BYOP tab.
+- Minor documentation updates.
+	- About tab: Instrument compatibility section expanded.
+	- Guide tab: Updated guide to incorporate recent changes.
+	- Help tab: Updated error messages.
+
+<br>
+
 ##### <a name="0.1.1"> Version 0.1.1 </a>
 <hr>
 
