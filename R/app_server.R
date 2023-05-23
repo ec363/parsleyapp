@@ -226,47 +226,66 @@ app_server <- function(input, output, session) { # shiny as package function
 
       # LOAD:
 
-      # Which file to upload
-      file_in <- input$upload_data # the fileInput file selection device for Uploading one file was named "upload_data"
-      # print(file_in) # check
-      # print(file_in$datapath) # check
+      # v1 ### fileinput
+      # # Which file to upload
+      # file_in <- input$upload_data # the fileInput file selection device for Uploading one file was named "upload_data"
+      # # print(file_in) # check
+      # # print(file_in$datapath) # check
+      #
+      # # Do the upload
+      #
+      # # Reading the file:
+      # isolate({
+      #
+      #   # Error handling when you try and upload the wrong file type: # 1. trycatch catches error
+      #   tryCatch({
+      #
+      #     if(input$upload_data_delim == ","){ ### delim
+      #
+      #       # read.csv
+      #       data <- utils::read.csv(file_in$datapath, header = FALSE) ###
+      #       # print(head(data)) # check
+      #
+      #     } ### delim
+      #
+      #     if(input$upload_data_delim != ","){ ### delim
+      #
+      #       # read.table
+      #       data <- utils::read.table(file_in$datapath, header = FALSE,
+      #                                 sep = input$upload_data_delim)
+      #
+      #     } ### delim
+      #
+      #   }, # end first {} block in tryCatch
+      #   error = function(err) { message(err) },
+      #   warning = function(warn) { message(warn) }
+      #   ) # end tryCatch
+      #   # Error handling when you try and upload the wrong file type: # 2. req() stops rest of function
+      #   req(is.data.frame(data)) # read_delim produces tibbles. tibble::is_tibble(data) also works.
+      #
+      # }) # end isolate
+      #
+      # # LOAD
+      # # 1. Update all data (# Update df_shiny with converted dataframe)
+      # df_shiny$alldata <- data
 
-      # Do the upload
+      # v2 fileinput of specific types # https://mastering-shiny.org/action-transfer.html#uploading-data ### fileinput
+      # only upload data if extension is valid
+      ext <- tools::file_ext(input$upload_data$name) ### fileinput
+      if(any(grepl(pattern = ext, x = c("csv", "tsv", "txt")))){
 
-      # Reading the file:
-      isolate({
+        if(input$upload_data_delim == ","){ ### delim
+          data <- utils::read.csv(input$upload_data$datapath, header = FALSE) # read.csv
+        }
+        if(input$upload_data_delim != ","){ ### delim
+          data <- utils::read.table(input$upload_data$datapath, header = FALSE, sep = input$upload_data_delim) # read.table
+        }
 
-        # Error handling when you try and upload the wrong file type: # 1. trycatch catches error
-        tryCatch({
+        # LOAD
+        # 1. Update all data (# Update df_shiny with converted dataframe)
+        df_shiny$alldata <- data
 
-          if(input$upload_data_delim == ","){ ### delim
-
-            # read.csv
-            data <- utils::read.csv(file_in$datapath, header = FALSE) ###
-            # print(head(data)) # check
-
-          } ### delim
-
-          if(input$upload_data_delim != ","){ ### delim
-
-            # read.table
-            data <- utils::read.table(file_in$datapath, header = FALSE,
-                                      sep = input$upload_data_delim)
-
-          } ### delim
-
-        }, # end first {} block in tryCatch
-        error = function(err) { message(err) },
-        warning = function(warn) { message(warn) }
-        ) # end tryCatch
-        # Error handling when you try and upload the wrong file type: # 2. req() stops rest of function
-        req(is.data.frame(data)) # read_delim produces tibbles. tibble::is_tibble(data) also works.
-
-      }) # end isolate
-
-      # LOAD
-      # 1. Update all data (# Update df_shiny with converted dataframe)
-      df_shiny$alldata <- data
+      } # only upload data if extension is valid
 
     }) # end withprogress
 
@@ -443,35 +462,49 @@ app_server <- function(input, output, session) { # shiny as package function
 
       # LOAD:
 
-      # Which file to upload
-      file_in <- input$upload_metadata # the fileInput file selection device for Uploading one file was named "upload_metadata"
-      # print(file_in) # check
-      # print(file_in$datapath) # check
+      # v1 ### fileinput
+      # # Which file to upload
+      # file_in <- input$upload_metadata # the fileInput file selection device for Uploading one file was named "upload_metadata"
+      # # print(file_in) # check
+      # # print(file_in$datapath) # check
+      #
+      # # Do the upload
+      #
+      # # Reading the file:
+      # isolate({
+      #
+      #   # Error handling when you try and upload the wrong file type: # 1. trycatch catches error
+      #   tryCatch({
+      #
+      #     # read.csv
+      #     data <- utils::read.csv(file_in$datapath, header = TRUE) # metadata should always have header (ie 1st row = colnames)
+      #     # print(head(data)) # check
+      #
+      #   }, # end first {} block in tryCatch
+      #   error = function(err) { message(err) },
+      #   warning = function(warn) { message(warn) }
+      #   ) # end tryCatch
+      #   # Error handling when you try and upload the wrong file type: # 2. req() stops rest of function
+      #   req(is.data.frame(data)) # read_delim produces tibbles. tibble::is_tibble(data) also works.
+      #
+      # }) # end isolate
+      #
+      # # LOAD
+      # # 1. Update metadata
+      # df_shiny$metadata <- data
 
-      # Do the upload
+      # v2 fileinput of specific types ### fileinput
+      # only upload metadata if extension is valid
+      ext <- tools::file_ext(input$upload_metadata$name) ### fileinput
+      if(any(grepl(pattern = ext, x = c("csv")))){
 
-      # Reading the file:
-      isolate({
+        data <- utils::read.csv(input$upload_metadata$datapath, header = TRUE) # metadata should always have header (ie 1st row = colnames)
 
-        # Error handling when you try and upload the wrong file type: # 1. trycatch catches error
-        tryCatch({
+        # LOAD
+        # 1. Update metadata
+        df_shiny$metadata <- data
 
-          # read.csv
-          data <- utils::read.csv(file_in$datapath, header = TRUE) # metadata should always have header (ie 1st row = colnames)
-          # print(head(data)) # check
-
-        }, # end first {} block in tryCatch
-        error = function(err) { message(err) },
-        warning = function(warn) { message(warn) }
-        ) # end tryCatch
-        # Error handling when you try and upload the wrong file type: # 2. req() stops rest of function
-        req(is.data.frame(data)) # read_delim produces tibbles. tibble::is_tibble(data) also works.
-
-      }) # end isolate
-
-      # LOAD
-      # 1. Update metadata
-      df_shiny$metadata <- data
+      } # only upload data if extension is valid
 
     }) # end withprogress
 

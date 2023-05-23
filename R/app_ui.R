@@ -81,7 +81,10 @@ app_ui <- function(request) { # shiny as package requires ui as function
                       condition = "input.data_input=='2'",
                       fileInput("upload_data",
                                 label = NULL,
-                                multiple = FALSE), # explanation: inputId = upload_data, label = NULL
+                                multiple = FALSE,
+                                accept = c("text/csv",
+                                           "text/tab-separated-values",
+                                           "text/plain")), ### fileinput
                       selectInput("upload_data_delim", "Delimiter (File type)", ### delim
                                   list("Comma (CSV)" = ",",
                                        "Semicolon (CSV)" = ";",
@@ -132,7 +135,8 @@ app_ui <- function(request) { # shiny as package requires ui as function
                         condition = "input.metadata_input == '2'",
                         fileInput("upload_metadata",
                                   label = NULL,
-                                  multiple = FALSE),
+                                  multiple = FALSE,
+                                  accept = c("text/csv")), ### fileinput
                         # selectInput("metadata_delim", "Delimiter:",
                         #             list("Comma" = ",",
                         #                  "Tab" = "\t",
