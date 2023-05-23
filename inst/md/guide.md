@@ -55,7 +55,9 @@ To start, upload your experimental Raw Data file. On the 'Build Your Own Parser'
 
 Most plate readers export files in Excel (.xlsx) format, so make sure you first open these in Excel or similar and use the 'Save As..' function to save them in CSV format before using Parsley.
 
-To upload a file, select 'Upload CSV', find your CSV file and click 'Submit'. A successful upload will result in the name of your file appearing below the Submit button, and the entire CSV contents appearing at the bottom of the page. Even if the file is very wide or long, you should be able to scroll to view the entire file.
+To upload a file, select 'Upload CSV', find your CSV file and click 'Submit'. (Since v0.1.2, it is possible to upload tab-separated value (tsv) files, as well as CSV files that use semi-colons (;) instead of commas (,) by selecting the appropriate [delimeter](https://en.wikipedia.org/wiki/Delimiter-separated_values) before clicking Submit.)
+
+A successful upload will result in the name of your file appearing below the Submit button, and the entire CSV contents appearing at the bottom of the page. Even if the file is very wide or long, you should be able to scroll to view the entire file.
 
 <img src="www/13_rawdata_submitfile.png" style = "width:700px; border: 1px solid  gray;">
 <br><br>
@@ -100,7 +102,9 @@ For example, the Metadata for our fluorescein dilution series might look like th
 On saving this as a CSV and uploading it to Parsley, we should notice once again that the upload triggered the display the _file name_ of the uploaded file below the Submit button, and the _contents_ of that file at the bottom of the page. Unlike the Raw Data file, we might also notice that Metadata is not displayed in an interactive format.
 
 <img src="www/21_metadata_submitfile.png" style="width:700px; border: 1px solid gray;">
-<br>
+<br><br>
+
+It is possible to skip this step, and to use Parsley to extract and tidy your data without joining it to metadata. Choose 'Load example', and select 'Skip metadata' from the dropdown. You should see the Metadata tab confirm that no metadata has been uploaded.
 
 <br>
 
@@ -331,11 +335,13 @@ Step 5 adds well numbers to your data to enable you to identify your samples wit
 
 Follow the instructions:
 
-> Select starting well and orientation of data.
+<!-- > Select starting well and orientation of data. -->
 
-<!-- Here, the app wants to match each sample to a well ID. Many plate reader export formats do not export well IDs into the Raw Data file, and the orientation of wells can differ. Assuming all wells are represented, select the first well and the orientation and the app will work out the identity of all wells. If there are wells missing from the list, you will need to identify a row or column with well names to extract. -->
+<!-- Here, the app wants to match each sample to a well ID. Many plate reader export formats do not export well IDs into the Raw Data file, so this information often cannot be taken from the Raw Data file. A **Starting well** is required as you may have taken data only from a subset of wells, so the first well may not be 'A1'. **Well orientation** is required to specify how the wells are ordered in the Raw Data. Select both from the dropdown menus, and the app will work out the identity of all the wells in your Cropped Data.  -->
 
-Here, the app wants to match each sample to a well ID. Many plate reader export formats do not export well IDs into the Raw Data file, so this information often cannot be taken from the Raw Data file. A **Starting well** is required as you may have taken data only from a subset of wells, so the first well may not be 'A1'. **Well orientation** is required to specify how the wells are ordered in the Raw Data. Select both from the dropdown menus, and the app will work out the identity of all the wells in your Cropped Data. 
+> Select well orientation and starting well.
+
+Here, the app wants to match each sample to a well ID. For common 96-well plate formats, enter the well orientation and the starting well to enable such matching. **Well orientation** is required to specify how the wells are ordered in the Raw Data. A **Starting well** is required as you may have taken data only from a subset of wells, so the first well may not be 'A1'. Select both from the dropdown menus, and the app will work out the identity of all the wells in your Cropped Data.
 
 Meaning of **Well orientation** options:
 
@@ -343,7 +349,9 @@ Meaning of **Well orientation** options:
 - 'A1->H1' means 'A1', 'B1', 'C1' ... 'H1', 'A2', 'B2'...
 - 'Custom' means neither of the above (and will request that you select first and last wells of a row/column of cells that contains the well info).
 
-> <i class="fa-solid fa-circle-info"></i> The app assumes use of a 96-well plate (A1-H12) configuration with no wells missing. If the well order doesn't conform to either given orientation (A1->A12 or A1->H1), or if wells are missing, choose 'Custom' well orientation.
+<!-- > <i class="fa-solid fa-circle-info"></i> The app assumes use of a 96-well plate (A1-H12) configuration with no wells missing. If the well order doesn't conform to either given orientation (A1->A12 or A1->H1), or if wells are missing, choose 'Custom' well orientation. -->
+
+> <i class="fa-solid fa-circle-info"></i> Presets correspond to standard 96-well plates and assume no wells are missing. Where a different multiwell plate is used, or if wells are missing, choose 'Custom'.
 
 If there are wells missing from the expected list of wells, eg. if you only measured wells A1, A2, B1 and B2, the standard (A1->A12) orientation will not assign correct well naming for you as it assumes the presence of wells A3-A12 which you didn't measure. Select 'Custom'. The app will ask you to select cells within the Raw Data file that represent the well IDs.
 

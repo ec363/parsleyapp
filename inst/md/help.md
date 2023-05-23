@@ -164,11 +164,6 @@ If the data is in 'rows', Parsley expected the well names to be arranged in a ro
 
 If the data is in 'columns', Parsley expected the well names to be arranged in a column and the number of rows to match that of the data.
 
-**Error: Selected wells does not contain named starting well.**  
-**Error: Starting well must be first cell selected in Custom well selection.**  
-
-Custom well numbering: The first cell selected is expected to correspond to the starting well, so it should be identical to the starting well selected in the dropdown menu.
-
 **Error: Well name selection cannot contain empty cells.**
 
 Custom well numbering: every sample must have a non-empty 'well' value or data will be lost during parsing.
