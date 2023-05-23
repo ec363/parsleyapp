@@ -3,6 +3,8 @@
 
 A wide variety of example data is provided with the app to serve as an illustration of all the data types and formats Parsley can handle, as well as to let you test the app's functionality. This <i class="fa-solid fa-circle-play"></i> **Demos** section includes details of the provenance of each of the provided **Example data** sets and a few **Demos** that illustrate how to build parsers for each of these.
 
+<!-- Demos made with app v0.1.1. -->
+
 <br>
 
 ##### <a name="standardex"> Standard Data </a>

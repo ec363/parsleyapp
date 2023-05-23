@@ -12,6 +12,8 @@ Welcome to Parsley! We assume you are here because you have exported some data f
 
 There are three main steps to parsing plate reader data with Parsley. First, you need to upload your experimental **Raw Data** file. Second, you will need to create and upload an accompanying **Metadata** file that contains all the extra information you will need to attach to your data for your downstream analysis. Third, you need to proceed through a guided series of **Data Specification** steps, to tell the app about your data (such as what type of data it is and where the relevant data cells are located within your Raw Data spreadsheet).
 
+<!-- Guide written with app v0.1.1. -->
+
 Navigate to the 'Build Your Own Parser' tab (left hand link in the top navigation bar) to get started.
 
 <img src="www/0_parsley.png" style="width:700px; border: 1px solid gray;">
