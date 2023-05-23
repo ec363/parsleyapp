@@ -96,12 +96,22 @@ Parsley has been verified to work with the following data formats exported from 
     -   **Spectrum** - default export format, -/+unused wells, -/+metadata, wellformats as A1 or A01, -/+transpose
     -   **Timecourse** - default export format, -/+unused wells, -/+metadata, wellformats as A1 or A01, -/+transpose
 -   <font color='18BC9C'>**BioTek Synergy HT plate reader** (Gen5 software)</font>
-    -   **Standard**
-    -   **Timecourse**
+    -   **Standard** - (column format)
+    -   **Timecourse** - (row format)
 -   <font color='18BC9C'>**BioTek Synergy Neo2 plate reader** (Gen5 software)</font>
     -   **Timecourse** - (row format)
 -   <font color='18BC9C'>**Molecular Devices SpectraMax iD5 plate reader**</font>
     -   **Standard** - (matrix format)
+-   <font color='18BC9C'>**Beckman Coulter BioLector Microbioreactor**</font>
+    -   **Timecourse** - (column format)
+-   <font color='18BC9C'>**Enzyscreen GrowthProfiler plate reader**</font>
+    -   **Timecourse** - (row format)
+-   <font color='18BC9C'>**Growth Curves Bioscreen plate reader**</font>
+    -   **Timecourse** - (row format)
+-   <font color='18BC9C'>**PerkinElmer VICTOR Nivo plate reader**</font>
+    -   **Timecourse** - (column format)
+-   <font color='18BC9C'>**Tecan GENios plate reader**</font>
+    -   **Timecourse** - (row format)
 
 As time goes on, we hope to verify more plate reader outputs with Parsley. Please reach out if you use a different instrument and Parsley does (or does not!) work for your data exports.
 
