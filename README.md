@@ -2,6 +2,7 @@
 <img src="inst/www/parsley_png.png" align="right" height="200px"/>
 
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![DOI](https://zenodo.org/badge/640912123.svg)](https://zenodo.org/badge/latestdoi/640912123)
 
 Multiwell plate readers are an important tool in the life sciences. They are frequently used to measure fluorescence, absorbance and luminescence, among other measurement types. As they are heavily used for high-throughput assays and screens, their analysis benefits from automated (programmatic) data analysis.
 
