@@ -417,7 +417,7 @@ Click the Parse Data button. A Parsed Data tab should appear.
 <img src="www/37_step7_1_parsedata.png" style="width:700px; border: 1px solid gray;">
 <br><br>
 
-In our fluorescein example, we can see that it correctly joined the metadata to the data. As noted in step 6, for the purposes of this Guide we have only worked with the data from row A here, even though we provided it with the metadata for both rows A and B. You can see it joined the data with the correct rows.
+In our fluorescein example, we can see that it correctly joined the metadata to the data.
 
 A 'Download parsed data' button should appear. Download the CSV file.
 

@@ -33,7 +33,7 @@ Imagine a fluorescence intensity measurement on a dilution series of fluorescein
 
 <br> <img src="www/0_rawdatacsv.png" style="width:700px;"/> <br><br>
 
-In its current form, you will get errors with any software, because the data does not look like any recognisable data table object: its rows and columns have irregular meanings, some metadata is included but not helpfully positioned, and most metadata you require for your analysis is missing (eg. protein, buffer, dilution, volume, etc).
+In its current form, you will get errors with any software, because the data does not look like any recognisable data table object: its rows and columns have irregular meanings, some metadata is included but not helpfully positioned, and most metadata you require for your analysis is missing (eg. fluorophore, buffer, dilution, volume, etc).
 
 <!-- A parser extracts the data values from the raw data file, along with crucial metadata such as well (ie. A1-H12), measurement channel (eg. OD600, GFP..), and if applicable, wavelength (eg. 485nm, for spectrum data) or time points (eg. 30min, for kinetic / timecourse data) into what we call Cropped Data: -->
 
