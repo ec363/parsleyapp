@@ -10,8 +10,8 @@ However, most plate readers export raw data in formats that software packages ca
 While a few parser functions for certain export formats from certain plate readers have been written, there is no generic tool that can handle data parsing from any plate reader: this is why Parsley was built.
 
 Author: Eszter Csibra\
-Version: 0.1.2\
-Release: May 2023
+Version: 0.1.3\
+Release: Jun 2023
 
 <br>
 

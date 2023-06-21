@@ -2,6 +2,17 @@
 
 <br>
 
+##### <a name="0.1.3"> Version 0.1.3 </a>
+<hr>
+
+Release: Jun 2023
+
+- Minor improvements to functionality.
+	- Updated file handling checks to restrict uploaded files to compatible file types.
+- Minor wording corrections in the documentation.
+
+<br>
+
 ##### <a name="0.1.2"> Version 0.1.2 </a>
 <hr>
 
