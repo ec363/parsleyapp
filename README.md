@@ -70,7 +70,7 @@ Parsley has been verified to work with the following data formats exported from 
     -   Spectrum - direction horizontal/vertical, well data in rows/columns/matrixseparated/matrixXfluor/matrixnested
     -   Timecourse - direction horizontal/vertical, well data in rows/columns
 -   <font color='18BC9C'>**BMG LabTech Clariostar Plus plate reader** (MARS software)</font>
-    -   Standard** - default export format, -/+unused wells, -/+metadata, wellformats as A1 or A01, -/+transpose
+    -   Standard - default export format, -/+unused wells, -/+metadata, wellformats as A1 or A01, -/+transpose
     -   Spectrum - default export format, -/+unused wells, -/+metadata, wellformats as A1 or A01, -/+transpose
     -   Timecourse - default export format, -/+unused wells, -/+metadata, wellformats as A1 or A01, -/+transpose
 -   <font color='18BC9C'>**BioTek Synergy HT plate reader** (Gen5 software)</font>
