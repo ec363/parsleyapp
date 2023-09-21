@@ -670,6 +670,7 @@ app_server <- function(input, output, session) { # shiny as package function
               escape = TRUE, # default but impt. 'escapes' html content of tables.
               selection = list(target = 'cell'),
               rownames = FALSE, # remove row numbering
+              # rownames = TRUE, ### rownumbers # can't enable, as disrupts cell selection function.
               class = "compact", # removes row highlighting and compacts rows a bit
               options = list(
                 dom = "t", # only show table - no search, no pagination options, no summary "showing rows 1-185 of 185'
@@ -702,7 +703,8 @@ app_server <- function(input, output, session) { # shiny as package function
 
     DT::datatable(df_dataspecs$firstchanneldata,
               escape = TRUE, # default but impt. 'escapes' html content of tables.
-              rownames = FALSE, # remove row numbering
+              # rownames = FALSE, # remove row numbering
+              rownames = TRUE, ### rownumbers
               class = "compact", # removes row highlighting and compacts rows a bit
               options = list(
                 dom = "t", # only show table - no search, no pagination options, no summary "showing rows 1-185 of 185'
@@ -738,7 +740,8 @@ app_server <- function(input, output, session) { # shiny as package function
 
     DT::datatable(df_shiny$metadata,
               escape = TRUE, # default but impt. 'escapes' html content of tables.
-              rownames = FALSE, # remove row numbering
+              # rownames = FALSE, # remove row numbering
+              rownames = TRUE, ### rownumbers
               class = "compact", # removes row highlighting and compacts rows a bit
               options = list(
                 dom = "t", # only show table - no search, no pagination options, no summary "showing rows 1-185 of 185'
@@ -756,7 +759,8 @@ app_server <- function(input, output, session) { # shiny as package function
     DT::datatable(df_shiny$parseddata,
               escape = TRUE, # default but impt. 'escapes' html content of tables.
               # selection = list(target = 'cell'),
-              rownames = FALSE, # remove row numbering
+              # rownames = FALSE, # remove row numbering
+              rownames = TRUE, ### rownumbers
               class = "compact", # removes row highlighting and compacts rows a bit
               options = list(
                 dom = "t", # only show table - no search, no pagination options, no summary "showing rows 1-185 of 185'
