@@ -2585,7 +2585,7 @@ app_server <- function(input, output, session) { # shiny as package function
       df <- df_shiny$parseddata
       utils::write.csv(df, file, row.names = FALSE)
     },
-    contentType = "test/csv" # from downloadHandler help page
+    contentType = "text/csv" # from downloadHandler help page
   )
 
 
