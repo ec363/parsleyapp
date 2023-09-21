@@ -42,7 +42,11 @@ For a given Reading, there should only be 1 value for any given well at any give
 
 **Data files are not uploading**
 
-Check that the uploaded file corresponds to a CSV file. An 'Uploaded file name' box should have appeared beneath the Submit button. If it did not, you did not select a file with Browse. If a file name appears and it is a CSV file, wait a few seconds as large files can take a few seconds to load. If you still see no Raw Data, the most common problem is your CSV file does not end with a new empty line. Open the file in a text editor, put your cursor to the right end of the last line and hit Return. Save the file and try again.
+Check if an 'Uploaded file name' box has appeared beneath the Submit button. If it did not, you did not select a file with Browse. If a file name appears, check it is the right file. Wait a few seconds, as large files can take a few seconds to load, and large Excel files can be especially slow. We recommend saving Excel format files as CSV files before upload, particularly if you encounter unexpected issues. 
+
+Allowed file formats are .csv, .tsv, .txt, .xlsx, or .xls. Make sure you have selected an appropriate file and selected the correct file type for the selected file.
+
+If you are using CSV format files, and still see no Raw Data, the most common problem is that your CSV file may not end with a new empty line. Open the file in a text editor, put your cursor to the right end of the last line and hit Return. Save the file and try again.
 
 **How do I create a metadata file?**
 
@@ -51,6 +55,19 @@ Create a new spreadsheet with Excel or similar. Create a column called 'well' (c
 **Data has been reordered due to clicking on column names in Raw Data tab**
 
 This cannot be undone, unfortunately. Reload the page and start again.
+
+<br>
+
+##### <a name="errormessages00"> Error messages: Data upload errors </a>
+<hr>
+
+**Error: File extension needs to be one of the following: 'csv', 'tsv', 'txt', 'xls', 'xlsx'.**
+
+The selected file does not have an extension corresponding to the appropriate file types. Select another file or save the file in an appropriate format.
+
+**Error: Ensure that the specified file type matches uploaded file's extension.**
+
+The selected file has an extension that doesn't match the file type selected from the 'File type' menu: perhaps you selected a '.xlsx' file but the File type menu is set to 'CSV'?
 
 <br>
 

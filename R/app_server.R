@@ -269,21 +269,65 @@ app_server <- function(input, output, session) { # shiny as package function
       # # 1. Update all data (# Update df_shiny with converted dataframe)
       # df_shiny$alldata <- data
 
-      # v2 fileinput of specific types # https://mastering-shiny.org/action-transfer.html#uploading-data ### fileinput
+      # # v2 fileinput of specific types # https://mastering-shiny.org/action-transfer.html#uploading-data ### fileinput
+      # # only upload data if extension is valid
+      # ext <- tools::file_ext(input$upload_data$name) ### fileinput
+      # if(any(grepl(pattern = ext, x = c("csv", "tsv", "txt")))){
+      #
+      #   if(input$upload_data_delim == ","){ ### delim
+      #     data <- utils::read.csv(input$upload_data$datapath, header = FALSE) # read.csv
+      #   }
+      #   if(input$upload_data_delim != ","){ ### delim
+      #     data <- utils::read.table(input$upload_data$datapath, header = FALSE, sep = input$upload_data_delim) # read.table
+      #   }
+      #
+      #   # LOAD
+      #   # 1. Update all data (# Update df_shiny with converted dataframe)
+      #   df_shiny$alldata <- data
+      #
+      # } # only upload data if extension is valid
+
+      # v3 fileinput of specific types, including excel ### fileinput ### excel
+      # https://mastering-shiny.org/action-transfer.html#uploading-data ### fileinput
       # only upload data if extension is valid
       ext <- tools::file_ext(input$upload_data$name) ### fileinput
-      if(any(grepl(pattern = ext, x = c("csv", "tsv", "txt")))){
+      if(any(grepl(pattern = ext, x = c("csv", "tsv", "txt", "xls", "xlsx")))){
 
-        if(input$upload_data_delim == ","){ ### delim
+        data <- NULL
+
+        if(grepl(pattern = ext, x = c("csv")) & input$upload_data_delim == ","){ ### delim
           data <- utils::read.csv(input$upload_data$datapath, header = FALSE) # read.csv
         }
-        if(input$upload_data_delim != ","){ ### delim
+        if(any(grepl(pattern = ext, x = c("csv", "tsv", "txt"))) & (input$upload_data_delim == ";" | input$upload_data_delim == "\t")){ ### delim
           data <- utils::read.table(input$upload_data$datapath, header = FALSE, sep = input$upload_data_delim) # read.table
         }
+        if(any(grepl(pattern = ext, x = c("xls", "xlsx"))) & input$upload_data_delim == "excel"){ ### excel
+          data <- readxl::read_excel(input$upload_data$datapath, col_names = FALSE)
+          # first sheet (sheets = 1 would be equivalent)
+          # col_names like "header" for readcsv, except colnames are "..1" etc, not "V1" etc.
+        }
 
-        # LOAD
-        # 1. Update all data (# Update df_shiny with converted dataframe)
-        df_shiny$alldata <- data
+        if(!is.null(data)){ ### excel
+          # LOAD
+          # 1. Update all data (# Update df_shiny with converted dataframe)
+          df_shiny$alldata <- data
+        } else {
+          # if data doesn't exist, there must be a mix up between file extension and file type specified
+          message("Error: Ensure that the specified file type matches uploaded file's extension.")
+          showModal(modalDialog(title = "Error", "Ensure that the specified file type matches uploaded file's extension.",
+                                easyClose = TRUE ))
+        }
+
+        # # LOAD
+        # # 1. Update all data (# Update df_shiny with converted dataframe)
+        # df_shiny$alldata <- data
+
+      } else {
+
+        # if extension is not on the list of permissible extensions, throw error ### excel
+        message("Error: File extension needs to be one of the following: 'csv', 'tsv', 'txt', 'xls', 'xlsx'.")
+        showModal(modalDialog(title = "Error", "File extension needs to be one of the following: 'csv', 'tsv', 'txt', 'xls', 'xlsx'.",
+                              easyClose = TRUE ))
 
       } # only upload data if extension is valid
 
@@ -493,16 +537,57 @@ app_server <- function(input, output, session) { # shiny as package function
       # # 1. Update metadata
       # df_shiny$metadata <- data
 
-      # v2 fileinput of specific types ### fileinput
+      # # v2 fileinput of specific types ### fileinput
+      # # only upload metadata if extension is valid
+      # ext <- tools::file_ext(input$upload_metadata$name) ### fileinput
+      # if(any(grepl(pattern = ext, x = c("csv")))){
+      #
+      #   data <- utils::read.csv(input$upload_metadata$datapath, header = TRUE) # metadata should always have header (ie 1st row = colnames)
+      #
+      #   # LOAD
+      #   # 1. Update metadata
+      #   df_shiny$metadata <- data
+      #
+      # } # only upload data if extension is valid
+
+      # v3 fileinput of specific types, including excel ### fileinput ### excel
       # only upload metadata if extension is valid
       ext <- tools::file_ext(input$upload_metadata$name) ### fileinput
-      if(any(grepl(pattern = ext, x = c("csv")))){
+      if(any(grepl(pattern = ext, x = c("csv", "tsv", "txt", "xls", "xlsx")))){
 
-        data <- utils::read.csv(input$upload_metadata$datapath, header = TRUE) # metadata should always have header (ie 1st row = colnames)
+        data <- NULL
 
-        # LOAD
-        # 1. Update metadata
-        df_shiny$metadata <- data
+        if(grepl(pattern = ext, x = c("csv")) & input$metadata_delim == ","){ ### delim
+          data <- utils::read.csv(input$upload_metadata$datapath, header = TRUE) # read.csv
+        }
+        if(any(grepl(pattern = ext, x = c("csv", "tsv", "txt"))) & (input$metadata_delim == ";" | input$metadata_delim == "\t")){ ### delim
+          data <- utils::read.table(input$upload_metadata$datapath, header = TRUE, sep = input$metadata_delim) # read.table
+        }
+        if(any(grepl(pattern = ext, x = c("xls", "xlsx"))) & input$metadata_delim == "excel"){ ### excel
+          data <- readxl::read_excel(input$upload_metadata$datapath, col_names = TRUE) # first sheet # col_names like "header" for readcsv
+        }
+
+        if(!is.null(data)){ ### excel
+          # LOAD
+          # 1. Update metadata
+          df_shiny$metadata <- data
+        } else {
+          # if data doesn't exist, there must be a mix up between file extension and file type specified
+          message("Error: Ensure that the specified file type matches uploaded file's extension.")
+          showModal(modalDialog(title = "Error", "Ensure that the specified file type matches uploaded file's extension.",
+                                easyClose = TRUE ))
+        }
+
+        # # LOAD
+        # # 1. Update metadata
+        # df_shiny$metadata <- data
+
+      } else {
+
+        # if extension is not on the list of permissible extensions, throw error ### excel
+        message("Error: File extension needs to be one of the following: 'csv', 'tsv', 'txt', 'xls', 'xlsx'.")
+        showModal(modalDialog(title = "Error", "File extension needs to be one of the following: 'csv', 'tsv', 'txt', 'xls', 'xlsx'.",
+                              easyClose = TRUE ))
 
       } # only upload data if extension is valid
 

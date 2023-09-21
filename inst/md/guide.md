@@ -12,7 +12,7 @@ Welcome to Parsley! We assume you are here because you have exported some data f
 
 There are three main steps to parsing plate reader data with Parsley. First, you need to upload your experimental **Raw Data** file. Second, you will need to create and upload an accompanying **Metadata** file that contains all the extra information you will need to attach to your data for your downstream analysis. Third, you need to proceed through a guided series of **Data Specification** steps, to tell the app about your data (such as what type of data it is and where the relevant data cells are located within your Raw Data spreadsheet).
 
-<!-- Guide written with app v0.1.1. -->
+<!-- Guide written with app v0.1.1 / 2023/09. -->
 
 Navigate to the 'Build Your Own Parser' tab (left hand link in the top navigation bar) to get started.
 
@@ -50,16 +50,15 @@ The image below shows how such data might look in Excel after export from a plat
 
 To start, upload your experimental Raw Data file. On the 'Build Your Own Parser' tab, you should see the following instructions at the top of the page:
 
-<!-- > Upload a plate reader data ('raw data') file. This should be a CSV format version of the file exported from your plate reader. -->
-> **Raw Data:** Upload a raw data file from your plate reader experiment in CSV format.
+> **Raw Data:** Upload a raw data file from your plate reader experiment.
 
 <!-- screenshot of before upload page -->
 
-Most plate readers export files in Excel (.xlsx) format, so make sure you first open these in Excel or similar and use the 'Save As..' function to save them in CSV format before using Parsley.
+We recommend uploading CSV format files where possible. As most plate readers export files in Excel (.xlsx) format, these need to be converted (you can open them in Excel or similar and use 'Save As..'). While Parsley can handle Excel files, importing data from Excel files can be slow and can cause issues that are solved by using CSV format.
 
-To upload a file, select 'Upload CSV', find your CSV file and click 'Submit'. (Since v0.1.2, it is possible to upload tab-separated value (tsv) files, as well as CSV files that use semi-colons (;) instead of commas (,) by selecting the appropriate [delimeter](https://en.wikipedia.org/wiki/Delimiter-separated_values) before clicking Submit.)
+To upload a file, select 'Upload file', find your Raw Data file, select a 'File type' from the dropdown menu, and click 'Submit'. (Since v0.1.2, it is also possible to upload tab-separated value (tsv) files, as well as CSV files that use semi-colons (;) instead of commas (,) by selecting the appropriate [delimeter](https://en.wikipedia.org/wiki/Delimiter-separated_values).)
 
-A successful upload will result in the name of your file appearing below the Submit button, and the entire CSV contents appearing at the bottom of the page. Even if the file is very wide or long, you should be able to scroll to view the entire file.
+A successful upload will result in the name of your file appearing below the Submit button, and the entire Raw Data file contents appearing at the bottom of the page. Even if the file is very wide or long, you should be able to scroll to view the entire file.
 
 <img src="www/13_rawdata_submitfile.png" style = "width:700px; border: 1px solid  gray;">
 <br><br>
@@ -83,10 +82,9 @@ In addition, the displayed Raw Data table contains interactive _column names_ th
 
 Once the Raw Data has been uploaded, follow the instructions to upload a Metadata file:
 
-<!-- > Upload a plate layout ('metadata') file in CSV format. This should be in 'tidy data' format and include a 'well' column in 'A1->H12' format. -->
-> **Metadata:** Upload a metadata file in CSV format. This should include a 'well' column in 'A1->H12' format.
+> **Metadata:** Upload a metadata file. This should include a 'well' column in 'A1->H12' format.
 
-Metadata files are simple files you can create in Excel or a similar application (just remember to save it as a CSV) in which you add any and all variables necessary for your downstream data analysis. If you're using an existing software package, the software should specify which variables are required in your parsed data.
+Metadata files are simple files you can create in Excel or a similar application, in which you add any and all variables necessary for your downstream data analysis. If you're using an existing software package, the software should specify which variables are required in your parsed data.
 
 There are few rules for how to create Metadata files, but they are strict:
 

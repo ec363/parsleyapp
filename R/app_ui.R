@@ -39,10 +39,12 @@ app_ui <- function(request) { # shiny as package requires ui as function
              column(4,
 
                     strong("How to Build a Parser:"), br(), br(),
-                    p(strong("Raw Data:"), "Upload a raw data file from your plate reader experiment in CSV format."),
+                    # p(strong("Raw Data:"), "Upload a raw data file from your plate reader experiment in CSV format."),
+                    p(strong("Raw Data:"), "Upload a raw data file from your plate reader experiment."), ### excel
                     conditionalPanel(
                       condition = "input.submit_exampledata_button != '0' || input.submit_datafile_button != '0'",
-                      p(strong("Metadata:"), "Upload a metadata file in CSV format. This should include a 'well' column in 'A1->H12' format.")
+                      # p(strong("Metadata:"), "Upload a metadata file in CSV format. This should include a 'well' column in 'A1->H12' format.")
+                      p(strong("Metadata:"), "Upload a metadata file. This should include a 'well' column in 'A1->H12' format.") ### excel
                     ),
                     conditionalPanel(
                       condition = "input.submit_examplemetadata_button != '0' || input.submit_metadatafile_button != '0'",
@@ -56,7 +58,10 @@ app_ui <- function(request) { # shiny as package requires ui as function
                     strong("Raw Data:"), br(), br(),
                     radioButtons("data_input",
                                  label = NULL, # NULL < "" in terms of space
-                                 choices = list("Load example" = 1, "Upload CSV" = 2), selected = 1),
+                                 choices = list("Load example" = 1,
+                                                # "Upload CSV" = 2
+                                                "Upload file" = 2 ### excel
+                                 ), selected = 1),
 
                     # Conditional Sub-Panels depending on Data Input Type
                     # Example Data
@@ -82,15 +87,21 @@ app_ui <- function(request) { # shiny as package requires ui as function
                       fileInput("upload_data",
                                 label = NULL,
                                 multiple = FALSE,
-                                accept = c("text/csv",
-                                           "text/tab-separated-values",
-                                           "text/plain")), ### fileinput
-                      selectInput("upload_data_delim", "Delimiter (File type)", ### delim
+                                # accept = c("text/csv",
+                                #            "text/tab-separated-values",
+                                #            "text/plain",
+                                #            "application/vnd.ms-excel" ### excel # https://www.iana.org/assignments/media-types/media-types.xhtml
+                                #            ) # hashed after adding excel because excel MIME type fails
+                      ), ### fileinput
+                      selectInput("upload_data_delim",
+                                  # "Delimiter (File type)", ### delim
+                                  "File type", ### excel
                                   list("Comma (CSV)" = ",",
                                        "Semicolon (CSV)" = ";",
-                                       "Tab (TSV)" = "\t"
+                                       "Tab (TSV)" = "\t",
                                        # "Space" = " "
-                                       ),
+                                       "Excel (XLSX)" = "excel" ### excel
+                                  ),
                                   selected = "Comma (CSV)"),
                       actionButton("submit_datafile_button", "Submit", class = "btn-primary"),
                       actionButton("reset_datafile_button", "Clear"), # Reset button akin to https://shiny.rstudio.com/articles/action-buttons.html
@@ -113,7 +124,10 @@ app_ui <- function(request) { # shiny as package requires ui as function
                       strong("Metadata:"), br(), br(),
                       radioButtons("metadata_input",
                                    label = NULL,
-                                   choices = list("Load example" = 1, "Upload CSV" = 2), selected = 1),
+                                   choices = list("Load example" = 1,
+                                                  # "Upload CSV" = 2
+                                                  "Upload file" = 2 ### excel
+                                   ), selected = 1),
 
                       # Conditional Sub-Panels depending on Data Input Type
                       # Example metadata
@@ -135,14 +149,21 @@ app_ui <- function(request) { # shiny as package requires ui as function
                         condition = "input.metadata_input == '2'",
                         fileInput("upload_metadata",
                                   label = NULL,
-                                  multiple = FALSE,
-                                  accept = c("text/csv")), ### fileinput
-                        # selectInput("metadata_delim", "Delimiter:",
-                        #             list("Comma" = ",",
-                        #                  "Tab" = "\t",
-                        #                  "Semicolon" = ";",
-                        #                  "Space" = " "),
-                        #             selected = "Comma"),
+                                  multiple = FALSE
+                                  # accept = c("text/csv",
+                                  #            "application/vnd.ms-excel" ### excel
+                                  # ) # hashed after adding excel because excel MIME type fails
+                        ), ### fileinput
+                        selectInput("metadata_delim",
+                                    # "Delimiter (File type)", ### delim
+                                    "File type", ### excel
+                                    list("Comma (CSV)" = ",",
+                                         "Semicolon (CSV)" = ";",
+                                         "Tab (TSV)" = "\t",
+                                         # "Space" = " "
+                                         "Excel (XLSX)" = "excel" ### excel
+                                    ),
+                                    selected = "Comma"), # added back after adding excel option
                         actionButton("submit_metadatafile_button", "Submit", class = "btn-primary"),
                         actionButton("reset_metadatafile_button", "Clear"),
                         conditionalPanel(

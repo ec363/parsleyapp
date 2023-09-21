@@ -3,7 +3,7 @@
 [Overview](#helpintro)  
 [Definitions](#definitions)  
 [Troubleshooting](#troubleshooting)  
-[Error messages](#errormessages0)  
+[Error messages](#errormessages00)  
 [Warning messages](#warningmessages)  
 
 <!-- [Error messages: Generic](#errormessages0)  
