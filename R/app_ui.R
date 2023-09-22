@@ -44,7 +44,8 @@ app_ui <- function(request) { # shiny as package requires ui as function
                     conditionalPanel(
                       condition = "input.submit_exampledata_button != '0' || input.submit_datafile_button != '0'",
                       # p(strong("Metadata:"), "Upload a metadata file in CSV format. This should include a 'well' column in 'A1->H12' format.")
-                      p(strong("Metadata:"), "Upload a metadata file. This should include a 'well' column in 'A1->H12' format.") ### excel
+                      p(strong("Metadata:"), "Upload a metadata file. This should include a 'well' column in 'A1->H12' format.
+                        To skip metadata addition, choose 'Skip Metadata'.") ### excel
                     ),
                     conditionalPanel(
                       condition = "input.submit_examplemetadata_button != '0' || input.submit_metadatafile_button != '0'",
