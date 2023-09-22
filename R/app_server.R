@@ -1116,72 +1116,153 @@ app_server <- function(input, output, session) { # shiny as package function
 
     } else if(df_dataspecs$datatype == "datatype_timecourse") {
 
-      df_dataspecs$timecourse_firsttimepoint <- input$timecourse_firsttimepoint
-      df_dataspecs$timecourse_duration <- input$timecourse_duration
-      df_dataspecs$timecourse_interval <- input$timecourse_interval
-      df_dataspecs$timepoint_number_expected <- input$timepoint_number_expected
-      # df_dataspecs$timepoint_number <- input$timepoint_number # not specified in inputs anymore, needs working out (below)
+      if(input$timecourse_input == "timecourse_input_manual"){ # timepoints added in the original way. added for handling: ### timepoints from data
 
-      # Work out list of timepoints from first, interval and duration
-      df_dataspecs$list_of_timepoints <- seq(from = df_dataspecs$timecourse_firsttimepoint, to = df_dataspecs$timecourse_duration, by = df_dataspecs$timecourse_interval)
-      print("list of timepoints (calculated from first timepoint, interval and duration): ")
-      print(df_dataspecs$list_of_timepoints)
+        df_dataspecs$timecourse_firsttimepoint <- input$timecourse_firsttimepoint
+        df_dataspecs$timecourse_duration <- input$timecourse_duration
+        df_dataspecs$timecourse_interval <- input$timecourse_interval
+        df_dataspecs$timepoint_number_expected <- input$timepoint_number_expected
+        # df_dataspecs$timepoint_number <- input$timepoint_number # not specified in inputs anymore, needs working out (below)
 
-      # Work out timepoint number from list
-      df_dataspecs$timepoint_number <- length(df_dataspecs$list_of_timepoints)
-      print("timepoint number (calculated from first timepoint, interval and duration): ")
-      print(df_dataspecs$timepoint_number)
+        # Work out list of timepoints from first, interval and duration
+        df_dataspecs$list_of_timepoints <- seq(from = df_dataspecs$timecourse_firsttimepoint, to = df_dataspecs$timecourse_duration, by = df_dataspecs$timecourse_interval)
+        print("list of timepoints (calculated from first timepoint, interval and duration): ")
+        print(df_dataspecs$list_of_timepoints)
 
-      # Compare worked out timepoint number to expected timepoint number
-      df_dataspecs$timepoint_number_expected <- input$timepoint_number_expected
-      print("timepoint number expected: ")
-      print(df_dataspecs$timepoint_number_expected)
+        # Work out timepoint number from list
+        df_dataspecs$timepoint_number <- length(df_dataspecs$list_of_timepoints)
+        print("timepoint number (calculated from first timepoint, interval and duration): ")
+        print(df_dataspecs$timepoint_number)
 
-      # If they don't match - show message to say timepoint list will be cropped after expected number of timepoints
-      if(df_dataspecs$timepoint_number_expected > df_dataspecs$timepoint_number){
+        # Compare worked out timepoint number to expected timepoint number
+        df_dataspecs$timepoint_number_expected <- input$timepoint_number_expected
+        print("timepoint number expected: ")
+        print(df_dataspecs$timepoint_number_expected)
 
-        # Use calculated list
-        # no need to update timepoints
+        # If they don't match - show message to say timepoint list will be cropped after expected number of timepoints
+        if(df_dataspecs$timepoint_number_expected > df_dataspecs$timepoint_number){
 
-        # Use calculated timepoint number
-        # no need to update timepoint_number
+          # Use calculated list
+          # no need to update timepoints
 
-        # Console
-        message("Warning: More expected timepoints than calculated timepoints.")
-        message("Using calculated timepoints:")
-        message(df_dataspecs$list_of_timepoints)
+          # Use calculated timepoint number
+          # no need to update timepoint_number
 
-        # Modal
-        showModal(modalDialog(title = "Warning",
-                              paste0("More expected timepoints than calculated timepoints. Using calculated number of timepoints (", df_dataspecs$timepoint_number, "). Resultant timepoints: ",
-                                     df_dataspecs$list_of_timepoints[1], ", ", df_dataspecs$list_of_timepoints[2], " ... ",
-                                     df_dataspecs$list_of_timepoints[length(df_dataspecs$list_of_timepoints)], " min."), # last timepoint
-                              easyClose = TRUE ))
-        # can't straightforwardly paste the whole list in. this is a compromise w caveat that we're assuming at least 2 timepoints (not too much of a stretch hopefully!)
+          # Console
+          message("Warning: More expected timepoints than calculated timepoints.")
+          message("Using calculated timepoints:")
+          message(df_dataspecs$list_of_timepoints)
 
-      } else if(df_dataspecs$timepoint_number_expected < df_dataspecs$timepoint_number){
+          # Modal
+          showModal(modalDialog(title = "Warning",
+                                # paste0("More expected timepoints than calculated timepoints. Using calculated number of timepoints (", df_dataspecs$timepoint_number, "). Resultant timepoints: ",
+                                #        df_dataspecs$list_of_timepoints[1], ", ", df_dataspecs$list_of_timepoints[2], " ... ",
+                                #        df_dataspecs$list_of_timepoints[length(df_dataspecs$list_of_timepoints)], " min."), # last timepoint
+                                paste0("More expected timepoints than calculated timepoints. Using calculated number of timepoints (", df_dataspecs$timepoint_number, "). Resultant timepoints: ",
+                                       df_dataspecs$list_of_timepoints[1], ", ", df_dataspecs$list_of_timepoints[2], " ... ",
+                                       df_dataspecs$list_of_timepoints[length(df_dataspecs$list_of_timepoints)], "."), ### minutes
+                                easyClose = TRUE ))
+          # can't straightforwardly paste the whole list in. this is a compromise w caveat that we're assuming at least 2 timepoints (not too much of a stretch hopefully!)
 
-        # Use smaller number, the expected timepoints. Truncate list.
-        df_dataspecs$list_of_timepoints <- df_dataspecs$list_of_timepoints[1:df_dataspecs$timepoint_number_expected]
+        } else if(df_dataspecs$timepoint_number_expected < df_dataspecs$timepoint_number){
 
-        # Use expected timepoint number
-        df_dataspecs$timepoint_number <- df_dataspecs$timepoint_number_expected
+          # Use smaller number, the expected timepoints. Truncate list.
+          df_dataspecs$list_of_timepoints <- df_dataspecs$list_of_timepoints[1:df_dataspecs$timepoint_number_expected]
 
-        # Console
-        message("Warning: Fewer expected timepoints than calculated timepoints.")
-        message("Truncating timepoints to expected number of timepoints:")
-        message(df_dataspecs$list_of_timepoints)
+          # Use expected timepoint number
+          df_dataspecs$timepoint_number <- df_dataspecs$timepoint_number_expected
 
-        # Modal
-        showModal(modalDialog(title = "Warning",
-                              paste0("Fewer expected timepoints than calculated timepoints. Truncating timepoints to expected number of timepoints (",
-                                     df_dataspecs$timepoint_number, "). Resultant timepoints: ",
-                                     df_dataspecs$list_of_timepoints[1], ", ", df_dataspecs$list_of_timepoints[2], " ... ",
-                                     df_dataspecs$list_of_timepoints[length(df_dataspecs$list_of_timepoints)], " min."), # last timepoint
-                              easyClose = TRUE ))
-        # can't straightforwardly paste the whole list in. this is a compromise w caveat that we're assuming at least 2 timepoints (not too much of a stretch hopefully!)
+          # Console
+          message("Warning: Fewer expected timepoints than calculated timepoints.")
+          message("Truncating timepoints to expected number of timepoints:")
+          message(df_dataspecs$list_of_timepoints)
 
-      }
+          # Modal
+          showModal(modalDialog(title = "Warning",
+                                # paste0("Fewer expected timepoints than calculated timepoints. Truncating timepoints to expected number of timepoints (",
+                                #        df_dataspecs$timepoint_number, "). Resultant timepoints: ",
+                                #        df_dataspecs$list_of_timepoints[1], ", ", df_dataspecs$list_of_timepoints[2], " ... ",
+                                #        df_dataspecs$list_of_timepoints[length(df_dataspecs$list_of_timepoints)], " min."), # last timepoint
+                                paste0("Fewer expected timepoints than calculated timepoints. Truncating timepoints to expected number of timepoints (",
+                                       df_dataspecs$timepoint_number, "). Resultant timepoints: ",
+                                       df_dataspecs$list_of_timepoints[1], ", ", df_dataspecs$list_of_timepoints[2], " ... ",
+                                       df_dataspecs$list_of_timepoints[length(df_dataspecs$list_of_timepoints)], "."), ### minutes
+                                easyClose = TRUE ))
+          # can't straightforwardly paste the whole list in. this is a compromise w caveat that we're assuming at least 2 timepoints (not too much of a stretch hopefully!)
+
+        }
+
+      } else if(input$timecourse_input == "timecourse_input_select"){ ### timepoints from data
+
+        all_selected_cells <- input$RawDataTable_cells_selected
+
+        if(nrow(input$RawDataTable_cells_selected)!=2){
+          # do nothing until there are selections
+          message("Error: Select two cells.")
+          showModal(modalDialog(title = "Error", "Select two cells.", easyClose = TRUE ))
+          df_dataspecs$timepoint_number <- NULL
+          df_dataspecs$list_of_timepoints <- NULL
+          return()
+        }
+
+        # take lowest&highest row numbers (regardless of click order or if topleft-bottomright conventions were followed)
+        # by def, all_selected_cells will be a 2by2 matrix
+        row_beg <- min(all_selected_cells[1,1], all_selected_cells[2,1])
+        row_end <- max(all_selected_cells[1,1], all_selected_cells[2,1])
+        col_beg <- min(all_selected_cells[1,2], all_selected_cells[2,2])+1 # +1 as cols start at 0 for some reason
+        col_end <- max(all_selected_cells[1,2], all_selected_cells[2,2])+1 # +1 as cols start at 0 for some reason
+
+        # rows
+        if(df_dataspecs$dataformat == "dataformat_rows"){ # if data in rows, then timepoints will form a column
+
+          # stop if selection is >1 columns
+          if(col_beg != col_end){
+            message("Error: Select only 1 column.")
+            showModal(modalDialog(title = "Error", "Select only 1 column.", easyClose = TRUE ))
+            df_dataspecs$timepoint_number <- NULL
+            df_dataspecs$list_of_timepoints <- NULL
+            return()
+          }
+
+          # SAVE DATA
+          df_dataspecs$list_of_timepoints <- df_shiny$alldata[row_beg:row_end, col_beg:col_end] # works. not list or df, but probably an array here
+
+        } # rows
+
+        # columns
+        if(df_dataspecs$dataformat == "dataformat_columns"){ # if data in columns, then timepoints will form a row
+
+          # stop if selection is >1 rows
+          if(row_beg != row_end){
+            message("Error: Select only 1 row.")
+            showModal(modalDialog(title = "Error", "Select only 1 row.", easyClose = TRUE ))
+            df_dataspecs$timepoint_number <- NULL
+            df_dataspecs$list_of_timepoints <- NULL
+            return()
+          }
+
+          # SAVE DATA
+          if(col_end != col_beg){ # if we have several columns, it will form a df naturally
+            df_dataspecs$list_of_timepoints <- as.character(df_shiny$alldata[row_beg:row_end, col_beg:col_end]) # as array, not df
+          } else if(col_end == col_beg) { # if we have a single column, we need to force a dataframe
+            df_dataspecs$list_of_timepoints <- as.character(v1 = df_shiny$alldata[row_beg:row_end, col_beg:col_end]) # as array, not df
+          }
+
+        } # columns
+
+        df_dataspecs$timepoint_number <- length(df_dataspecs$list_of_timepoints)
+
+        # Check for empty cells
+        if(any(df_dataspecs$list_of_timepoints=="")){
+          # if any of the wells in the list is "", stop
+          message("Error: Timepoint selection cannot contain empty cells.")
+          showModal(modalDialog(title = "Error", "Timepoint selection cannot contain empty cells.", easyClose = TRUE ))
+          df_dataspecs$timepoint_number <- NULL
+          df_dataspecs$list_of_timepoints <- NULL
+          return()
+        }
+
+      } # how timepoints are specified
 
     } # timecourse
 

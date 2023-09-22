@@ -128,6 +128,19 @@ Selected cell contents will become column names. Column names cannot be blank!
 
 <br>
 
+##### <a name="errormessages2b"> Error messages for Step 2b: Timecourse settings </a>
+<hr>
+
+**Error: Select two cells.**  
+**Error: Select only 1 row/column.**  
+**Error: Timepoint selection cannot contain empty cells.**  
+
+Check you have selected the correct cells. The selection needs to be exactly two cells - in the same row for column format data, or in the same column for row format data - and none of the cells between the two selected ones can be empty.
+
+If you are certain the selected cells are correct, check if you don't still have cells selected from Step 2. These need to be unselected. They can be easy to forget about or miss, particularly with large file uploads.
+
+<br>
+
 <!-- ##### <a name="errormessages3"> Error messages for Step 3: Data from first channel </a> -->
 ##### <a name="errormessages3"> Error messages for Step 3: Data from first reading </a>
 <hr>

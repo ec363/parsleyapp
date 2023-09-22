@@ -325,13 +325,41 @@ app_ui <- function(request) { # shiny as package requires ui as function
                        condition = "input.datatype == 'datatype_timecourse'",
 
                        strong("2b) Timecourse settings"), br(),
-                       p("Enter timecourse settings."),
+                       p("Specify the time points in the data."),
 
-                       # for timecourse data:
-                       numericInput("timecourse_firsttimepoint", label = "First timepoint (min)", value = 0, min = 0, max = NA),
-                       numericInput("timecourse_duration", label = "Duration  (min)", value = 960, min = 1, max = NA),
-                       numericInput("timecourse_interval", label = "Interval  (min)", value = 30, min = 1, max = NA),
-                       numericInput("timepoint_number_expected", label = "# Timepoints expected", value = 32, min = 1, max = NA),
+                       # # v1
+                       # p("Enter timecourse settings."),
+                       #
+                       # # for timecourse data:
+                       # numericInput("timecourse_firsttimepoint", label = "First timepoint (min)", value = 0, min = 0, max = NA),
+                       # numericInput("timecourse_duration", label = "Duration  (min)", value = 960, min = 1, max = NA),
+                       # numericInput("timecourse_interval", label = "Interval  (min)", value = 30, min = 1, max = NA),
+                       # numericInput("timepoint_number_expected", label = "# Timepoints expected", value = 32, min = 1, max = NA),
+
+                       # v2 ### timepoints from data
+                       selectInput("timecourse_input", label = "Time course specification",
+                                   list("[Time course input]" = "timecourse_input_null",
+                                        "Select cells with timepoints" = "timecourse_input_select",
+                                        "Enter timecourse settings" = "timecourse_input_manual"),
+                                   selected = "timecourse_input_null"),
+                       conditionalPanel(
+                         condition = "input.timecourse_input == 'timecourse_input_select'",
+                         p(icon("hand-pointer"), "Select the cells in the Raw Data table that contain the timepoints, in order from first to last."),
+                         p(icon("circle-info"), "Selections on large data files can be slow.")
+                       ),
+                       conditionalPanel(
+                         condition = "input.timecourse_input == 'timecourse_input_manual'",
+                         # numericInput("timecourse_firsttimepoint", label = "First timepoint (min)", value = 0, min = 0, max = NA),
+                         # numericInput("timecourse_duration", label = "Duration  (min)", value = 960, min = 1, max = NA),
+                         # numericInput("timecourse_interval", label = "Interval  (min)", value = 30, min = 1, max = NA),
+                         # numericInput("timepoint_number_expected", label = "# Timepoints expected", value = 32, min = 1, max = NA)
+
+                         numericInput("timecourse_firsttimepoint", label = "First timepoint", value = 0, min = 0, max = NA), ### minutes
+                         numericInput("timecourse_duration", label = "Duration", value = 960, min = 1, max = NA),
+                         numericInput("timecourse_interval", label = "Interval", value = 30, min = 1, max = NA),
+                         numericInput("timepoint_number_expected", label = "# Timepoints expected", value = 32, min = 1, max = NA)
+                       ),
+                       # v2 end
 
                        actionButton("submit_timepointvars_button", "Set", class = "btn-primary"),
                        actionButton("view_dataspecs_button2b", "View", class = "btn-info"),
@@ -638,15 +666,39 @@ app_ui <- function(request) { # shiny as package requires ui as function
                                       conditionalPanel(
                                         condition = "input.submit_timepointvars_button > 0", # submit_timepointvars_button only revealed when timecourse
 
+                                        # # v1
+                                        # strong("Step 2B: Timecourse settings"), br(),
+                                        # "First timepoint (min):", br(),
+                                        # verbatimTextOutput("timecourse_firsttimepoint"),
+                                        # "Timecourse duration (min):", br(),
+                                        # verbatimTextOutput("timecourse_duration"),
+                                        # "Interval (min):", br(),
+                                        # verbatimTextOutput("timecourse_interval"),
+                                        # "Number of timepoints expected:", br(),
+                                        # verbatimTextOutput("timepoint_number_expected"),
+                                        # "Number of timepoints:", br(), # worked out version
+                                        # verbatimTextOutput("timepoint_number"),
+                                        # "List of timepoints:", br(),
+                                        # verbatimTextOutput("list_of_timepoints")
+
+                                        # v2 ### timepoints from data
                                         strong("Step 2B: Timecourse settings"), br(),
-                                        "First timepoint (min):", br(),
-                                        verbatimTextOutput("timecourse_firsttimepoint"),
-                                        "Timecourse duration (min):", br(),
-                                        verbatimTextOutput("timecourse_duration"),
-                                        "Interval (min):", br(),
-                                        verbatimTextOutput("timecourse_interval"),
-                                        "Number of timepoints expected:", br(),
-                                        verbatimTextOutput("timepoint_number_expected"),
+                                        # for manual entry timepoints:
+                                        conditionalPanel(
+                                          condition = "input.timecourse_input == 'timecourse_input_manual'",
+                                          # "First timepoint (min):", br(),
+                                          "First timepoint:", br(), ### minutes
+                                          verbatimTextOutput("timecourse_firsttimepoint"),
+                                          # "Timecourse duration (min):", br(),
+                                          "Timecourse duration:", br(), ### minutes
+                                          verbatimTextOutput("timecourse_duration"),
+                                          # "Interval (min):", br(),
+                                          "Interval:", br(), ### minutes
+                                          verbatimTextOutput("timecourse_interval"),
+                                          "Number of timepoints expected:", br(),
+                                          verbatimTextOutput("timepoint_number_expected")
+                                        ),
+                                        # for manual entry timepoints and timepoints selected from raw data:
                                         "Number of timepoints:", br(), # worked out version
                                         verbatimTextOutput("timepoint_number"),
                                         "List of timepoints:", br(),

@@ -483,7 +483,11 @@ A timecourse experiment was carried out on this plate in a Tecan Spark plate rea
 
 <a name="timecourseestep2b"> **Step 2b: Timecourse settings** </a>
 
-Unlike for other data types, the app contains an extra section for Timecourse data that is positioned after Step 2 in which Readings are specified. This step aims to work out the time points in your experiment using a small set of inputs. You are not required to select or list every timepoint by hand, the app will calculate them for you instead. This is partly because there may be many timepoints, and partly because many plate readers export timepoints in a variety of often unhelpful units (eg. seconds for a day-long timecourse), odd formats (mixing numbers and letters in timepoint cells, eg.'10 min') or with excessive precision (eg. such that the '30 minute' timepoint is listed as having been taken at '32 min' for one reading and '34 min' for the next reading, frustrating downstream analyses).
+Unlike for other data types, the app contains an extra section for Timecourse data that is positioned after Step 2 in which Readings are specified. This step will create a numerical list of timepoints used in your experiment. This can be achieved in one of two ways: by selection of cells specifying each timepoint directly, or by manually specifying a small set of parameters, from which the app calculates the list for you.
+
+**To specify timepoint parameters for a calculation of timepoints, select 'Enter timecourse settings' from the dropdown menu.**
+
+This step aims to work out the time points in your experiment using a small set of inputs. You are not required to select or list every timepoint by hand, the app will calculate them for you instead. This is partly because there may be many timepoints, and partly because many plate readers export timepoints in a variety of often unhelpful units (eg. seconds for a day-long timecourse), odd formats (mixing numbers and letters in timepoint cells, eg.'10 min') or with excessive precision (eg. such that the '30 minute' timepoint is listed as having been taken at '32 min' for one reading and '34 min' for the next reading, frustrating downstream analyses).
 
 The basic inputs required to calculate timepoints in Parsley include the first time point, the duration of the time course and the interval (the difference between the first and second time points). These should be easy to obtain from metadata recorded by the software or the user during the experiment.
 
@@ -510,6 +514,12 @@ Click View to double check the timepoints Parsley has calculated are correct.
 
 <img src="www/timecourse_step2b_3_set_view.png" style = "width:700px; border: 1px solid gray;">
 <br><br>
+
+_Note that as of September 2023, there is no longer an assumption that the units of timecourse will be specified in minutes. The units are not specified by the app, do not need to be specified by the user, and make no difference to the parsing process._ <!-- update with version number instead of date -->
+
+**To select cells with numerical timepoint information, select 'Select cells with timepoints' from the dropdown menu.**
+
+As for Step 2 (Reading names), select the two cells corresponding to the first and last timepoints in the data (two cells in a row for column data, and two cells in the same column for row data). The app will extract the values of each cell between the first and last cell selected, and turn these into a list of timepoints. While the app doesn't check for this, as it doesn't affect parsing, we recommend that this function is only used on cells that contain strictly numerical data (eg. "10") rather than a mixture of numbers and characters (eg. "10 min"), as this will help in downstream analyses.
 
 <a name="timecourseestep3"> **Step3: Data from first reading** </a>
 
