@@ -44,8 +44,8 @@ app_ui <- function(request) { # shiny as package requires ui as function
                     conditionalPanel(
                       condition = "input.submit_exampledata_button != '0' || input.submit_datafile_button != '0'",
                       # p(strong("Metadata:"), "Upload a metadata file in CSV format. This should include a 'well' column in 'A1->H12' format.")
-                      p(strong("Metadata:"), "Upload a metadata file. This should include a 'well' column in 'A1->H12' format.
-                        To skip metadata addition, choose 'Skip Metadata'.") ### excel
+                      p(strong("Metadata:"), "Upload a metadata file. For tidy format metadata files, include a 'well' column in 'A1->H12' format.
+                        To skip metadata addition, choose 'Skip Metadata'.") ### excel ### matrix format
                     ),
                     conditionalPanel(
                       condition = "input.submit_examplemetadata_button != '0' || input.submit_metadatafile_button != '0'",
@@ -137,10 +137,16 @@ app_ui <- function(request) { # shiny as package requires ui as function
                         p("Example metadata:"),
                         selectInput("select_examplemetadata",
                                     label = NULL,
-                                    list("1 - Green fluorescence data" = "metadata_green",
-                                         "2 - Timecourse data" = "metadata_timecourse",
-                                         "Skip metadata" = "metadata_skip" ### meta
-                                         ),
+                                    # list("1 - Green fluorescence data" = "metadata_green",
+                                    #      "2 - Timecourse data" = "metadata_timecourse",
+                                    #      "Skip metadata" = "metadata_skip" ### meta
+                                    #      ),
+                                    list("1 - Green fluorescence data (tidy)" = "metadata_green",
+                                         "2 - Green fluorescence data (matrix)" = "metadata_green_matrix", ### matrix format
+                                         "3 - Timecourse data (tidy)" = "metadata_timecourse",
+                                         "4 - Timecourse data (matrix)" = "metadata_timecourse_matrix", ### matrix format
+                                         "SKIP METADATA" = "metadata_skip" ### meta
+                                    ), ### matrix format
                                     selected = "metadata_green"),
                         actionButton("submit_examplemetadata_button", "Submit", class = "btn-primary"),
                         actionButton("reset_examplemetadata_button", "Clear")
@@ -165,6 +171,12 @@ app_ui <- function(request) { # shiny as package requires ui as function
                                          "Excel (XLSX)" = "excel" ### excel
                                     ),
                                     selected = "Comma"), # added back after adding excel option
+                        selectInput("metadata_format", ### matrix format
+                                    "Metadata format",
+                                    list("Tidy format" = "tidy",
+                                         "Matrix format" = "matrix"
+                                    ),
+                                    selected = "Tidy format"), # added back after adding excel option
                         actionButton("submit_metadatafile_button", "Submit", class = "btn-primary"),
                         actionButton("reset_metadatafile_button", "Clear"),
                         conditionalPanel(
@@ -574,8 +586,15 @@ app_ui <- function(request) { # shiny as package requires ui as function
                      # Step 6 -----
                      strong("6) Join metadata"), br(),
                      # p("Make sure a metadata file in the correct format has been uploaded above."), ### meta
-                     p("Make sure a metadata file in the correct format has been uploaded above (unless you selected to skip the metadata).
-                       Make sure the 'wells' column of the file contains entries for each well in the Cropped Data (in exactly the same notation)."), ### meta
+                     # p("Make sure a metadata file in the correct format has been uploaded above (unless you selected to skip the metadata).
+                     #   Make sure the 'well' column of the file contains entries for each well in the Cropped Data (in exactly the same notation)."), ### meta
+                     p("Make sure a metadata file in the stated (tidy/matrix) format has been uploaded above (unless you selected to skip the metadata)."), ### matrix format
+                     p(strong("Tidy format metadata"), "should be displayed in the Metadata tab with the column names in bold.
+                       Make sure the 'well' column of the file contains entries for each well in the Cropped Data (in exactly the same notation)."), ### matrix format
+                     p(strong("Matrix format metadata"), "should be displayed in the Metadata tab with non-specific column names (e.g. V1, V2 or '...1', '...2').
+                       Each variable should be displayed as an 8-row by 12-column grid (for 96-well plates), or similarly for other plate sizes,
+                       with the variable name in the top left corner of the grid,
+                       and with consecutive variables entered below one another separated by a single blank row."), ### matrix format
                      actionButton("view_metadata_button", "View Metadata", class = "btn-success"), # btn-info
                      actionButton("step6_checkbox_button",
                                   label = NULL, icon("lock-open"),

@@ -82,11 +82,13 @@ In addition, the displayed Raw Data table contains interactive _column names_ th
 
 Once the Raw Data has been uploaded, follow the instructions to upload a Metadata file:
 
-> **Metadata:** Upload a metadata file. This should include a 'well' column in 'A1->H12' format.
+> **Metadata:** Upload a metadata file. For tidy format metadata files, include a 'well' column in 'A1->H12' format. To skip metadata addition, choose 'Skip Metadata'.
 
 Metadata files are simple files you can create in Excel or a similar application, in which you add any and all variables necessary for your downstream data analysis. If you're using an existing software package, the software should specify which variables are required in your parsed data.
 
-There are few rules for how to create Metadata files, but they are strict:
+Parsley accepts metadata in 2 formats: **tidy** format and **matrix** format. **Tidy format is recommended for metadata.**
+
+**Tidy format Metadata:** There are few rules for how to create tidy Metadata files, but they are strict:
 
 - Metadata files should be prepared in a 'tidy data' format. This means the **data should be arranged in columns, where each column represents a variable and where the variable name for each column is located in the first row of that column**.
 - **Metadata must contain a column called ‘well’ that contains entries in the format ‘A1’ to ‘H12’ to specify well positions in a 96-well plate.** This is because 'well' is the column that will be used for joining the data to the metadata: without 'well' this joining action will fail. All other columns are optional and will depend on downstream requirements. For example, for plate reader calibration with [FPCountR](https://github.com/ec363/fpcountr), the metadata requires at a minimum the additional columns: ‘instrument’, ‘channel_name’, ‘calibrant’, ‘replicate’, ‘mw_gmol1’, ‘dilution’ and ‘volume’.
@@ -96,6 +98,18 @@ For example, the Metadata for our fluorescein dilution series might look like th
 
 <div style="text-align: center;">
 <img src="www/0_metadatacsv.png" style="width:350px; border: 1px solid gray;">
+</div>
+<br>
+
+**Matrix format Metadata:** As of September 2023, Parsley also accepts matrix format metadata. To do this, we have adapted functions from another R package, [plater](https://cran.r-project.org/web/packages/plater/vignettes/plater-basics.html), that was written specifically to allow metadata to be assembled 'intuitively', as you would when preparing a plate for an experiment.
+
+- Matrix format metadata requires each variable being arranged in matrix format, ie. arranged like a multiwell plate. For a 96-well plate, this means the first column contains row names A-H, the first row contains column names 1-12. The name of the metadata variable should be provided in the top left corner cell, and the values of this variable arranged in each 'well' slot. Consecutive variables should be arranged below the first, with a 1 row gap between each matrix.
+- **Variable names must be unique (no two columns should have the same name), and contain no spaces or symbols (except underscores, which are tolerated).**
+
+Matrix-format metadata for the fluorescein dilution series would be arranged as follows:
+
+<div style="text-align: center;">
+<img src="www/0_metadatacsv2.png" style="width:700px; border: 1px solid gray;">
 </div>
 <br>
 
@@ -389,9 +403,13 @@ Click the lock to confirm and continue to Step 6.
 
 Step 6 allows you to check your Metadata.
 
-> Make sure a metadata file in the correct format has been uploaded above.
+> Make sure a metadata file in the stated (tidy/matrix) format has been uploaded above (unless you selected to skip the metadata).
 
-Click View Metadata to check the Metadata is correct. Guidance is provided in the [Metadata section of this Guide](#stepB). Check that your Metadata contains a column called 'well' and that the well labels in that column exactly matches the well labels in your Cropped Data. Metadata can be cleared and re-uploaded if necessary using the section on the top right.
+> **Tidy format metadata** should be displayed in the Metadata tab with the column names in bold. Make sure the 'well' column of the file contains entries for each well in the Cropped Data (in exactly the same notation).
+
+> **Matrix format metadata** should be displayed in the Metadata tab with non-specific column names (e.g. V1, V2 or '...1', '...2'). Each variable should be displayed as an 8-row by 12-column grid (for 96-well plates), or similarly for other plate sizes, with the variable name in the top left corner of the grid, and with consecutive variables entered below one another separated by a single blank row.
+
+Click View Metadata to check the Metadata is correct. Further guidance is provided in the [Metadata section of this Guide](#stepB). Metadata can be cleared and re-uploaded if necessary using the section on the top right.
 
 <img src="www/36_step6_viewmeta.png" style="width:700px; border: 1px solid gray;">
 <br><br>

@@ -8,7 +8,7 @@ Authors@R:
          email = "ec3630@gmail.com",
          comment = c(ORCID = "0000-0003-4759-5921"))
 Description: Multiwell plate readers are an important tool in the life sciences and their analysis benefits from automated data analysis. However, most plate readers export raw data in formats that software packages cannot work with, and that do not contain the necessary metadata for downstream analysis. A necessary initial step in every analysis is therefore extracting the data, reformatting it into the correct 'tidy' data structure, and joining it with any required metadata: we call this process 'parsing'. While a few parser functions for certain export formats from certain plate readers have been written, there is no generic tool that can handle data parsing from any plate reader: this is why Parsley was built.
-License: MIT + file LICENSE
+License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)

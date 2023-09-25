@@ -453,8 +453,17 @@ app_server <- function(input, output, session) { # shiny as package function
         # LOAD
         # 1. Update metadata
         filepathtouse <- system.file("extdata", paste0(input$select_examplemetadata, ".csv"), package = "parsleyapp") ###
-        df_shiny$metadata <- utils::read.csv(filepathtouse)
-        # print(names(df_shiny$metadata)) # check # works
+
+        # # v1
+        # df_shiny$metadata <- utils::read.csv(filepathtouse)
+        # # print(names(df_shiny$metadata)) # check # works
+
+        # v2 ### matrix format
+        if(grepl("matrix", input$select_examplemetadata)){
+          df_shiny$metadata <- utils::read.csv(filepathtouse, header = FALSE) # matrix
+        } else {
+          df_shiny$metadata <- utils::read.csv(filepathtouse, header = TRUE) # tidy
+        }
 
       }) # end withprogress
 
@@ -558,13 +567,31 @@ app_server <- function(input, output, session) { # shiny as package function
         data <- NULL
 
         if(grepl(pattern = ext, x = c("csv")) & input$metadata_delim == ","){ ### delim
-          data <- utils::read.csv(input$upload_metadata$datapath, header = TRUE) # read.csv
+
+          if(input$metadata_format == "tidy"){
+            data <- utils::read.csv(input$upload_metadata$datapath, header = TRUE) # read.csv
+          } else if(input$metadata_format == "matrix"){ ### matrix format
+            data <- utils::read.csv(input$upload_metadata$datapath, header = FALSE)
+          }
+
         }
         if(any(grepl(pattern = ext, x = c("csv", "tsv", "txt"))) & (input$metadata_delim == ";" | input$metadata_delim == "\t")){ ### delim
-          data <- utils::read.table(input$upload_metadata$datapath, header = TRUE, sep = input$metadata_delim) # read.table
+
+          if(input$metadata_format == "tidy"){
+            data <- utils::read.table(input$upload_metadata$datapath, header = TRUE, sep = input$metadata_delim) # read.table
+          } else if(input$metadata_format == "matrix"){ ### matrix format
+            data <- utils::read.table(input$upload_metadata$datapath, header = FALSE, sep = input$metadata_delim)
+          }
+
         }
         if(any(grepl(pattern = ext, x = c("xls", "xlsx"))) & input$metadata_delim == "excel"){ ### excel
-          data <- readxl::read_excel(input$upload_metadata$datapath, col_names = TRUE) # first sheet # col_names like "header" for readcsv
+
+          if(input$metadata_format == "tidy"){
+            data <- readxl::read_excel(input$upload_metadata$datapath, col_names = TRUE) # first sheet # col_names like "header" for readcsv
+          } else if(input$metadata_format == "matrix"){ ### matrix format
+            data <- readxl::read_excel(input$upload_metadata$datapath, col_names = FALSE)
+          }
+
         }
 
         if(!is.null(data)){ ### excel
@@ -2382,13 +2409,13 @@ app_server <- function(input, output, session) { # shiny as package function
       return()
     }
 
-    # Check that metadata has 'well' column
-    if( (isFALSE(df_shiny$metadata_skip)) ### meta
-        & (!any(grepl("well", colnames(df_shiny$metadata)))) ){ ### R CMD check doesn't like the fact that I assume a well column. But there's a check here!
-      message("Error: Can't merge Data and Metadata when Metadata does not contain a 'well' column.")
-      showModal(modalDialog(title = "Error", "Can't merge Data and Metadata when Metadata does not contain a 'well' column.", easyClose = TRUE ))
-      return()
-    }
+    # # Check that metadata has 'well' column ### matrix format: moved down
+    # if( (isFALSE(df_shiny$metadata_skip)) ### meta
+    #     & (!any(grepl("well", colnames(df_shiny$metadata)))) ){ ### R CMD check doesn't like the fact that I assume a well column. But there's a check here!
+    #   message("Error: Can't merge Data and Metadata when Metadata does not contain a 'well' column.")
+    #   showModal(modalDialog(title = "Error", "Can't merge Data and Metadata when Metadata does not contain a 'well' column.", easyClose = TRUE ))
+    #   return()
+    # }
 
     ## PARSE
     if(df_dataspecs$datatype == "datatype_standard" | df_dataspecs$datatype == "datatype_spectrum"){
@@ -2499,14 +2526,67 @@ app_server <- function(input, output, session) { # shiny as package function
     print(datablock)
 
     ## Bind with plate layout metadata
-    if(isFALSE(df_shiny$metadata_skip)){ ### meta
-      parseddata <- dplyr::left_join(df_shiny$metadata, datablock, by = "well")
-      ### R CMD check doesn't like the fact that I assume a well column. But there's a check at the top!
+    if( (input$metadata_input == 1 & isFALSE(df_shiny$metadata_skip))
+        | input$metadata_input == 2){ ### meta
+      # if we're uploading example metadata, and we have not selected "skip metadata"
+      # or if we're uploading new metadata
+
+      # Identify metadata format ### matrix format
+      if(input$metadata_input == 1 & !grepl("matrix", input$select_examplemetadata)){
+        # if we're uploading example metadata, and the metadata is in tidy format
+        metadata_format <- "tidy"
+      }
+      if(input$metadata_input == 1 & grepl("matrix", input$select_examplemetadata)){
+        # if we're uploading example metadata, and the metadata is in matrix format
+        metadata_format <- "matrix"
+      }
+      if(input$metadata_input == 2 & input$metadata_format == "tidy"){
+        # if we're uploading new metadata, and the metadata is in tidy format
+        metadata_format <- "tidy"
+      }
+      if(input$metadata_input == 2 & input$metadata_format == "matrix"){
+        # if we're uploading new metadata, and the metadata is in matrix format
+        metadata_format <- "matrix"
+      }
+
+      # Parse data, depending on metadata format ### matrix format
+      if(metadata_format == "tidy"){ # standard parsing
+
+        # Check that metadata has 'well' column
+        if( (isFALSE(df_shiny$metadata_skip)) ### meta
+            & (!any(grepl("well", colnames(df_shiny$metadata)))) ){ ### R CMD check doesn't like the fact that I assume a well column. But there's a check here!
+          # message("Error: Can't merge Data and Metadata when Metadata does not contain a 'well' column.")
+          # showModal(modalDialog(title = "Error", "Can't merge Data and Metadata when Metadata does not contain a 'well' column.", easyClose = TRUE ))
+
+          message("Error: Can't merge Data and tidy Metadata if Metadata does not contain a 'well' column.
+                  Verify that the Metadata is in tidy format. If so, add a 'well' column.
+                  If it is in matrix format, select 'Matrix format' in the Metadata upload section above, click Submit to reupload the Metadata, before retrying the Parsing.") ### matrix format
+          showModal(modalDialog(title = "Error", "Can't merge Data and Metadata when Metadata does not contain a 'well' column.
+                                Verify that Metadata is in tidy format. If so, add a 'well' column.
+                                If it is in matrix format, select 'Matrix format' in the Metadata upload section above, click Submit to reupload the Metadata, before retrying the Parsing.",
+                                easyClose = TRUE )) ### matrix format
+          return()
+        }
+        parseddata <- dplyr::left_join(df_shiny$metadata, datablock, by = "well")
+        ### R CMD check doesn't like the fact that I assume a well column. But there's a check at the top!
+
+      }
+
+      if(metadata_format == "matrix"){ # matrix parsing
+
+        # parse with matrix format metadata with plater ### matrix format
+        metadata_tidy <- read_matrixformat_metadata(data = df_shiny$metadata, well_ids_column = "well")
+        metadata_tidy
+
+        parseddata <- dplyr::left_join(metadata_tidy, datablock, by = "well")
+        ### R CMD check doesn't like the fact that I assume a well column. But there's a check at the top!
+      }
 
       ## Make row and column columns
       parseddata$row <- substr(x = parseddata$well, start = 1, stop = 1)
       parseddata$column <- as.numeric(substr(x = parseddata$well, start = 2, stop = nchar(parseddata$well)))
       parseddata <- dplyr::arrange_at(parseddata, dplyr::vars(.data$row, .data$column))
+
     } else {
 
       ## Skip metadata joining, and simply return tidied dataframe ### meta

@@ -203,9 +203,13 @@ Custom well numbering: every sample must have a non-empty 'well' value or data w
 ##### <a name="errormessages7"> Error messages for Step 7: Parse data </a>
 <hr>
 
-**Error: Can't merge Data and Metadata when Metadata does not contain a 'well' column.**
+**Error: Can't merge Data and tidy Metadata if Metadata does not contain a 'well' column. Verify that the Metadata is in tidy format. If so, add a 'well' column. If it is in matrix format, select 'Matrix format' in the Metadata upload section above, click Submit to reupload the Metadata, before retrying the Parsing.**
 
-Check that the metadata file was uploaded correctly and contains a column labelled 'well'. Check that Parsley has correctly interpreted that 'well' is the column name: column names will appear in bold at the top. If it is displayed further down, edit the CSV file so that the column names are the first line of the spreadsheet.
+Check that the metadata file was uploaded correctly.
+
+If you uploaded Tidy format Metadata, it needs to contain a column labelled 'well'. Check that Parsley has correctly interpreted that 'well' is the column name: column names will appear in bold at the top. If it is displayed further down, edit the CSV file so that the column names are the first line of the spreadsheet.
+
+If you uploaded Metadata format Metadata, this error has come up because you selected 'Tidy format' under the Metadata format menu. Select 'Metadata format' instead, press Submit to re-upload the Metadata correctly, and retry the Parse step.
 
 <br>
 
