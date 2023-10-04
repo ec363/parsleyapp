@@ -209,7 +209,7 @@ Check that the metadata file was uploaded correctly.
 
 If you uploaded Tidy format Metadata, it needs to contain a column labelled 'well'. Check that Parsley has correctly interpreted that 'well' is the column name: column names will appear in bold at the top. If it is displayed further down, edit the CSV file so that the column names are the first line of the spreadsheet.
 
-If you uploaded Metadata format Metadata, this error has come up because you selected 'Tidy format' under the Metadata format menu. Select 'Metadata format' instead, press Submit to re-upload the Metadata correctly, and retry the Parse step.
+If you uploaded Matrix format Metadata, this error has come up because you selected 'Tidy format' under the Metadata format menu. Select 'Matrix format' instead, press Submit to re-upload the Metadata correctly, and retry the Parse step.
 
 <br>
 
