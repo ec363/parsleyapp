@@ -12,7 +12,7 @@ Welcome to Parsley! We assume you are here because you have exported some data f
 
 There are three main steps to parsing plate reader data with Parsley. First, you need to upload your experimental **Raw Data** file. Second, you will need to create and upload an accompanying **Metadata** file that contains all the extra information you will need to attach to your data for your downstream analysis. Third, you need to proceed through a guided series of **Data Specification** steps, to tell the app about your data (such as what type of data it is and where the relevant data cells are located within your Raw Data spreadsheet).
 
-<!-- Guide written with app v0.1.1 / 2023/09. -->
+<!-- Guide written with app v0.1.1 / v0.2.0. -->
 
 Navigate to the 'Build Your Own Parser' tab (left hand link in the top navigation bar) to get started.
 
@@ -101,7 +101,7 @@ For example, the Metadata for our fluorescein dilution series might look like th
 </div>
 <br>
 
-**Matrix format Metadata:** As of September 2023, Parsley also accepts matrix format metadata. To do this, we have adapted functions from another R package, [plater](https://cran.r-project.org/web/packages/plater/vignettes/plater-basics.html), that was written specifically to allow metadata to be assembled 'intuitively', as you would when preparing a plate for an experiment.
+**Matrix format Metadata:** As of v0.2.0, Parsley also accepts matrix format metadata. To do this, we have adapted functions from another R package, [plater](https://cran.r-project.org/web/packages/plater/vignettes/plater-basics.html), that was written specifically to allow metadata to be assembled 'intuitively', as you would when preparing a plate for an experiment.
 
 - Matrix format metadata requires each variable being arranged in matrix format, ie. arranged like a multiwell plate. For a 96-well plate, this means the first column contains row names A-H, the first row contains column names 1-12. The name of the metadata variable should be provided in the top left corner cell, and the values of this variable arranged in each 'well' slot. Consecutive variables should be arranged below the first, with a 1 row gap between each matrix.
 - **Variable names must be unique (no two columns should have the same name), and contain no spaces or symbols (except underscores, which are tolerated).**
@@ -533,7 +533,7 @@ Click View to double check the timepoints Parsley has calculated are correct.
 <img src="www/timecourse_step2b_3_set_view.png" style = "width:700px; border: 1px solid gray;">
 <br><br>
 
-_Note that as of September 2023, there is no longer an assumption that the units of timecourse will be specified in minutes. The units are not specified by the app, do not need to be specified by the user, and make no difference to the parsing process._ <!-- update with version number instead of date -->
+_Note that as of v0.2.0, there is no longer an assumption that the units of timecourse will be specified in minutes. The units are not specified by the app, do not need to be specified by the user, and make no difference to the parsing process._ <!-- update with version number instead of date -->
 
 **To select cells with numerical timepoint information, select 'Select cells with timepoints' from the dropdown menu.**
 

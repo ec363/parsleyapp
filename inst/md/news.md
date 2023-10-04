@@ -2,6 +2,25 @@
 
 <br>
 
+##### <a name="0.2.0"> Version 0.2.0 </a>
+<hr>
+
+Release: Oct 2023
+
+- Improvements to functionality.
+  - Added ability to upload files in Excel format.
+  - Removed requirement for units to be in minutes.
+  - Added ability to grab timepoints by selecting these directly from the data.
+  - Added ability to upload metadata files in matrix format (including a new example file).
+- Bug fixes
+  - Added error handling to catch issues with the data/metadata upload step that previously caused the app to crash.
+- Minor UI updates.
+  - Added row numbers to most tables.
+- Updates to the documentation.
+  - Updated Guide and Help pages about new functionality.
+
+<br>
+
 ##### <a name="0.1.3"> Version 0.1.3 </a>
 <hr>
 
