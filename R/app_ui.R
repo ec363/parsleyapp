@@ -353,7 +353,7 @@ app_ui <- function(request) { # shiny as package requires ui as function
                        selectInput("timecourse_input", label = "Time course specification",
                                    list("[Time course input]" = "timecourse_input_null",
                                         "Select cells with timepoints" = "timecourse_input_select",
-                                        "Enter timecourse settings" = "timecourse_input_manual"),
+                                        "Enter timecourse settings" = "timecourse_input_calculate"),
                                    selected = "timecourse_input_null"),
                        conditionalPanel(
                          condition = "input.timecourse_input == 'timecourse_input_select'",
@@ -361,7 +361,7 @@ app_ui <- function(request) { # shiny as package requires ui as function
                          p(icon("circle-info"), "Selections on large data files can be slow.")
                        ),
                        conditionalPanel(
-                         condition = "input.timecourse_input == 'timecourse_input_manual'",
+                         condition = "input.timecourse_input == 'timecourse_input_calculate'",
                          # numericInput("timecourse_firsttimepoint", label = "First timepoint (min)", value = 0, min = 0, max = NA),
                          # numericInput("timecourse_duration", label = "Duration  (min)", value = 960, min = 1, max = NA),
                          # numericInput("timecourse_interval", label = "Interval  (min)", value = 30, min = 1, max = NA),
@@ -611,8 +611,33 @@ app_ui <- function(request) { # shiny as package requires ui as function
                      # DOWNLOAD
                      conditionalPanel(
                        condition = "input.submit_parsedata_button > 0",
-                       downloadButton("download_table_CSV", "Download parsed data (CSV)", class = "btn-primary")
-                     )
+                       downloadButton("download_table_CSV", "Download parsed data (CSV)", class = "btn-primary"),
+
+                       # SAVE PARSER ### save_parser
+                       br(), hr(),
+                       strong("Save Parser (Optional)"),
+                       p("Save this parser function for use with further files."),
+                       actionButton(inputId = "save_parser_button", label = "Save Parser",
+                                    icon = icon("bookmark"), class = "btn-success"), # actionbutton whose icon is updated when clicked
+                       br(), br(),
+                       conditionalPanel(
+                         condition = "input.save_parser_button == 1",
+                         verbatimTextOutput("save_parser_button_feedback1") # parser function created
+                       ),
+                       conditionalPanel(
+                         condition = "input.save_parser_button > 1",
+                         verbatimTextOutput("save_parser_button_feedback2") # parser function updated
+                       ),
+                       conditionalPanel(
+                         condition = "input.save_parser_button > 0",
+                         p("Parse further files now using the saved parser, or download it for use at a later date."),
+                         actionButton("switch_to_saved_parser_tab_button", "Parse More Data",
+                                      icon = icon("plus"), class = "btn-default"),
+                         downloadButton("download_saved_parser", "Download", # "Download Parser Function (.RDS)",
+                                        class = "btn-primary")
+                       )
+
+                     ) # conditional on parsing
 
                    ) # steps 2-6 conditional on step1 checkbox
 
@@ -705,7 +730,7 @@ app_ui <- function(request) { # shiny as package requires ui as function
                                         strong("Step 2B: Timecourse settings"), br(),
                                         # for manual entry timepoints:
                                         conditionalPanel(
-                                          condition = "input.timecourse_input == 'timecourse_input_manual'",
+                                          condition = "input.timecourse_input == 'timecourse_input_calculate'",
                                           # "First timepoint (min):", br(),
                                           "First timepoint:", br(), ### minutes
                                           verbatimTextOutput("timecourse_firsttimepoint"),
@@ -802,10 +827,431 @@ app_ui <- function(request) { # shiny as package requires ui as function
 
              ) # sidebarLayout
 
-           ), # conditionalPanel (on uploading data)
+           ) # conditionalPanel (on uploading data)
 
   ), # Top Tab 1
 
+  # Tab 2: Use Saved Parser -------------------------------------------------------------------------------------
+
+  tabPanel("Use Saved Parser", icon = icon("upload"), ### save_parser
+           value = "usp", # reqd for tab switching
+
+           ## Data input panel (TOP)
+           fluidRow(
+
+             # Column1
+             column(3,
+
+                    strong("How to Use a Saved Parser:"), br(), br(),
+                    p(strong("Parser:"), "Upload a parser function file or use the parser function from the current session."),
+
+                    conditionalPanel(
+                      condition = "input.submit_exampleparser_button != '0' || input.submit_currentparser_button != '0' ||
+                      input.submit_savedparser_button != '0'",
+                      p(strong("Raw Data:"), "Upload a raw data file from your plate reader experiment."),
+                    ),
+
+                    conditionalPanel(
+                      condition = "input.tab2_submit_exampledata_button != '0' || input.tab2_submit_datafile_button != '0'",
+                      p(strong("Metadata:"), "Upload a metadata file. For tidy format metadata files, include a 'well' column in 'A1->H12' format.
+                        To skip metadata addition, choose 'Skip Metadata'.")
+                    )
+
+             ),
+             # Column2
+             column(3,
+
+                    # Tab2 Parser Upload Panel
+                    strong("Parser:"), br(), br(),
+                    radioButtons("parser_input",
+                                 label = NULL,
+                                 choices = list("Load example parser" = 1,
+                                                "Use current parser" = 2,
+                                                "Upload saved parser" = 3
+                                 ), selected = 1),
+
+                    # Conditional Sub-Panels depending on Data Input Type
+                    # Example Parser
+                    conditionalPanel(
+                      condition = "input.parser_input=='1'",
+
+                      p("Example parser:"),
+                      selectInput("select_exampleparser",
+                                  label = NULL,
+                                  list("1 - Green fluorescence data (rows)" = "parser_green_rows",
+                                       "2 - Green fluorescence data (cols)" = "parser_green_cols",
+                                       "3 - Green fluorescence data (matrix)" = "parser_green_matrix",
+                                       "4 - Absorbance spectrum data (cols)" = "parser_absorbance_spectrum_cols",
+                                       "5 - Absorbance spectrum data (rows)" = "parser_absorbance_spectrum_rows",
+                                       "6 - Timecourse data (rows)" = "parser_timecourse_rows",
+                                       "7 - Timecourse data (cols)" = "parser_timecourse_cols"
+                                  ),
+                                  selected = "parser_green_rows"),
+
+                      actionButton("submit_exampleparser_button", "Submit", class = "btn-primary"),
+                      actionButton("reset_exampleparser_button", "Clear")
+                    ),
+
+                    # Current Parser
+                    conditionalPanel(
+                      condition = "input.parser_input=='2'",
+                      actionButton("submit_currentparser_button", "Submit", class = "btn-primary"),
+                      actionButton("reset_currentparser_button", "Clear")
+                    ),
+
+                    # Saved Parser
+                    conditionalPanel(
+                      condition = "input.parser_input=='3'",
+                      fileInput("upload_parser", label = NULL, multiple = FALSE
+                                # accept = c("text/csv", "text/tab-separated-values", "text/plain")
+                      ),
+                      actionButton("submit_savedparser_button", "Submit", class = "btn-primary"),
+                      actionButton("reset_savedparser_button", "Clear"),
+                      conditionalPanel(
+                        condition = "input.submit_savedparser_button != '0'",
+                        br(),
+                        p("Uploaded file name:"),
+                        verbatimTextOutput("parserfile_name")
+                      )
+                    )
+
+             ),
+             # Column3
+             column(3,
+
+                    # Tab2 Raw Data Panel
+                    conditionalPanel(
+                      condition = "input.submit_exampleparser_button != '0' || input.submit_currentparser_button != '0' ||
+                      input.submit_savedparser_button != '0'",
+
+                      strong("Raw Data:"), br(), br(),
+                      radioButtons("tab2_data_input", label = NULL,
+                                   choices = list("Load example" = 1, "Upload file" = 2), selected = 1),
+
+                      # Conditional Sub-Panels depending on Data Input Type
+                      # Example Data
+                      conditionalPanel(
+                        condition = "input.tab2_data_input=='1'",
+                        p("Example data:"),
+                        selectInput("tab2_select_exampledata",
+                                    label = NULL,
+                                    list("1 - Green fluorescence data (rows)" = "data_green_rows",
+                                         "2 - Green fluorescence data (cols)" = "data_green_cols",
+                                         "3 - Green fluorescence data (matrix)" = "data_green_matrix",
+                                         "4 - Absorbance spectrum data (cols)" = "data_absorbance_spectrum_cols",
+                                         "5 - Absorbance spectrum data (rows)" = "data_absorbance_spectrum_rows",
+                                         "6 - Timecourse data (rows)" = "data_timecourse_rows",
+                                         "7 - Timecourse data (cols)" = "data_timecourse_columns"
+                                    ),
+                                    selected = "data_green_rows"),
+                        actionButton("tab2_submit_exampledata_button", "Submit", class = "btn-primary"),
+                        actionButton("tab2_reset_exampledata_button", "Clear")
+                      ),
+                      # Single file upload
+                      conditionalPanel(
+                        condition = "input.tab2_data_input=='2'",
+                        fileInput("tab2_upload_data",
+                                  label = NULL,
+                                  multiple = FALSE),
+                        selectInput("tab2_upload_data_delim",
+                                    "File type",
+                                    list("Comma (CSV)" = ",",
+                                         "Semicolon (CSV)" = ";",
+                                         "Tab (TSV)" = "\t",
+                                         "Excel (XLSX)" = "excel"),
+                                    selected = "Comma (CSV)"),
+                        actionButton("tab2_submit_datafile_button", "Submit", class = "btn-primary"),
+                        actionButton("tab2_reset_datafile_button", "Clear"),
+                        conditionalPanel(
+                          condition = "input.tab2_submit_datafile_button != '0'",
+                          br(),
+                          p("Uploaded file name:"),
+                          verbatimTextOutput("tab2_rawdatafile_name")
+                        )
+                      ) # single file upload
+                    ) # conditional panel for raw data
+             ), # column3
+
+             # Columns4
+             column(3,
+
+                    # Tab2 Metadata Panel
+                    conditionalPanel(
+                      condition = "input.tab2_submit_exampledata_button != '0' || input.tab2_submit_datafile_button != '0'",
+
+                      strong("Metadata:"), br(), br(),
+                      radioButtons("tab2_metadata_input",
+                                   label = NULL,
+                                   choices = list("Load example" = 1, "Upload file" = 2), selected = 1),
+
+                      # Conditional Sub-Panels depending on Data Input Type
+                      # Example metadata
+                      conditionalPanel(
+                        condition = "input.tab2_metadata_input == '1'",
+                        p("Example metadata:"),
+                        selectInput("tab2_select_examplemetadata",
+                                    label = NULL,
+                                    list("1 - Green fluorescence data (tidy)" = "metadata_green",
+                                         "2 - Green fluorescence data (matrix)" = "metadata_green_matrix",
+                                         "3 - Timecourse data (tidy)" = "metadata_timecourse",
+                                         "4 - Timecourse data (matrix)" = "metadata_timecourse_matrix",
+                                         "SKIP METADATA" = "metadata_skip"),
+                                    selected = "metadata_green"),
+                        actionButton("tab2_submit_examplemetadata_button", "Submit", class = "btn-primary"),
+                        actionButton("tab2_reset_examplemetadata_button", "Clear")
+                      ),
+                      # Upload metadata
+                      conditionalPanel(
+                        condition = "input.tab2_metadata_input == '2'",
+                        fileInput("tab2_upload_metadata",
+                                  label = NULL,
+                                  multiple = FALSE),
+                        selectInput("tab2_metadata_delim",
+                                    "File type",
+                                    list("Comma (CSV)" = ",",
+                                         "Semicolon (CSV)" = ";",
+                                         "Tab (TSV)" = "\t",
+                                         "Excel (XLSX)" = "excel"),
+                                    selected = "Comma"),
+                        selectInput("tab2_metadata_format",
+                                    "Metadata format",
+                                    list("Tidy format" = "tidy",
+                                         "Matrix format" = "matrix"),
+                                    selected = "Tidy format"),
+                        actionButton("tab2_submit_metadatafile_button", "Submit", class = "btn-primary"),
+                        actionButton("tab2_reset_metadatafile_button", "Clear"),
+                        conditionalPanel(
+                          condition = "input.tab2_submit_metadatafile_button != '0'",
+                          br(),
+                          p("Uploaded file name:"),
+                          verbatimTextOutput("tab2_metadatafile_name")
+                        )
+                      ) # metadata upload
+                    ) # conditional panel for metadata
+
+             ) # column4
+
+           ), # fluidrow, top row
+
+           hr(),
+
+           ## Main UI revealed when data is uploaded ---------------------------------------------------------
+           conditionalPanel(
+
+             # Conditional on parser upload:
+             condition = "input.submit_exampleparser_button != '0' || input.submit_currentparser_button != '0' ||
+             input.submit_savedparser_button != '0'",
+
+             sidebarLayout(
+
+               ## Left hand sidebar -------------------------------------------------------------------------------------
+               sidebarPanel(
+                 width = 4,
+                 style = "height: 90vh; overflow-y: auto; padding-top: 10px; padding-bottom: 10px;",
+                 # css to make scrollbar for the sidebar # https://www.r-bloggers.com/2022/06/scrollbar-for-the-shiny-sidebar/
+                 # padding 10px allows sidebar text to be in line w mainpanel text (think default is 20px)
+
+                 p(strong("Using a Saved Parser:")),
+                 p(icon("table"), " As for the previous tab, the loaded parser function and data files are displayed to the right."),
+                 p(icon("circle-xmark"), " Unlike the previous tab, these tables are not interactive."),
+
+                 conditionalPanel(
+                   # condition = "(input.tab2_submit_exampledata_button != '0' || input.tab2_submit_datafile_button != '0')
+                   # && (input.tab2_submit_examplemetadata_button != '0' || input.tab2_submit_metadatafile_button != '0')",
+                   condition = "input.tab2_submit_examplemetadata_button != '0' || input.tab2_submit_metadatafile_button != '0'",
+                   # metadata enough of a condition, as metadata section is only revealed after data is loaded anyway
+
+                   p(icon("play"), " Once a Parser Function, Raw data and Metadata have been uploaded, run the script to parse your files."),
+                   actionButton("use_saved_parser_button",
+                                "Run Parser",
+                                icon = icon("play"), class = "btn-success"),
+                   br(), br()
+                 ),
+
+                 # Download Parsed Data
+                 conditionalPanel(
+                   condition = "input.use_saved_parser_button > 0",
+                   downloadButton("tab2_download_table_CSV", "Download parsed data (CSV)", class = "btn-primary")
+                 )
+
+               ), # sidebar
+
+               # Main (data) panel -------------------------------------------------------------------------------------
+               mainPanel(
+                 width = 8, # width should be rest!
+
+                 tabsetPanel(id = "usp_mainpaneldata_tabset", # needed for updating view on tabset
+
+                             tabPanel("Parser Function", # Data Specs Tab
+                                      value = "dataspecs_tab", # needed for updating view on tabset
+
+                                      br(),
+
+                                      p("The details of the loaded parser function are listed below."),
+
+                                      # Step1
+                                      # strong("Step 1: Data format"), br(),
+                                      strong("Data format"), br(),
+                                      "Data Type:", br(),
+                                      verbatimTextOutput("tab2_datatype_printed"),
+                                      "Data Format:", br(),
+                                      verbatimTextOutput("tab2_dataformat_printed"),
+                                      br(),
+
+                                      # Step2 all
+                                      # strong("Step 2: Reading names"), br(),
+                                      strong("Reading names"), br(),
+                                      "Number of readings:", br(),
+                                      verbatimTextOutput("tab2_channel_number_printed"),
+                                      "Reading name specification:", br(),
+                                      verbatimTextOutput("tab2_channel_name_specification_printed"), # not in tab1
+                                      tags$i("Selected: reading names are selected from specific cells in the data."), br(),
+                                      tags$i("Fixed: reading names have been pre-specified."), br(), br(),
+
+                                      "Reading name indices.", tags$i("The location of the reading names in the data."), br(),
+                                      # verbatimTextOutput("tab2_channel_name_indices_printed"), # not in tab1
+                                      DT::dataTableOutput("tab2_channel_name_indices_printed"), br(), # not in tab1 # extra space needed
+                                      "Reading names.", tags$i("Pre-specified reading names."), br(),
+                                      verbatimTextOutput("tab2_channel_names_printed"),
+                                      br(),
+
+                                      # Step2 spectra
+                                      strong("Spectrum settings"), br(),
+                                      "Min wavelength (nm):", br(),
+                                      verbatimTextOutput("tab2_wav_min_printed"),
+                                      "Max wavelength (nm):", br(),
+                                      verbatimTextOutput("tab2_wav_max_printed"),
+                                      "Interval (nm):", br(),
+                                      verbatimTextOutput("tab2_wav_interval_printed"),
+                                      br(),
+
+                                      # Step2b timecourse
+                                      # strong("Step 2B: Timecourse settings"), br(),
+                                      strong("Timecourse settings"), br(),
+                                      "Number of timepoints:", br(), # worked out version
+                                      verbatimTextOutput("tab2_timepoint_number_printed"),
+                                      "Timecourse data specification.", br(),
+                                      verbatimTextOutput("tab2_timecourse_specification_printed"), # not in tab1
+                                      tags$i("Selected: time points are selected from specific cells in the data."), br(),
+                                      tags$i("Fixed: time points have been pre-calculated."), br(), br(),
+                                      "Timecourse indices.", tags$i("The location of the timeponts in the data."), br(),
+                                      # verbatimTextOutput("tab2_timecourse_indices_printed"), # not in tab1
+                                      DT::dataTableOutput("tab2_timecourse_indices_printed"), br(), # not in tab1 # extra space needed
+                                      "List of timepoints:", tags$i("Pre-specified timepoints."), br(),
+                                      verbatimTextOutput("tab2_list_of_timepoints_printed"),
+                                      br(),
+
+                                      # # "First timepoint (min):", br(),
+                                      # "First timepoint:", br(),
+                                      # verbatimTextOutput("tab2_timecourse_firsttimepoint"),
+                                      # # "Timecourse duration (min):", br(),
+                                      # "Timecourse duration:", br(),
+                                      # verbatimTextOutput("tab2_timecourse_duration"),
+                                      # # "Interval (min):", br(),
+                                      # "Interval:", br(),
+                                      # verbatimTextOutput("tab2_timecourse_interval"),
+                                      # "Number of timepoints expected:", br(),
+                                      # verbatimTextOutput("tab2_timepoint_number_expected"),
+
+                                      # Step3
+                                      # strong("Step 3: Data from first reading"), br(),
+                                      # "Data from first reading:", br(),
+                                      # DT::dataTableOutput('tab2_FirstChannelDataTable'), br(),
+                                      strong("Data from the first reading"), br(),
+                                      "Row where data begins:", br(),
+                                      verbatimTextOutput("tab2_row_beg_printed"), # not in tab1
+                                      "Row where data ends:", br(),
+                                      verbatimTextOutput("tab2_row_end_printed"), # not in tab1
+                                      "Column where data begins:", br(),
+                                      verbatimTextOutput("tab2_col_beg_printed"), # not in tab1
+                                      "Column where data ends:", br(),
+                                      verbatimTextOutput("tab2_col_end_printed"), # not in tab1
+                                      br(),
+
+                                      strong("Data spacing"), br(),
+                                      # "Matrix format (if data is in matrix format):", br(),
+                                      "If data is in matrix format, is it horizontal or vertical?", br(),
+                                      verbatimTextOutput("tab2_matrixformat_printed"), # not in tab1
+                                      # Step4
+                                      # strong("Step 4: Total data"), br(),
+                                      "Spacing between readings:", br(),
+                                      verbatimTextOutput("tab2_channeldataspacing_printed"),
+                                      br(),
+
+                                      # Step5
+                                      # strong("Step 5: Well numbering"), br(),
+                                      strong("Well numbering"), br(),
+                                      "Well specification.", br(),
+                                      verbatimTextOutput("tab2_well_data_specification_printed"), # not in tab1
+                                      tags$i("Selected: wells are selected from specific cells in the data."), br(),
+                                      tags$i("Fixed: wells have been pre-calculated."), br(), br(),
+                                      "Well data indices.", tags$i("The location of the well numbers in the data."), br(),
+                                      # verbatimTextOutput("tab2_well_data_indices_printed"), # not in tab1
+                                      DT::dataTableOutput("tab2_well_data_indices_printed"), br(), # not in tab1 # extra space needed
+                                      # "Starting well:", br(),
+                                      # verbatimTextOutput("tab2_starting_well_printed"),
+                                      # "Reading orientation:", br(),
+                                      # verbatimTextOutput("tab2_readingorientation_printed"),
+                                      "Used wells.", tags$i("Pre-specified well numbers."), br(),
+                                      verbatimTextOutput("tab2_used_wells_printed"),
+                                      br(), br()
+                             ),
+
+                             tabPanel("Raw Data",
+                                      value = "rawdata_tab", # needed for updating view on tabset
+
+                                      br(),
+
+                                      ## Raw data
+                                      DT::dataTableOutput('tab2_RawDataTable')
+
+                             ),
+                             tabPanel("Cropped Data",
+                                      value = "rawdata_cropped_tab", # needed for updating view on tabset
+
+                                      br(),
+
+                                      # cropped data
+                                      DT::dataTableOutput('tab2_TotalDataTable'), br(),
+
+                                      br(), br()
+                             ),
+                             tabPanel("Metadata",
+                                      value = "metadata_tab", # needed for updating view on tabset
+
+                                      br(),
+
+                                      conditionalPanel(
+                                        condition = "input.tab2_submit_examplemetadata_button == '0' && input.tab2_submit_metadatafile_button == '0'",
+                                        "Upload Metadata."
+                                      ),
+
+                                      ## Metadata
+                                      DT::dataTableOutput('tab2_MetaDataTable'),
+
+                                      br(), br()
+                             ),
+                             tabPanel("Parsed Data",
+                                      value = "parseddata_tab", # needed for updating view on tabset
+
+                                      br(),
+
+                                      ## Parsed Data
+                                      DT::dataTableOutput('tab2_ParsedDataTable'),
+
+                                      br(), br()
+                             )
+                 ) # tabsetPanel in the mainPanel
+
+               ) # mainPanel
+
+             ) # sidebarLayout
+
+           ) # conditionalPanel (on uploading data)
+
+  ), # use saved parser
+
+  # Other Tabs ----
   tabPanel("Guide", icon = icon("map"), # question
            value = "guide", # reqd for tab switching
 

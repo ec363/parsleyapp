@@ -10,11 +10,11 @@ Welcome to Parsley! We assume you are here because you have exported some data f
 <i class="fa-solid fa-arrow-right-long"></i> <i class="fa-solid fa-circle-question"></i> See the **Help** tab if you're looking for troubleshooting tips or help on how to interpret the error messages.  
 <i class="fa-solid fa-arrow-right-long"></i> <i class="fa-solid fa-print"></i> To refer to this guide easily while using the app, consider saving this page as a PDF (`Ctrl+P` or `Cmd+P`).  
 
-There are three main steps to parsing plate reader data with Parsley. First, you need to upload your experimental **Raw Data** file. Second, you will need to create and upload an accompanying **Metadata** file that contains all the extra information you will need to attach to your data for your downstream analysis. Third, you need to proceed through a guided series of **Data Specification** steps, to tell the app about your data (such as what type of data it is and where the relevant data cells are located within your Raw Data spreadsheet).
+There are three main steps to parsing plate reader data with Parsley using the first '**Build Your Own Parser**' tab. First, you need to upload your experimental **Raw Data** file. Second, you will need to create and upload an accompanying **Metadata** file that contains all the extra information you will need to attach to your data for your downstream analysis. Third, you need to proceed through a guided series of **Data Specification** steps, to tell the app about your data (such as what type of data it is and where the relevant data cells are located within your Raw Data spreadsheet). These three steps will create a 'parser function' or 'parser' that the app uses to convert the Raw Data and Metadata into Parsed Data. The Parsed Data can then be downloaded as a CSV file. The parser function you have built can also be saved for use on further files of the same type, using the second '**Use Saved Parser**' tab.
 
-<!-- Guide written with app v0.1.1 / v0.2.0. -->
+<!-- Guide written with app v0.1.1 / v0.2.0 / v0.3.0-v1.0.0. -->
 
-Navigate to the 'Build Your Own Parser' tab (left hand link in the top navigation bar) to get started.
+Navigate to the '**Build Your Own Parser**' tab (left hand link in the top navigation bar) to get started.
 
 <img src="www/0_parsley.png" style="width:700px; border: 1px solid gray;">
 <br>
@@ -576,7 +576,72 @@ Scrolling down to the boundary between two of the readings, we can verify that P
 <div style="text-align: center;">
 <img src="www/timecourse_step4_3_viewcropped_edges.png" style = "width:467px; border: 1px solid gray;">
 </div>
+<br><br>
+
 <br>
+
+
+
+#### <a name="usesavedparser"> Saving and Reusing Parser Functions </a>
+<hr>
+
+<a name="usesavedparser_1"> **Saving your parser** </a>
+
+On completion of a parser function with the '**Build Your Own Parser**' tab, a 'Save Parser' button will be revealed. Clicking it will assemble all the details you have just specified your data and metadata into a function, which can be used immediately to parse further files, or be downloaded for later use.
+
+<div style="text-align: center;">
+<img src="www/42_parsemoredata1.png" style = "width:233; border: 1px solid gray;">
+</div>
+<br>
+
+If you intend to use the saved parser in the current app session, there is no need to download it. Simply click on 'Parse More Data' which will take you to the second '**Use Saved Parser**' tab.
+
+If you want to use the parser for further files at a later date, download it. This will download a .RDS file. This is an R data file that is essentially a list of the data specifications in a format that Parsley will recognise when it is uploaded later.
+
+<a name="usesavedparser_1"> **Using a saved parser** </a>
+
+Navigate to the '**Use Saved Parser**' tab.
+
+<img src="www/usesavedparser_0_parser.png" style="width:700px; border: 1px solid gray;">
+<br><br>
+
+First, load a saved parser. If you have just made one on the first tab, select 'Use current parser' and Submit. If you saved one at an earlier date, select 'Upload saved parser' and upload the .RDS file you downloaded earlier.
+
+<img src="www/usesavedparser_0_currentparsersubmit.png" style="width:700px; border: 1px solid gray;">
+<br><br>
+
+Once the parser function has been uploaded, simply load a new Raw Data file and Metadata file as you would in the first tab, and select Run Parser. This should reveal the Parsed Data and the Download CSV button. (The Cropped Data tab can be checked in case the Parsed Data doesn't look right.)
+
+<img src="www/usesavedparser_2_parsed.png" style="width:700px; border: 1px solid gray;">
+<br><br>
+
+**A note on making parser functions that work for multiple files**
+
+Before saving parser functions for reuse, it's worth considering how these parsers work. In basic terms, a parser function is a series of instructions for about how to turn a given Raw Data file into the correct format, with some basic metadata (before you even join the extra Metadata file). 
+
+**Data**: Parsley extracts the numerical data itself purely with positional information from the file itself. This means that a parser function will only work on subsequent Raw Datafiles that contain data in the exact position as the original Raw Datafile. 
+
+**Basic metadata**: The basic metadata that Parsley requires from the Raw Datafile itself includes the reading names, timepoints (if applicable) and well numbering information. As plate readers export Raw Datafiles that may or may not include this information, there are two ways to specify this information in Parsley: data may be **selected** (grabbed from a specific location in the file) or **fixed** (manually entered or calculated). If you directed the app to locations in the data to find information (**selected** data), it will be set up to do the same for further files and will be able to handle differences between data files, so long as the updated information is recorded in the same positions as in the first file. However, if you manually entered or calculated certain information (**fixed** data), it will be programmed to always use those manually entered or calculated values for all subsequent files.
+
+Helpfully, when a parser is uploaded, you can view its details in the Parser Function tab to check that it will work for your data files.
+
+_Let's take an example. In the first example parser (Load Example Parser > 1 Green fluorescence data (rows)) that was made with the first example dataset (1 - Green fluorescence data (rows)), reading names were specified by selecting the positions in the Raw Data that contained that information: i.e., from the first 9 rows of the first column of the data. This is indicated in the Parser Function tab, where the Reading name specification is set to **selected**, and the indices of the Reading Names are specified in a table:_
+
+<div style="text-align: center;">
+<img src="www/usesavedparser_1_stdparser1.png" style = "width:467; border: 1px solid gray;">
+</div>
+<br>
+
+_Therefore, for each new file that is parsed with this parser, the channel names will be grabbed from the cells at those same positions, making it possible to use on data with alternative channel names._
+
+_In contrast, the well names were calculated from well orientation and starting well information, ie. the well data is fixed as 'A1, A2 .... B12' for all data processed with that parser. This is also indicated on the Parser Function tab, where Well specification is set to **fixed**, and the Used Wells are indicated in full:_
+
+<div style="text-align: center;">
+<img src="www/usesavedparser_1_stdparser2.png" style = "width:467; border: 1px solid gray;">
+</div>
+<br>
+
+_So with this parser, it is assumed that all subsequent data files will use the same well numbering._
 
 <!-- end of page -->
 

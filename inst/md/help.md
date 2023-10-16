@@ -213,6 +213,29 @@ If you uploaded Matrix format Metadata, this error has come up because you selec
 
 <br>
 
+##### <a name="errormessages8"> Error messages: Use Saved Parser Tab </a>
+<hr>
+
+**Error: Parser missing. Upload a saved parser or build one before proceeding.**
+
+The parser you are trying to load is missing. A common cause of this error is selecting 'Use current parser' when one hasn't yet been completed in the Build Your Own Parser tab. Did you mean to upload a saved .RDS file? Choose 'Upload saved parser'.
+
+**Error: Parser incomplete. If the parser was not created with a recent version of Parsley, remake the parser.**
+
+Parsley has detected a faulty parser function. This may be because the parser was built with an out of date version of Parsley. Remake the parser to fix this issue.
+
+**Error: Parser file could not be uploaded. Check that it is a .RDS file created with Parsley.**  
+**Error: The file extension for a parser need to be 'RDS'.**
+
+An error occurred while reading an uploaded file. The file may not be in the correct .RDS format. Are you sure you are uploading a parser function file made by Parsley?
+
+**Error: Upload a raw data file**  
+**Error: Upload a metadata file**
+
+Parsing cannot proceed without a raw data file and metadata file.
+
+<br>
+
 ##### <a name="warningmessages"> Warning messages for Step 2b: Timecourse settings </a>
 <hr>
 
