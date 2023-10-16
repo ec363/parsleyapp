@@ -2,6 +2,21 @@
 
 <br>
 
+##### <a name="1.0.0"> Version 1.0.0 </a>
+<hr>
+
+Release: Oct 2023
+
+- Major improvements to functionality.
+  - Added ability to download built parsers, and upload them for quick parsing of similar plate reader files. Parsing new data files now only requires (i) uploading a saved parser function, along with new raw data and metadata, and (ii) clicking a 'Run Parser' button. Example parsers are also provided for all example data types.
+- Major UI updates.
+  - Added section for saving and downloading parser at the bottom of the Build Your Own Parser tab.
+  - Added Use Saved Parser tab for handling uploaded parsers. This tab is laid out similarly to the first tab, with the addition of a Parser Function tab that includes a complete description of the loaded parser function.
+- Documentation updates.
+  - Updated Guide and Help pages about new functionality.
+
+<br>
+
 ##### <a name="0.2.0"> Version 0.2.0 </a>
 <hr>
 
