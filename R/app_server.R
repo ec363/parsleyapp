@@ -1035,6 +1035,18 @@ app_server <- function(input, output, session) { # shiny as package function
           return()
         }
 
+        # Check for duplicates
+        if(length(selectedcell_values) != length(unique(selectedcell_values))){
+          # lengths will only be equal if every value in selectedcell_values is unique
+          message("Error: Reading names must be unique.")
+          showModal(modalDialog(title = "Error", "Reading names must be unique.", easyClose = TRUE ))
+          df_dataspecs$channel_number <- NULL
+          df_dataspecs$channel_name_specification <- NULL ### save_parser
+          df_dataspecs$channel_name_indices <- NULL ### save_parser
+          df_dataspecs$channel_names <- NULL
+          return()
+        }
+
         # Update channel_names
         df_dataspecs$channel_names <- selectedcell_values
 
@@ -1067,6 +1079,18 @@ app_server <- function(input, output, session) { # shiny as package function
         if( (nrow_expected > nrow_submitted) | (nrow_expected < nrow_submitted) ){
           message("Error: Number of reading names does not match number of readings specified.")
           showModal(modalDialog(title = "Error", "Number of reading names does not match number of readings specified.", easyClose = TRUE ))
+          df_dataspecs$channel_number <- NULL
+          df_dataspecs$channel_name_specification <- NULL ### save_parser
+          df_dataspecs$channel_name_indices <- NULL ### save_parser
+          df_dataspecs$channel_names <- NULL
+          return()
+        }
+
+        # Check for duplicates
+        if(length(temp_channelnameslist) != length(unique(temp_channelnameslist))){
+          # lengths will only be equal if every value in temp_channelnameslist is unique
+          message("Error: Reading names must be unique.")
+          showModal(modalDialog(title = "Error", "Reading names must be unique.", easyClose = TRUE ))
           df_dataspecs$channel_number <- NULL
           df_dataspecs$channel_name_specification <- NULL ### save_parser
           df_dataspecs$channel_name_indices <- NULL ### save_parser
