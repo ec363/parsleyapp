@@ -2,6 +2,18 @@
 
 <br>
 
+##### <a name="1.0.1"> Version 1.0.1 </a>
+<hr>
+
+Release: Oct 2023
+
+- Bug fixes.
+  - Added error handling to catch issues in step 2 (reading names specification), that previously caused the app to crash during step 5 (well numbering).
+- Documentation updates.
+  - Help tab: Updated error messages.
+
+<br>
+
 ##### <a name="1.0.0"> Version 1.0.0 </a>
 <hr>
 

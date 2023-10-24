@@ -126,6 +126,10 @@ If you have stated there are X readings, you must either a) select X cells to co
 
 Selected cell contents will become column names. Column names cannot be blank!
 
+**Error: Reading names must be unique.**
+
+Selected cells or manually entered reading names contain duplicates, which isn't tolerated. Please specify a list of unique reading names.
+
 <br>
 
 ##### <a name="errormessages2b"> Error messages for Step 2b: Timecourse settings </a>
