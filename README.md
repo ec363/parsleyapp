@@ -117,6 +117,6 @@ run_app()
 
 ## Contact
 
-Questions, suggestions or bug reports? Please [contact me](mailto:e.csibra@imperial.ac.uk).
+Questions, suggestions or bug reports? Please [contact me](mailto:e.csibra@leeds.ac.uk).
 
 <br>
