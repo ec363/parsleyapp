@@ -1,9 +1,9 @@
 ## Parsley is a universal plate reader data parsing application.
 <img src="inst/www/parsley_png.png" align="right" height="200px"/>
 
+[![DOI](http://img.shields.io/badge/Bioinformatics-10.1093/bioinformatics/btad733-167da4.svg)](https://doi.org/10.1093/bioinformatics/btad733)
+[![DOI](http://img.shields.io/badge/Zenodo-10.5281/zenodo.13921218-0d82c3.svg)](https://doi.org/10.5281/zenodo.13921218)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8072500.svg)](https://doi.org/10.5281/zenodo.8072500)
-[![DOI](https://zenodo.org/badge/640912123.svg)](https://doi.org/10.5281/zenodo.13921218)
 
 Multiwell plate readers are an important tool in the life sciences. They are frequently used to measure fluorescence, absorbance and luminescence, among other measurement types. As they are heavily used for high-throughput assays and screens, their analysis benefits from automated (programmatic) data analysis.
 
