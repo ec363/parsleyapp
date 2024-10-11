@@ -5,12 +5,13 @@
 #' @noRd
 check_parser_complete <- function(parser_parameters){
 
-  # updated 2023.10.01
+  # updated 2024.09
   required_contents = c("datatype", "dataformat",
                         "channel_name_specification", "channel_number", "channel_names", # "channel_name_indices" can be NULL
                         # "matrixformat", "firstchanneldata", # can be NULL
                         "row_beg", "row_end", "col_beg", "col_end", # [] consider shrinking to 4part list
-                        "channeldataspacing",
+                        "channeldataspacing", # even spacing only # not used for calcs # used for printing feedback to users for all datatypes
+                        "channeldata_indices", # uneven spacing
                         "well_data_specification", "used_wells", # "well_data_indices" can be NULL
 
                         # spectrum only
@@ -19,6 +20,7 @@ check_parser_complete <- function(parser_parameters){
                         "timecourse_specification", "timepoint_number", "list_of_timepoints" # "timecourse_indices" can be NULL
   )
 
+  ## check parser has been uploaded
   if(is.null(parser_parameters$datatype)){
     # parser has never been specified OR it has been reset
     message("Error: Parser missing. Upload a saved parser or build one before proceeding.")
@@ -42,9 +44,8 @@ check_parser_complete <- function(parser_parameters){
     # no spectrum
     required_contents <- stringr::str_subset(string = required_contents, pattern = "wav", negate = TRUE)
   }
-  required_contents
 
-  # check all reqd parameters are in parameters list
+  ## check all reqd parameters are in parameters list
   result <- all(sapply(required_contents, function(x) x %in% names(parser_parameters)))
   result
   if(isFALSE(result)){
@@ -57,6 +58,9 @@ check_parser_complete <- function(parser_parameters){
   }
 
   ## check all reqd parameters are not NULL
+
+  # uneven spacing - channeldataspacing can be NULL:
+  required_contents <- required_contents[!stringr::str_detect(unlist(required_contents), "channeldataspacing")] # can be NULL
 
   # v2
   # distinction between names of list (eg "datatype") and their values "datatype_standard"

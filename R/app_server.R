@@ -391,6 +391,8 @@ app_server <- function(input, output, session) { # shiny as package function
 
       # step4
       df_dataspecs$channeldataspacing = NULL
+      df_dataspecs$channeldata_indices = NULL
+      df_dataspecs$channeldata_indices_rowsorcolumns = NULL
       # [] update checkbox button to even?
 
       # step5
@@ -1626,7 +1628,9 @@ app_server <- function(input, output, session) { # shiny as package function
       # do nothing if previous steps incomplete
       message("Error: Previous sections marked incomplete.")
       showModal(modalDialog(title = "Error", "Previous sections marked incomplete.", easyClose = TRUE ))
-      # df_dataspecs$channeldataspacing <- NULL
+      df_dataspecs$channeldataspacing <- NULL
+      df_dataspecs$channeldata_indices <- NULL
+      df_dataspecs$channeldata_indices_rowsorcolumns <- NULL
       # df_shiny$totaldata <- NULL
       return()
     }
@@ -1635,7 +1639,9 @@ app_server <- function(input, output, session) { # shiny as package function
     if(is.null(df_dataspecs$firstchanneldata)){
       message("Error: Add first reading data to Section 3 first.")
       showModal(modalDialog(title = "Error", "Add first reading data to Section 3 first.", easyClose = TRUE ))
-      # df_dataspecs$channeldataspacing <- NULL
+      df_dataspecs$channeldataspacing <- NULL
+      df_dataspecs$channeldata_indices <- NULL
+      df_dataspecs$channeldata_indices_rowsorcolumns <- NULL
       # df_shiny$totaldata <- NULL
       return()
     }
@@ -1645,16 +1651,111 @@ app_server <- function(input, output, session) { # shiny as package function
       message("Error: Reading number must be an integer of 1 or more.")
       showModal(modalDialog(title = "Error", "Reading number must be an integer of 1 or more.", easyClose = TRUE ))
       df_dataspecs$channeldataspacing <- NULL
+      df_dataspecs$channeldata_indices <- NULL
+      df_dataspecs$channeldata_indices_rowsorcolumns <- NULL
       df_shiny$totaldata <- NULL
       return()
     }
 
-    # SAVE
-    df_dataspecs$channeldataspacing <- input$channeldataspacing
+    # SAVE # original
+    # df_dataspecs$channeldataspacing <- input$channeldataspacing
+
+    # SAVE v2
+    # even spacing
+    if(input$channeldataspacing_input == "channeldataspacing_auto"){
+      df_dataspecs$channeldataspacing <- input$channeldataspacing
+    }
+    # uneven spacing
+    if(input$channeldataspacing_input == "channeldataspacing_select"){
+
+      # Error checks for uneven spacing
+      # 1. Select cells
+      if(nrow(input$RawDataTable_cells_selected)==0){
+        # do nothing until there are selections
+        message("Error: Select cells first.")
+        showModal(modalDialog(title = "Error", "Select cells first.", easyClose = TRUE ))
+        df_dataspecs$channeldataspacing <- NULL
+        df_dataspecs$channeldata_indices <- NULL
+        df_dataspecs$channeldata_indices_rowsorcolumns <- NULL
+        df_shiny$totaldata <- NULL
+        return()
+      }
+      # 2. Need as many selections as channels
+      # Expected Channel Number
+      nrow_expected <- df_dataspecs$channel_number
+      # Cells Selected (that represent each row/column of each reading)
+      nrow_submitted <- nrow(input$RawDataTable_cells_selected)
+      # Need as many selections as channels
+      if( (nrow_expected > nrow_submitted) | (nrow_expected < nrow_submitted) ){
+        message("Error: Number of selected cells does not match number of readings specified.")
+        showModal(modalDialog(title = "Error", "Number of selected cells does not match number of readings specified.", easyClose = TRUE ))
+        df_dataspecs$channeldataspacing <- NULL
+        df_dataspecs$channeldata_indices <- NULL
+        df_dataspecs$channeldata_indices_rowsorcolumns <- NULL
+        df_shiny$totaldata <- NULL
+        return()
+      }
+      # 3. Selections must possess unique row or column numbers (see below)
+
+      df_dataspecs$channeldataspacing <- NULL # input$channeldataspacing is 1 by default. set to NULL here clears the slate for the actual specification
+
+      all_selected_cells <- input$RawDataTable_cells_selected
+
+      # for rows or matrices, pick row numbers of the selected cells
+      # nb: all matrix (horiz/vertical) uses row numbers
+      if(df_dataspecs$dataformat == "dataformat_rows" | df_dataspecs$dataformat == "dataformat_matrix") {
+
+        # grab row data
+        temp_row_numbers <- all_selected_cells[,1]
+        temp_column_numbers <- NULL # initialse object so that print fn below doesn't generate an error
+
+        # Error checks for uneven spacing
+        # 3. Selections must possess unique row or column numbers (see below)
+        if(!length(unique(temp_row_numbers)) == length(temp_row_numbers)){
+          message("Error: Selected cells should be from unique rows.")
+          showModal(modalDialog(title = "Error", "Selected cells should be from unique rows.", easyClose = TRUE ))
+          df_dataspecs$channeldataspacing <- NULL
+          df_dataspecs$channeldata_indices <- NULL
+          df_dataspecs$channeldata_indices_rowsorcolumns <- NULL
+          df_shiny$totaldata <- NULL
+          return()
+        }
+
+      } # rows
+
+      # for columns, pick column numbers of the selected cells
+      if(df_dataspecs$dataformat == "dataformat_columns") {
+        # grab column data
+        temp_column_numbers <- all_selected_cells[,2]+1 # +1 as cols start at 0 for some reason
+        temp_row_numbers <- NULL # initialise object so that print fn below doesn't generate an error
+
+        # Error checks for uneven spacing
+        # 3. Selections must possess unique row or column numbers (see below)
+        if(!length(unique(temp_column_numbers)) == length(temp_column_numbers)){
+          message("Error: Selected cells should be from unique columns.")
+          showModal(modalDialog(title = "Error", "Selected cells should be from unique columns.", easyClose = TRUE ))
+          df_dataspecs$channeldataspacing <- NULL
+          df_dataspecs$channeldata_indices <- NULL
+          df_dataspecs$channeldata_indices_rowsorcolumns <- NULL
+          df_shiny$totaldata <- NULL
+          return()
+        }
+
+      } # columns
+
+    } # uneven spacing
 
     # Check Step4 value
+    print("data spacing input:")
+    print(input$channeldataspacing_input)
     print("data spacing:")
     print(df_dataspecs$channeldataspacing)
+    if(input$channeldataspacing_input == "channeldataspacing_select"){
+      print("row numbers (if spacing is uneven):")
+      print(temp_row_numbers) # uneven spacing
+      print("column numbers (if spacing is uneven):")
+      print(temp_column_numbers) # uneven spacing
+    }
 
     # TOTAL DATA THEREFORE
     # Standard and Spectrum -----
@@ -1668,6 +1769,15 @@ app_server <- function(input, output, session) { # shiny as package function
         # print("total data table:")
         # print(df_shiny$totaldata)
 
+        # Save row/col numbers where reading starts (for printing/saved parser)
+        if(df_dataspecs$dataformat == "dataformat_rows" | df_dataspecs$dataformat == "dataformat_matrix"){
+          df_dataspecs$channeldata_indices <- df_dataspecs$row_beg # used in console feedback and data specs tab feedback
+          df_dataspecs$channeldata_indices_rowsorcolumns <- "rows" # used in console feedback and data specs tab feedback
+        } else if(df_dataspecs$dataformat == "dataformat_columns"){
+          df_dataspecs$channeldata_indices <- df_dataspecs$col_beg # used in console feedback and data specs tab feedback
+          df_dataspecs$channeldata_indices_rowsorcolumns <- "columns" # used in console feedback and data specs tab feedback
+        }
+
       } else if(df_dataspecs$channel_number > 1){
         # (2) If >1 channel, totaldata is..
 
@@ -1679,12 +1789,28 @@ app_server <- function(input, output, session) { # shiny as package function
           # print("data spacing:")
           # print(df_dataspecs$channeldataspacing)
 
-          # row numbers needed:
+          # # row numbers needed: (v1 original)
+          # row_numbers <- c()
+          # for(i in 1:df_dataspecs$channel_number){
+          #   new_rownumber <- df_dataspecs$row_beg + (i-1)*df_dataspecs$channeldataspacing
+          #   # use (i-1) not (i) because first row needs to equal df_dataspecs$row_beg (first i is 1, so first i-1 will always be 0)
+          #   row_numbers <- c(row_numbers, new_rownumber)
+          # }
+          # print("row numbers to use:")
+          # print(row_numbers)
+
+          # row numbers needed: (v2 taking into account uneven spacing options)
           row_numbers <- c()
-          for(i in 1:df_dataspecs$channel_number){
-            new_rownumber <- df_dataspecs$row_beg + (i-1)*df_dataspecs$channeldataspacing
-            # use (i-1) not (i) because first row needs to equal df_dataspecs$row_beg (first i is 1, so first i-1 will always be 0)
-            row_numbers <- c(row_numbers, new_rownumber)
+          # even spacing
+          if(!is.null(df_dataspecs$channeldataspacing)){
+            for(i in 1:df_dataspecs$channel_number){
+              new_rownumber <- df_dataspecs$row_beg + (i-1)*df_dataspecs$channeldataspacing
+              # use (i-1) not (i) because first row needs to equal df_dataspecs$row_beg (first i is 1, so first i-1 will always be 0)
+              row_numbers <- c(row_numbers, new_rownumber)
+            }
+          } else {
+            # uneven spacing
+            row_numbers <- temp_row_numbers
           }
           print("row numbers to use:")
           print(row_numbers)
@@ -1716,6 +1842,10 @@ app_server <- function(input, output, session) { # shiny as package function
           # print("total data table:")
           # print(df_shiny$totaldata)
 
+          # Save row numbers where each reading starts (for saved parser) # uneven spacing
+          df_dataspecs$channeldata_indices <- row_numbers
+          df_dataspecs$channeldata_indices_rowsorcolumns <- "rows" # used in console feedback and data specs tab feedback
+
         }
 
         # (2b) Columns:
@@ -1724,12 +1854,28 @@ app_server <- function(input, output, session) { # shiny as package function
           # print("data spacing:")
           # print(df_dataspecs$channeldataspacing)
 
-          # column numbers needed:
+          # # column numbers needed: (v1 original)
+          # column_numbers <- c()
+          # for(i in 1:df_dataspecs$channel_number){
+          #   new_columnnumber <- df_dataspecs$col_beg + (i-1)*df_dataspecs$channeldataspacing
+          #   # use (i-1) not (i) because first column needs to equal df_dataspecs$col_beg (first i is 1, so first i-1 will always be 0)
+          #   column_numbers <- c(column_numbers, new_columnnumber)
+          # }
+          # print("column numbers to use:")
+          # print(column_numbers)
+
+          # column numbers needed: (v2 taking into account uneven spacing options)
           column_numbers <- c()
-          for(i in 1:df_dataspecs$channel_number){
-            new_columnnumber <- df_dataspecs$col_beg + (i-1)*df_dataspecs$channeldataspacing
-            # use (i-1) not (i) because first column needs to equal df_dataspecs$col_beg (first i is 1, so first i-1 will always be 0)
-            column_numbers <- c(column_numbers, new_columnnumber)
+          # even spacing
+          if(!is.null(df_dataspecs$channeldataspacing)){
+            for(i in 1:df_dataspecs$channel_number){
+              new_columnnumber <- df_dataspecs$col_beg + (i-1)*df_dataspecs$channeldataspacing
+              # use (i-1) not (i) because first column needs to equal df_dataspecs$col_beg (first i is 1, so first i-1 will always be 0)
+              column_numbers <- c(column_numbers, new_columnnumber)
+            }
+          } else {
+            # uneven spacing
+            column_numbers <- temp_column_numbers
           }
           print("column numbers to use:")
           print(column_numbers)
@@ -1761,6 +1907,10 @@ app_server <- function(input, output, session) { # shiny as package function
           # print("total data table:")
           # print(df_shiny$totaldata)
 
+          # Save column numbers where each reading starts (for saved parser) # uneven spacing
+          df_dataspecs$channeldata_indices <- column_numbers
+          df_dataspecs$channeldata_indices_rowsorcolumns <- "columns" # used in console feedback and data specs tab feedback
+
         } # columns
 
         # (2c) Matrix
@@ -1771,12 +1921,28 @@ app_server <- function(input, output, session) { # shiny as package function
 
           if(df_dataspecs$matrixformat == "horizontal"){ # matrix horizontal is in 8row*12col format
 
-            # row numbers needed:
+            # # row numbers needed: (v1 original)
+            # row_numbers <- c()
+            # for(i in 1:df_dataspecs$channel_number){
+            #   new_rownumber <- df_dataspecs$row_beg + (i-1)*df_dataspecs$channeldataspacing
+            #   # use (i-1) not (i) because first row needs to equal df_dataspecs$row_beg (first i is 1, so first i-1 will always be 0)
+            #   row_numbers <- c(row_numbers, new_rownumber)
+            # }
+            # print("row numbers to use:")
+            # print(row_numbers)
+
+            # row numbers needed: (v2 taking into account uneven spacing options)
             row_numbers <- c()
-            for(i in 1:df_dataspecs$channel_number){
-              new_rownumber <- df_dataspecs$row_beg + (i-1)*df_dataspecs$channeldataspacing
-              # use (i-1) not (i) because first row needs to equal df_dataspecs$row_beg (first i is 1, so first i-1 will always be 0)
-              row_numbers <- c(row_numbers, new_rownumber)
+            # even spacing
+            if(!is.null(df_dataspecs$channeldataspacing)){
+              for(i in 1:df_dataspecs$channel_number){
+                new_rownumber <- df_dataspecs$row_beg + (i-1)*df_dataspecs$channeldataspacing
+                # use (i-1) not (i) because first row needs to equal df_dataspecs$row_beg (first i is 1, so first i-1 will always be 0)
+                row_numbers <- c(row_numbers, new_rownumber)
+              }
+            } else {
+              # uneven spacing
+              row_numbers <- temp_row_numbers
             }
             print("row numbers to use:")
             print(row_numbers)
@@ -1821,16 +1987,36 @@ app_server <- function(input, output, session) { # shiny as package function
 
             } # for each reading -> assemble data
 
+            # Save row numbers where each reading starts (for saved parser) # uneven spacing
+            df_dataspecs$channeldata_indices <- row_numbers
+            df_dataspecs$channeldata_indices_rowsorcolumns <- "rows" # used in console feedback and data specs tab feedback
+
           } # horizontal
 
           if(df_dataspecs$matrixformat == "vertical"){ # matrix vertical is in 12row*8col format
 
-            # row numbers needed:
+            # # row numbers needed: (v1 original)
+            # row_numbers <- c()
+            # for(i in 1:df_dataspecs$channel_number){
+            #   new_rownumber <- df_dataspecs$row_beg + (i-1)*df_dataspecs$channeldataspacing
+            #   # use (i-1) not (i) because first row needs to equal df_dataspecs$row_beg (first i is 1, so first i-1 will always be 0)
+            #   row_numbers <- c(row_numbers, new_rownumber)
+            # }
+            # print("row numbers to use:")
+            # print(row_numbers)
+
+            # row numbers needed: (v2 taking into account uneven spacing options)
             row_numbers <- c()
-            for(i in 1:df_dataspecs$channel_number){
-              new_rownumber <- df_dataspecs$row_beg + (i-1)*df_dataspecs$channeldataspacing
-              # use (i-1) not (i) because first row needs to equal df_dataspecs$row_beg (first i is 1, so first i-1 will always be 0)
-              row_numbers <- c(row_numbers, new_rownumber)
+            # even spacing
+            if(!is.null(df_dataspecs$channeldataspacing)){
+              for(i in 1:df_dataspecs$channel_number){
+                new_rownumber <- df_dataspecs$row_beg + (i-1)*df_dataspecs$channeldataspacing
+                # use (i-1) not (i) because first row needs to equal df_dataspecs$row_beg (first i is 1, so first i-1 will always be 0)
+                row_numbers <- c(row_numbers, new_rownumber)
+              }
+            } else {
+              # uneven spacing
+              row_numbers <- temp_row_numbers
             }
             print("row numbers to use:")
             print(row_numbers)
@@ -1878,6 +2064,10 @@ app_server <- function(input, output, session) { # shiny as package function
               df_shiny$totaldata <- rbind(df_shiny$totaldata, temp_channeli_data) # step4
             } # for each reading -> assemble data
 
+            # Save row numbers where each reading starts (for saved parser) # uneven spacing
+            df_dataspecs$channeldata_indices <- row_numbers
+            df_dataspecs$channeldata_indices_rowsorcolumns <- "rows" # used in console feedback and data specs tab feedback
+
           } # vertical
 
           # print("total data table:")
@@ -1912,6 +2102,10 @@ app_server <- function(input, output, session) { # shiny as package function
           # print("total data table:")
           # print(df_shiny$totaldata)
 
+          # Save row numbers where reading starts (for printing/saved parser)
+          df_dataspecs$channeldata_indices <- df_dataspecs$row_beg # used in console feedback and data specs tab feedback
+          df_dataspecs$channeldata_indices_rowsorcolumns <- "rows" # used in console feedback and data specs tab feedback
+
         }
 
         if(df_dataspecs$dataformat == "dataformat_columns"){
@@ -1932,6 +2126,10 @@ app_server <- function(input, output, session) { # shiny as package function
           # print("total data table:")
           # print(df_shiny$totaldata)
 
+          # Save column numbers where reading starts (for printing/saved parser)
+          df_dataspecs$channeldata_indices <- df_dataspecs$col_beg # used in console feedback and data specs tab feedback
+          df_dataspecs$channeldata_indices_rowsorcolumns <- "columns" # used in console feedback and data specs tab feedback
+
         }
 
       } else if(df_dataspecs$channel_number > 1){
@@ -1947,10 +2145,53 @@ app_server <- function(input, output, session) { # shiny as package function
 
           # Get data, but also add cols for channel and time
 
+          # timecourse + uneven spacing (added section)
+          # row numbers needed:
+          row_numbers <- c()
+          # even spacing
+          if(!is.null(df_dataspecs$channeldataspacing)){
+            for(i in 1:df_dataspecs$channel_number){
+              new_rownumber <- df_dataspecs$row_beg + (i-1)*df_dataspecs$channeldataspacing
+              # use (i-1) not (i) because first row needs to equal df_dataspecs$row_beg (first i is 1, so first i-1 will always be 0)
+              row_numbers <- c(row_numbers, new_rownumber)
+            }
+          } else {
+            # uneven spacing
+            row_numbers <- temp_row_numbers
+          }
+          print("row numbers to use:")
+          print(row_numbers)
+
+          # original v1 - assumed channeldataspacing exists
+          # ## Prevent crash when row/column indexes to use don't exist in df
+          # print("Last row number of requested data:")
+          # # print(row_numbers[length(row_numbers)]) # last row number of requested data (+all its timepoints)
+          # largest_rownumber_needed <- df_dataspecs$row_beg+(df_dataspecs$channel_number-1)*df_dataspecs$channeldataspacing+(df_dataspecs$timepoint_number-1)
+          # print(largest_rownumber_needed)
+          # print("Last row number of existing data:")
+          # print(nrow(temp_alldata)) # last row number of existing data
+          # if(nrow(temp_alldata) < largest_rownumber_needed){
+          #   # if we're requesting data outside the alldata df
+          #
+          #   # Console
+          #   message("Error: Do not request data from outside range of file.")
+          #   message(paste0("Requested data up to row #", largest_rownumber_needed))
+          #   message(paste0("Existing data's highest row number: #", nrow(temp_alldata)))
+          #
+          #   # Modal
+          #   showModal(modalDialog(title = "Error",
+          #                         paste0("Do not request data from outside range of file. ",
+          #                                "[Requested data up to row #", largest_rownumber_needed, ". ",
+          #                                "Existing data's highest row number: #", nrow(temp_alldata), ".]"),
+          #                         easyClose = TRUE ))
+          #
+          #   return()
+          # }
+
+          # timecourse + uneven spacing v2
           ## Prevent crash when row/column indexes to use don't exist in df
           print("Last row number of requested data:")
-          # print(row_numbers[length(row_numbers)]) # last row number of requested data (+all its timepoints)
-          largest_rownumber_needed <- df_dataspecs$row_beg+(df_dataspecs$channel_number-1)*df_dataspecs$channeldataspacing+(df_dataspecs$timepoint_number-1)
+          largest_rownumber_needed <- max(row_numbers)+(df_dataspecs$timepoint_number-1) # works for even and uneven
           print(largest_rownumber_needed)
           print("Last row number of existing data:")
           print(nrow(temp_alldata)) # last row number of existing data
@@ -1975,9 +2216,18 @@ app_server <- function(input, output, session) { # shiny as package function
           df_shiny$totaldata <- c()
           for(i in 1:df_dataspecs$channel_number){
 
-            # find first row of data for current reading:
-            firstrownumber <- df_dataspecs$row_beg + (i-1)*df_dataspecs$channeldataspacing
+            # # v1 even only
+            # # find first row of data for current reading:
+            # firstrownumber <- df_dataspecs$row_beg + (i-1)*df_dataspecs$channeldataspacing
+            #
+            # # extract data for current reading:
+            # temp_channeldata <- temp_alldata[(firstrownumber):(firstrownumber+df_dataspecs$timepoint_number-1), # rows
+            #                                  df_dataspecs$col_beg:df_dataspecs$col_end] # cols
 
+            # v2 even and uneven # timecourse + uneven spacing
+            # row_numbers
+            # find first row of data for current reading:
+            firstrownumber <- row_numbers[i]
             # extract data for current reading:
             temp_channeldata <- temp_alldata[(firstrownumber):(firstrownumber+df_dataspecs$timepoint_number-1), # rows
                                              df_dataspecs$col_beg:df_dataspecs$col_end] # cols
@@ -2004,6 +2254,10 @@ app_server <- function(input, output, session) { # shiny as package function
           # print("total data table:")
           # print(df_shiny$totaldata)
 
+          # Save row numbers where each reading starts (for saved parser) # timecourse + uneven spacing
+          df_dataspecs$channeldata_indices <- row_numbers
+          df_dataspecs$channeldata_indices_rowsorcolumns <- "rows" # used in console feedback and data specs tab feedback
+
         } # rows
 
         # (2b) Columns:
@@ -2015,9 +2269,53 @@ app_server <- function(input, output, session) { # shiny as package function
           # Get data - but also add cols for channel and well
           # correct version = exactly like rows version above. but for cols.
 
+          # timecourse + uneven spacing
+          # column numbers needed:
+          column_numbers <- c()
+          # even spacing
+          if(!is.null(df_dataspecs$channeldataspacing)){
+            for(i in 1:df_dataspecs$channel_number){
+              new_columnnumber <- df_dataspecs$col_beg + (i-1)*df_dataspecs$channeldataspacing
+              # use (i-1) not (i) because first row needs to equal df_dataspecs$row_beg (first i is 1, so first i-1 will always be 0)
+              column_numbers <- c(column_numbers, new_columnnumber)
+            }
+          } else {
+            # uneven spacing
+            column_numbers <- temp_column_numbers
+          }
+          print("column numbers to use:")
+          print(column_numbers)
+
+          # original v1 - assumed channeldataspacing exists
+          # ## Prevent crash when row/column indexes to use don't exist in df
+          # print("Last col number of requested data:")
+          # largest_colnumber_needed <- df_dataspecs$col_beg+(df_dataspecs$channel_number-1)*df_dataspecs$channeldataspacing+(df_dataspecs$timepoint_number-1)
+          # print(largest_colnumber_needed)
+          # print("Last col number of existing data:")
+          # print(ncol(temp_alldata)) # last col number of existing data
+          # if(ncol(temp_alldata) < largest_colnumber_needed){
+          #   # if we're requesting data outside the alldata df
+          #
+          #   # Console
+          #   message("Error: Do not request data from outside range of file.")
+          #   message(paste0("Requested data up to col #", largest_colnumber_needed))
+          #   message(paste0("Existing data's highest col number: #", ncol(temp_alldata)))
+          #
+          #   # Modal
+          #   showModal(modalDialog(title = "Error",
+          #                         paste0("Do not request data from outside range of file. ",
+          #                                "[Requested data up to col #", largest_colnumber_needed, ". ",
+          #                                "Existing data's highest col number: #", ncol(temp_alldata), ".]"),
+          #                         easyClose = TRUE ))
+          #
+          #   return()
+          # }
+
+          # timecourse + uneven spacing v2
           ## Prevent crash when row/column indexes to use don't exist in df
           print("Last col number of requested data:")
-          largest_colnumber_needed <- df_dataspecs$col_beg+(df_dataspecs$channel_number-1)*df_dataspecs$channeldataspacing+(df_dataspecs$timepoint_number-1)
+          # largest_colnumber_needed <- df_dataspecs$col_beg+(df_dataspecs$channel_number-1)*df_dataspecs$channeldataspacing+(df_dataspecs$timepoint_number-1)
+          largest_colnumber_needed <- max(column_numbers)+(df_dataspecs$timepoint_number-1) # works for even and uneven
           print(largest_colnumber_needed)
           print("Last col number of existing data:")
           print(ncol(temp_alldata)) # last col number of existing data
@@ -2042,11 +2340,19 @@ app_server <- function(input, output, session) { # shiny as package function
           df_shiny$totaldata <- c()
           for(i in 1:df_dataspecs$channel_number){
 
-            # find first col of data for current reading:
-            firstcolnumber <- df_dataspecs$col_beg + (i-1)*df_dataspecs$channeldataspacing
+            # # v1 even only
+            # # find first col of data for current reading:
+            # firstcolnumber <- df_dataspecs$col_beg + (i-1)*df_dataspecs$channeldataspacing
+            #
+            # # extract data for current reading:
+            # temp_channeldata <- temp_alldata[df_dataspecs$row_beg:df_dataspecs$row_end, (firstcolnumber):(firstcolnumber+df_dataspecs$timepoint_number-1)]
 
+            # v2 even and uneven # timecourse + uneven spacing
+            # find first row of data for current reading:
+            firstcolnumber <- column_numbers[i]
             # extract data for current reading:
-            temp_channeldata <- temp_alldata[df_dataspecs$row_beg:df_dataspecs$row_end, (firstcolnumber):(firstcolnumber+df_dataspecs$timepoint_number-1)]
+            temp_channeldata <- temp_alldata[df_dataspecs$row_beg:df_dataspecs$row_end, # rows
+                                             (firstcolnumber):(firstcolnumber+df_dataspecs$timepoint_number-1)] # cols
 
             # EDIT: different from non-timecourse data, add in column names from timepoint time (here)
             # and columns for reading name (here) and well name (step 5):
@@ -2072,6 +2378,10 @@ app_server <- function(input, output, session) { # shiny as package function
           # print("total data table:")
           # print(df_shiny$totaldata)
 
+          # Save column numbers where each reading starts (for saved parser) # timecourse + uneven spacing
+          df_dataspecs$channeldata_indices <- column_numbers
+          df_dataspecs$channeldata_indices_rowsorcolumns <- "columns" # used in console feedback and data specs tab feedback
+
         } # columns
 
         # (2c) Matrix - not avail for timecourse data
@@ -2083,14 +2393,22 @@ app_server <- function(input, output, session) { # shiny as package function
     # # Console checks
     # print("total data table:")
     # print(df_shiny$totaldata)
+    print(paste0("Readings start in the following ", df_dataspecs$channeldata_indices_rowsorcolumns, ":"))
+    print(df_dataspecs$channeldata_indices)
 
     # Show Cropped Data Tab (tab is now visible, but isn't automatically selected)
     showTab(inputId = "byop_mainpaneldata_tabset", target = "rawdata_cropped_tab", select = FALSE)
 
   })
-  output$channeldataspacing_printed <- renderPrint({ cat(df_dataspecs$channeldataspacing) })
-
-  #
+  # output$channeldataspacing_printed <- renderPrint({ cat(df_dataspecs$channeldataspacing) })
+  output$channeldataspacing_printed <- renderPrint({
+    if(!is.null(df_dataspecs$channeldataspacing)){cat(df_dataspecs$channeldataspacing)} else { cat("N/A") }}) # uneven spacing - only display where even spacing is used
+  # output$channeldata_indices_printed <- renderPrint({ cat(df_dataspecs$channeldata_indices) }) # uneven spacing
+  # output$channeldata_indices_rowsorcolumns_printed <- renderPrint({ cat(df_dataspecs$channeldata_indices_rowsorcolumns) }) # uneven spacing
+  output$channeldata_indices_printed <- renderPrint({
+    if(!is.null(df_dataspecs$channeldata_indices)){cat(df_dataspecs$channeldata_indices)} else { cat("N/A") }}) # uneven spacing
+  output$channeldata_indices_rowsorcolumns_printed <- renderPrint({
+    if(!is.null(df_dataspecs$channeldata_indices_rowsorcolumns)){cat(df_dataspecs$channeldata_indices_rowsorcolumns)} else { cat("N/A") }}) # uneven spacing
 
   # Step 5 - Well numbering -------------------------------------------------------------------------------------
   observeEvent(input$submit_readingorientation_button, { # update whenever Step5 Confirm button is pressed # CORRECT
@@ -2760,6 +3078,8 @@ app_server <- function(input, output, session) { # shiny as package function
 
       # step4
       df_dataspecs$channeldataspacing = NULL
+      df_dataspecs$channeldata_indices = NULL
+      df_dataspecs$channeldata_indices_rowsorcolumns = NULL
       # [] update checkbox button to even?
 
       # step5
@@ -3040,6 +3360,8 @@ app_server <- function(input, output, session) { # shiny as package function
 
     # step4
     tab2_df_dataspecs$channeldataspacing = df_dataspecs$channeldataspacing
+    tab2_df_dataspecs$channeldata_indices = df_dataspecs$channeldata_indices # uneven spacing
+    tab2_df_dataspecs$channeldata_indices_rowsorcolumns = df_dataspecs$channeldata_indices_rowsorcolumns # uneven spacing # nb. not used for calcs but used for printing in data specs tab
 
     # step5
     tab2_df_dataspecs$well_data_specification = df_dataspecs$well_data_specification
@@ -3147,6 +3469,8 @@ app_server <- function(input, output, session) { # shiny as package function
       tab2_df_dataspecs$col_end = temp_list$col_end
       # step4
       tab2_df_dataspecs$channeldataspacing = temp_list$channeldataspacing
+      tab2_df_dataspecs$channeldata_indices = temp_list$channeldata_indices # uneven spacing
+      tab2_df_dataspecs$channeldata_indices_rowsorcolumns = temp_list$channeldata_indices_rowsorcolumns # uneven spacing
       # step5
       tab2_df_dataspecs$well_data_specification = temp_list$well_data_specification
       tab2_df_dataspecs$well_data_indices = temp_list$well_data_indices
@@ -3273,6 +3597,8 @@ app_server <- function(input, output, session) { # shiny as package function
 
       # step4
       tab2_df_dataspecs$channeldataspacing = df_dataspecs$channeldataspacing
+      tab2_df_dataspecs$channeldata_indices = df_dataspecs$channeldata_indices # uneven spacing
+      tab2_df_dataspecs$channeldata_indices_rowsorcolumns = df_dataspecs$channeldata_indices_rowsorcolumns # uneven spacing
 
       # step5
       tab2_df_dataspecs$well_data_specification = df_dataspecs$well_data_specification
@@ -3416,6 +3742,8 @@ app_server <- function(input, output, session) { # shiny as package function
           tab2_df_dataspecs$col_end = temp_list$col_end
           # step4
           tab2_df_dataspecs$channeldataspacing = temp_list$channeldataspacing
+          tab2_df_dataspecs$channeldata_indices = temp_list$channeldata_indices # uneven spacing
+          tab2_df_dataspecs$channeldata_indices_rowsorcolumns = temp_list$channeldata_indices_rowsorcolumns # uneven spacing
           # step5
           tab2_df_dataspecs$well_data_specification = temp_list$well_data_specification
           tab2_df_dataspecs$well_data_indices = temp_list$well_data_indices
@@ -3578,7 +3906,15 @@ app_server <- function(input, output, session) { # shiny as package function
   output$tab2_col_beg_printed <- renderPrint({ cat(tab2_df_dataspecs$col_beg) })
   output$tab2_col_end_printed <- renderPrint({ cat(tab2_df_dataspecs$col_end) })
 
-  output$tab2_channeldataspacing_printed <- renderPrint({ cat(tab2_df_dataspecs$channeldataspacing) })
+  # output$tab2_channeldataspacing_printed <- renderPrint({ cat(tab2_df_dataspecs$channeldataspacing) })
+  output$tab2_channeldataspacing_printed <- renderPrint({
+    if(!is.null(tab2_df_dataspecs$channeldataspacing)){cat(tab2_df_dataspecs$channeldataspacing)} else { cat("N/A") }}) # uneven spacing - only display where even spacing is used
+  # output$tab2_channeldata_indices_printed <- renderPrint({ cat(tab2_df_dataspecs$channeldata_indices) }) # uneven spacing
+  # output$tab2_channeldata_indices_rowsorcolumns_printed <- renderPrint({ cat(tab2_df_dataspecs$channeldata_indices_rowsorcolumns) }) # uneven spacing
+  output$tab2_channeldata_indices_printed <- renderPrint({
+    if(!is.null(tab2_df_dataspecs$channeldata_indices)){cat(tab2_df_dataspecs$channeldata_indices)} else { cat("N/A") }}) # uneven spacing
+  output$tab2_channeldata_indices_rowsorcolumns_printed <- renderPrint({
+    if(!is.null(tab2_df_dataspecs$channeldata_indices_rowsorcolumns)){cat(tab2_df_dataspecs$channeldata_indices_rowsorcolumns)} else { cat("N/A") }}) # uneven spacing
 
   output$tab2_well_data_specification_printed <- renderPrint({ cat(tab2_df_dataspecs$well_data_specification) })
   # output$tab2_well_data_indices_printed <- renderPrint({
@@ -4305,6 +4641,7 @@ app_server <- function(input, output, session) { # shiny as package function
       print(tab2_df_dataspecs$firstchanneldata)
 
       # Step4: TOTAL DATA (essentially copied from Tab1Step4) -----
+
       # Standard and Spectrum -----
       if(tab2_df_dataspecs$datatype == "datatype_standard" | tab2_df_dataspecs$datatype == "datatype_spectrum"){
 
@@ -4327,13 +4664,19 @@ app_server <- function(input, output, session) { # shiny as package function
             # print("data spacing:")
             # print(tab2_df_dataspecs$channeldataspacing)
 
-            # row numbers needed:
-            row_numbers <- c()
-            for(i in 1:tab2_df_dataspecs$channel_number){
-              new_rownumber <- tab2_df_dataspecs$row_beg + (i-1)*tab2_df_dataspecs$channeldataspacing
-              # use (i-1) not (i) because first row needs to equal tab2_df_dataspecs$row_beg (first i is 1, so first i-1 will always be 0)
-              row_numbers <- c(row_numbers, new_rownumber)
-            }
+            # # original v1:
+            # # row numbers needed:
+            # row_numbers <- c()
+            # for(i in 1:tab2_df_dataspecs$channel_number){
+            #   new_rownumber <- tab2_df_dataspecs$row_beg + (i-1)*tab2_df_dataspecs$channeldataspacing
+            #   # use (i-1) not (i) because first row needs to equal tab2_df_dataspecs$row_beg (first i is 1, so first i-1 will always be 0)
+            #   row_numbers <- c(row_numbers, new_rownumber)
+            # }
+            # print("row numbers to use:")
+            # print(row_numbers)
+
+            # v2 uneven spacing
+            row_numbers <- tab2_df_dataspecs$channeldata_indices
             print("row numbers to use:")
             print(row_numbers)
 
@@ -4364,7 +4707,7 @@ app_server <- function(input, output, session) { # shiny as package function
             # print("total data table:")
             # print(tab2_df_shiny$totaldata)
 
-          }
+          } # rows
 
           # (2b) Columns:
           if(tab2_df_dataspecs$dataformat == "dataformat_columns"){
@@ -4372,13 +4715,19 @@ app_server <- function(input, output, session) { # shiny as package function
             # print("data spacing:")
             # print(tab2_df_dataspecs$channeldataspacing)
 
-            # column numbers needed:
-            column_numbers <- c()
-            for(i in 1:tab2_df_dataspecs$channel_number){
-              new_columnnumber <- tab2_df_dataspecs$col_beg + (i-1)*tab2_df_dataspecs$channeldataspacing
-              # use (i-1) not (i) because first column needs to equal tab2_df_dataspecs$col_beg (first i is 1, so first i-1 will always be 0)
-              column_numbers <- c(column_numbers, new_columnnumber)
-            }
+            # # original v1
+            # # column numbers needed:
+            # column_numbers <- c()
+            # for(i in 1:tab2_df_dataspecs$channel_number){
+            #   new_columnnumber <- tab2_df_dataspecs$col_beg + (i-1)*tab2_df_dataspecs$channeldataspacing
+            #   # use (i-1) not (i) because first column needs to equal tab2_df_dataspecs$col_beg (first i is 1, so first i-1 will always be 0)
+            #   column_numbers <- c(column_numbers, new_columnnumber)
+            # }
+            # print("column numbers to use:")
+            # print(column_numbers)
+
+            # v2 uneven spacing
+            column_numbers <- tab2_df_dataspecs$channeldata_indices
             print("column numbers to use:")
             print(column_numbers)
 
@@ -4419,13 +4768,19 @@ app_server <- function(input, output, session) { # shiny as package function
 
             if(tab2_df_dataspecs$matrixformat == "horizontal"){ # matrix horizontal is in 8row*12col format
 
-              # row numbers needed:
-              row_numbers <- c()
-              for(i in 1:tab2_df_dataspecs$channel_number){
-                new_rownumber <- tab2_df_dataspecs$row_beg + (i-1)*tab2_df_dataspecs$channeldataspacing
-                # use (i-1) not (i) because first row needs to equal tab2_df_dataspecs$row_beg (first i is 1, so first i-1 will always be 0)
-                row_numbers <- c(row_numbers, new_rownumber)
-              }
+              # # original v1
+              # # row numbers needed:
+              # row_numbers <- c()
+              # for(i in 1:tab2_df_dataspecs$channel_number){
+              #   new_rownumber <- tab2_df_dataspecs$row_beg + (i-1)*tab2_df_dataspecs$channeldataspacing
+              #   # use (i-1) not (i) because first row needs to equal tab2_df_dataspecs$row_beg (first i is 1, so first i-1 will always be 0)
+              #   row_numbers <- c(row_numbers, new_rownumber)
+              # }
+              # print("row numbers to use:")
+              # print(row_numbers)
+
+              # v2 uneven spacing
+              row_numbers <- tab2_df_dataspecs$channeldata_indices
               print("row numbers to use:")
               print(row_numbers)
 
@@ -4473,13 +4828,19 @@ app_server <- function(input, output, session) { # shiny as package function
 
             if(tab2_df_dataspecs$matrixformat == "vertical"){ # matrix vertical is in 12row*8col format
 
-              # row numbers needed:
-              row_numbers <- c()
-              for(i in 1:tab2_df_dataspecs$channel_number){
-                new_rownumber <- tab2_df_dataspecs$row_beg + (i-1)*tab2_df_dataspecs$channeldataspacing
-                # use (i-1) not (i) because first row needs to equal tab2_df_dataspecs$row_beg (first i is 1, so first i-1 will always be 0)
-                row_numbers <- c(row_numbers, new_rownumber)
-              }
+              # # original v1
+              # # row numbers needed:
+              # row_numbers <- c()
+              # for(i in 1:tab2_df_dataspecs$channel_number){
+              #   new_rownumber <- tab2_df_dataspecs$row_beg + (i-1)*tab2_df_dataspecs$channeldataspacing
+              #   # use (i-1) not (i) because first row needs to equal tab2_df_dataspecs$row_beg (first i is 1, so first i-1 will always be 0)
+              #   row_numbers <- c(row_numbers, new_rownumber)
+              # }
+              # print("row numbers to use:")
+              # print(row_numbers)
+
+              # v2 uneven spacing
+              row_numbers <- tab2_df_dataspecs$channeldata_indices
               print("row numbers to use:")
               print(row_numbers)
 
@@ -4595,10 +4956,43 @@ app_server <- function(input, output, session) { # shiny as package function
 
             # Get data, but also add cols for channel and time
 
+            # timecourse + uneven spacing (added section)
+            # row numbers needed:
+            row_numbers <- tab2_df_dataspecs$channeldata_indices
+            print("row numbers to use:")
+            print(row_numbers)
+
+            # # original v1 - assumed channeldataspacing exists
+            # ## Prevent crash when row/column indexes to use don't exist in df
+            # print("Last row number of requested data:")
+            # # print(row_numbers[length(row_numbers)]) # last row number of requested data (+all its timepoints)
+            # largest_rownumber_needed <- tab2_df_dataspecs$row_beg+(tab2_df_dataspecs$channel_number-1)*tab2_df_dataspecs$channeldataspacing+(tab2_df_dataspecs$timepoint_number-1)
+            # print(largest_rownumber_needed)
+            # print("Last row number of existing data:")
+            # print(nrow(temp_alldata)) # last row number of existing data
+            # if(nrow(temp_alldata) < largest_rownumber_needed){
+            #   # if we're requesting data outside the alldata df
+            #
+            #   # Console
+            #   message("Error: Do not request data from outside range of file.")
+            #   message(paste0("Requested data up to row #", largest_rownumber_needed))
+            #   message(paste0("Existing data's highest row number: #", nrow(temp_alldata)))
+            #
+            #   # Modal
+            #   showModal(modalDialog(title = "Error",
+            #                         paste0("Do not request data from outside range of file. ",
+            #                                "[Requested data up to row #", largest_rownumber_needed, ". ",
+            #                                "Existing data's highest row number: #", nrow(temp_alldata), ".]"),
+            #                         easyClose = TRUE ))
+            #
+            #   return()
+            # }
+
+            # timecourse + uneven spacing v2
             ## Prevent crash when row/column indexes to use don't exist in df
             print("Last row number of requested data:")
-            # print(row_numbers[length(row_numbers)]) # last row number of requested data (+all its timepoints)
-            largest_rownumber_needed <- tab2_df_dataspecs$row_beg+(tab2_df_dataspecs$channel_number-1)*tab2_df_dataspecs$channeldataspacing+(tab2_df_dataspecs$timepoint_number-1)
+            # largest_rownumber_needed <- tab2_df_dataspecs$row_beg+(tab2_df_dataspecs$channel_number-1)*tab2_df_dataspecs$channeldataspacing+(tab2_df_dataspecs$timepoint_number-1)
+            largest_rownumber_needed <- max(row_numbers)+(tab2_df_dataspecs$timepoint_number-1) # works for even and uneven
             print(largest_rownumber_needed)
             print("Last row number of existing data:")
             print(nrow(temp_alldata)) # last row number of existing data
@@ -4623,9 +5017,16 @@ app_server <- function(input, output, session) { # shiny as package function
             tab2_df_shiny$totaldata <- c()
             for(i in 1:tab2_df_dataspecs$channel_number){
 
-              # find first row of data for current reading:
-              firstrownumber <- tab2_df_dataspecs$row_beg + (i-1)*tab2_df_dataspecs$channeldataspacing
+              # # v1 even only
+              # # find first row of data for current reading:
+              # firstrownumber <- tab2_df_dataspecs$row_beg + (i-1)*tab2_df_dataspecs$channeldataspacing
+              # # extract data for current reading:
+              # temp_channeldata <- temp_alldata[(firstrownumber):(firstrownumber+tab2_df_dataspecs$timepoint_number-1), # rows
+              #                                  tab2_df_dataspecs$col_beg:tab2_df_dataspecs$col_end] # cols
 
+              # v2 even and uneven # timecourse + uneven spacing
+              # find first row of data for current reading:
+              firstrownumber <- row_numbers[i]
               # extract data for current reading:
               temp_channeldata <- temp_alldata[(firstrownumber):(firstrownumber+tab2_df_dataspecs$timepoint_number-1), # rows
                                                tab2_df_dataspecs$col_beg:tab2_df_dataspecs$col_end] # cols
@@ -4663,9 +5064,42 @@ app_server <- function(input, output, session) { # shiny as package function
             # Get data - but also add cols for channel and well
             # correct version = exactly like rows version above. but for cols.
 
+            # timecourse + uneven spacing (added section)
+            # column numbers needed:
+            column_numbers <- tab2_df_dataspecs$channeldata_indices
+            print("column numbers to use:")
+            print(column_numbers)
+
+            # # original v1 - assumed channeldataspacing exists
+            # ## Prevent crash when row/column indexes to use don't exist in df
+            # print("Last col number of requested data:")
+            # largest_colnumber_needed <- tab2_df_dataspecs$col_beg+(tab2_df_dataspecs$channel_number-1)*tab2_df_dataspecs$channeldataspacing+(tab2_df_dataspecs$timepoint_number-1)
+            # print(largest_colnumber_needed)
+            # print("Last col number of existing data:")
+            # print(ncol(temp_alldata)) # last col number of existing data
+            # if(ncol(temp_alldata) < largest_colnumber_needed){
+            #   # if we're requesting data outside the alldata df
+            #
+            #   # Console
+            #   message("Error: Do not request data from outside range of file.")
+            #   message(paste0("Requested data up to col #", largest_colnumber_needed))
+            #   message(paste0("Existing data's highest col number: #", ncol(temp_alldata)))
+            #
+            #   # Modal
+            #   showModal(modalDialog(title = "Error",
+            #                         paste0("Do not request data from outside range of file. ",
+            #                                "[Requested data up to col #", largest_colnumber_needed, ". ",
+            #                                "Existing data's highest col number: #", ncol(temp_alldata), ".]"),
+            #                         easyClose = TRUE ))
+            #
+            #   return()
+            # }
+
+            # timecourse + uneven spacing v2
             ## Prevent crash when row/column indexes to use don't exist in df
             print("Last col number of requested data:")
-            largest_colnumber_needed <- tab2_df_dataspecs$col_beg+(tab2_df_dataspecs$channel_number-1)*tab2_df_dataspecs$channeldataspacing+(tab2_df_dataspecs$timepoint_number-1)
+            # largest_colnumber_needed <- tab2_df_dataspecs$col_beg+(tab2_df_dataspecs$channel_number-1)*tab2_df_dataspecs$channeldataspacing+(tab2_df_dataspecs$timepoint_number-1)
+            largest_colnumber_needed <- max(column_numbers)+(tab2_df_dataspecs$timepoint_number-1) # works for even and uneven
             print(largest_colnumber_needed)
             print("Last col number of existing data:")
             print(ncol(temp_alldata)) # last col number of existing data
@@ -4690,11 +5124,18 @@ app_server <- function(input, output, session) { # shiny as package function
             tab2_df_shiny$totaldata <- c()
             for(i in 1:tab2_df_dataspecs$channel_number){
 
-              # find first col of data for current reading:
-              firstcolnumber <- tab2_df_dataspecs$col_beg + (i-1)*tab2_df_dataspecs$channeldataspacing
+              # # v1 even only
+              # # find first col of data for current reading:
+              # firstcolnumber <- tab2_df_dataspecs$col_beg + (i-1)*tab2_df_dataspecs$channeldataspacing
+              # # extract data for current reading:
+              # temp_channeldata <- temp_alldata[tab2_df_dataspecs$row_beg:tab2_df_dataspecs$row_end, (firstcolnumber):(firstcolnumber+tab2_df_dataspecs$timepoint_number-1)]
 
+              # v2 even and uneven # timecourse + uneven spacing
+              # find first col of data for current reading:
+              firstcolnumber <- column_numbers[i]
               # extract data for current reading:
-              temp_channeldata <- temp_alldata[tab2_df_dataspecs$row_beg:tab2_df_dataspecs$row_end, (firstcolnumber):(firstcolnumber+tab2_df_dataspecs$timepoint_number-1)]
+              temp_channeldata <- temp_alldata[tab2_df_dataspecs$row_beg:tab2_df_dataspecs$row_end, # rows
+                                               (firstcolnumber):(firstcolnumber+tab2_df_dataspecs$timepoint_number-1)] # cols
 
               # EDIT: different from non-timecourse data, add in column names from timepoint time (here)
               # and columns for reading name (here) and well name (step 5):
@@ -4714,7 +5155,6 @@ app_server <- function(input, output, session) { # shiny as package function
 
               # bind to final df:
               tab2_df_shiny$totaldata <- rbind(tab2_df_shiny$totaldata, temp_channeldata)
-
             }
 
             # print("total data table:")

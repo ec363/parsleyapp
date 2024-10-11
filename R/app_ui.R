@@ -426,37 +426,87 @@ app_ui <- function(request) { # shiny as package requires ui as function
 
                      # Step 4 -----
                      strong("4) Total data"), br(),
-                     p("Enter the spacing between data in consecutive readings, to allow the app to find and extract the data from all readings.
+
+                     # # original v1 assuming even spacing for readings
+                     # p("Enter the spacing between data in consecutive readings, to allow the app to find and extract the data from all readings.
+                     # If data contains only 1 reading, the number below will be ignored."),
+                     # conditionalPanel(
+                     #   condition = "input.dataformat == 'dataformat_rows' && input.datatype == 'datatype_standard'",
+                     #   p(icon("circle-info"), "How many rows separate the data in the first and second readings?
+                     #     (Data in consecutive rows = 1; Data with 1 blank row between channels = 2.)")
+                     # ),
+                     # conditionalPanel(
+                     #   condition = "input.dataformat == 'dataformat_columns' && input.datatype == 'datatype_standard'",
+                     #   p(icon("circle-info"), "How many columns separate the data in the first and second readings?
+                     #    (Data in consecutive columns = 1; Data with 1 blank column between channels = 2.)")
+                     # ),
+                     # conditionalPanel(
+                     #   condition = "input.dataformat == 'dataformat_matrix' && input.datatype == 'datatype_standard'",
+                     #   p(icon("circle-info"), "How many rows separate the first row of the first reading and the first row of the second reading?
+                     #   For 'horizontal' matrix data: Data without gaps = 8; Data with 1 blank row between readings = 9.
+                     #   For 'vertical' matrix data: Data without gaps = 12; Data with 1 blank row between readings = 13.")
+                     # ),
+                     # conditionalPanel(
+                     #   condition = "input.dataformat == 'dataformat_rows' && input.datatype == 'datatype_timecourse'",
+                     #   p(icon("circle-info"), "How many rows separate the first timepoint of the first reading and the first timepoint of the second reading?
+                     #   For 10 timepoints: Data without gaps = 10; Data with 1 blank row between readings = 11.")
+                     # ),
+                     # conditionalPanel(
+                     #   condition = "input.dataformat == 'dataformat_columns' && input.datatype == 'datatype_timecourse'",
+                     #   p(icon("circle-info"), "How many columns separate the first timepoint of the first reading and the first timepoint of the second reading?
+                     #   For 10 timepoints: Data without gaps = 10; Data with 1 blank column between readings = 11.")
+                     # ),
+                     #
+                     # numericInput("channeldataspacing", label = NULL,
+                     #              value = 1, min = 1, max = NA), # original
+
+                     # uneven spacing v2
+                     selectInput("channeldataspacing_input", label = "Spacing specification",
+                                 list(
+                                   # "[Reading names input]" = "channeldataspacing_null",
+                                   "Readings are evenly spaced" = "channeldataspacing_auto",
+                                   "Readings are unevenly spaced" = "channeldataspacing_select"
+                                   ),
+                                 selected = "channeldataspacing_auto"),
+                     conditionalPanel(
+                       condition = "input.channeldataspacing_input == 'channeldataspacing_auto'",
+
+                       p("Enter the spacing between data in consecutive readings, to allow the app to find and extract the data from all readings.
                      If data contains only 1 reading, the number below will be ignored."),
-                     conditionalPanel(
-                       condition = "input.dataformat == 'dataformat_rows' && input.datatype == 'datatype_standard'",
-                       p(icon("circle-info"), "How many rows separate the data in the first and second readings?
+                       conditionalPanel(
+                         condition = "input.dataformat == 'dataformat_rows' && input.datatype == 'datatype_standard'",
+                         p(icon("circle-info"), "How many rows separate the data in the first and second readings?
                          (Data in consecutive rows = 1; Data with 1 blank row between channels = 2.)")
-                     ),
-                     conditionalPanel(
-                       condition = "input.dataformat == 'dataformat_columns' && input.datatype == 'datatype_standard'",
-                       p(icon("circle-info"), "How many columns separate the data in the first and second readings?
+                       ),
+                       conditionalPanel(
+                         condition = "input.dataformat == 'dataformat_columns' && input.datatype == 'datatype_standard'",
+                         p(icon("circle-info"), "How many columns separate the data in the first and second readings?
                         (Data in consecutive columns = 1; Data with 1 blank column between channels = 2.)")
-                     ),
-                     conditionalPanel(
-                       condition = "input.dataformat == 'dataformat_matrix' && input.datatype == 'datatype_standard'",
-                       p(icon("circle-info"), "How many rows separate the first row of the first reading and the first row of the second reading?
+                       ),
+                       conditionalPanel(
+                         condition = "input.dataformat == 'dataformat_matrix' && input.datatype == 'datatype_standard'",
+                         p(icon("circle-info"), "How many rows separate the first row of the first reading and the first row of the second reading?
                        For 'horizontal' matrix data: Data without gaps = 8; Data with 1 blank row between readings = 9.
                        For 'vertical' matrix data: Data without gaps = 12; Data with 1 blank row between readings = 13.")
-                     ),
-                     conditionalPanel(
-                       condition = "input.dataformat == 'dataformat_rows' && input.datatype == 'datatype_timecourse'",
-                       p(icon("circle-info"), "How many rows separate the first timepoint of the first reading and the first timepoint of the second reading?
+                       ),
+                       conditionalPanel(
+                         condition = "input.dataformat == 'dataformat_rows' && input.datatype == 'datatype_timecourse'",
+                         p(icon("circle-info"), "How many rows separate the first timepoint of the first reading and the first timepoint of the second reading?
                        For 10 timepoints: Data without gaps = 10; Data with 1 blank row between readings = 11.")
+                       ),
+                       conditionalPanel(
+                         condition = "input.dataformat == 'dataformat_columns' && input.datatype == 'datatype_timecourse'",
+                         p(icon("circle-info"), "How many columns separate the first timepoint of the first reading and the first timepoint of the second reading?
+                       For 10 timepoints: Data without gaps = 10; Data with 1 blank column between readings = 11.")
+                       ),
+
+                       numericInput("channeldataspacing", label = NULL, value = 1, min = 1, max = NA)
                      ),
                      conditionalPanel(
-                       condition = "input.dataformat == 'dataformat_columns' && input.datatype == 'datatype_timecourse'",
-                       p(icon("circle-info"), "How many columns separate the first timepoint of the first reading and the first timepoint of the second reading?
-                       For 10 timepoints: Data without gaps = 10; Data with 1 blank column between readings = 11.")
+                       condition = "input.channeldataspacing_input == 'channeldataspacing_select'",
+                       p(icon("hand-pointer"), "Select the first cell from every reading, in order from first to last."),
+                       p(icon("circle-info"), "Selections on large data files can be slow.")
                      ),
-
-                     numericInput("channeldataspacing", label = NULL,
-                                  value = 1, min = 1, max = NA),
 
                      actionButton("submit_channeldataspacing_button", "Set", class = "btn-primary"),
                      actionButton("view_dataspecs_button4", "View", class = "btn-info"),
@@ -780,7 +830,11 @@ app_ui <- function(request) { # shiny as package requires ui as function
 
                                         strong("Step 4: Total data"), br(),
                                         "Spacing between readings:", br(),
-                                        verbatimTextOutput("channeldataspacing_printed")
+                                        verbatimTextOutput("channeldataspacing_printed"),
+                                        "Location of each of the readings:", br(), # uneven spacing
+                                        # "(Not available for timecourse data.)", br(),
+                                        verbatimTextOutput("channeldata_indices_rowsorcolumns_printed"),
+                                        verbatimTextOutput("channeldata_indices_printed")
 
                                       ),
 
@@ -1187,8 +1241,16 @@ app_ui <- function(request) { # shiny as package requires ui as function
                                       verbatimTextOutput("tab2_matrixformat_printed"), # not in tab1
                                       # Step4
                                       # strong("Step 4: Total data"), br(),
+                                      # v1
+                                      # "Spacing between readings:", br(),
+                                      # verbatimTextOutput("tab2_channeldataspacing_printed"),
+                                      # uneven spacing v2
                                       "Spacing between readings:", br(),
                                       verbatimTextOutput("tab2_channeldataspacing_printed"),
+                                      "Location of each of the readings:", br(),
+                                      # "(Not available for timecourse data.)", br(),
+                                      verbatimTextOutput("tab2_channeldata_indices_printed"), # not used in calcs, just as feedback for users
+
                                       br(),
 
                                       # Step5
