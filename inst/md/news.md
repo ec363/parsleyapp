@@ -2,6 +2,21 @@
 
 <br>
 
+##### <a name="1.1.0"> Version 1.1.0 </a>
+<hr>
+
+Release: Oct 2024
+
+- Improvements to functionality.
+  - Added ability to parse data that are unevenly spaced. Added this ability for all data types (standard, spectrum and timecourse) by adding an option to Step 4 to specify the starting row/column of each reading by cell selection. Updated all example parsers.
+  - Added ability to parse spectrum data in matrix format.
+  - Added reminders to Step 2 and Step 4 that the order of cell selection matters.
+- Documentation updates.
+  - About tab: Updated plate reader data formats that the app can parse.
+  - Help tab: Updated troubleshooting section and error messages.
+
+<br>
+
 ##### <a name="1.0.1"> Version 1.0.1 </a>
 <hr>
 
