@@ -95,9 +95,9 @@ Use the mouse to select cells in the Raw Data table to complete this section, be
 ##### <a name="errormessages1"> Error messages for Step 1: Data format </a>
 <hr>
 
-**Error: Spectrum data must be provided in row or column format.**
+<!-- **Error: Spectrum data must be provided in row or column format.**
 
-Parsley cannot handle spectrum data in matrix format.
+Parsley cannot handle spectrum data in matrix format. -->
 
 **Error: Timecourse data must be provided in row or column format.**
 

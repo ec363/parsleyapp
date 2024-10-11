@@ -106,6 +106,7 @@ Parsley has been verified to work with the following data formats exported from 
     -   **Timecourse** - (row format)
 -   <font color='18BC9C'>**Molecular Devices SpectraMax iD5 plate reader**</font>
     -   **Standard** - (matrix format, even/uneven spacing)
+    -   **Spectrum** - (matrix format)
     -   **Timecourse** - (matrix format, even/uneven spacing)
 -   <font color='18BC9C'>**Beckman Coulter BioLector Microbioreactor**</font>
     -   **Timecourse** - (column format)

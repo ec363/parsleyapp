@@ -907,14 +907,14 @@ app_server <- function(input, output, session) { # shiny as package function
     df_dataspecs$datatype <- input$datatype # "datatype_standard"
     df_dataspecs$dataformat <- input$dataformat # "dataformat_rows" or "dataformat_columns"
 
-    # Illegal combinations
-    if( (df_dataspecs$datatype == "datatype_spectrum" & df_dataspecs$dataformat == "dataformat_matrix") ){
-      message("Error: Spectrum data must be provided in row or column format.")
-      showModal(modalDialog(title = "Error", "Spectrum data must be provided in row or column format.", easyClose = TRUE ))
-      df_dataspecs$datatype <- NULL # revert value
-      df_dataspecs$dataformat <- NULL
-      return()
-    }
+    # # Illegal combinations # spectrum matrix - removed
+    # if( (df_dataspecs$datatype == "datatype_spectrum" & df_dataspecs$dataformat == "dataformat_matrix") ){
+    #   message("Error: Spectrum data must be provided in row or column format.")
+    #   showModal(modalDialog(title = "Error", "Spectrum data must be provided in row or column format.", easyClose = TRUE ))
+    #   df_dataspecs$datatype <- NULL # revert value
+    #   df_dataspecs$dataformat <- NULL
+    #   return()
+    # }
     if( (df_dataspecs$datatype == "datatype_timecourse" & df_dataspecs$dataformat == "dataformat_matrix") ){
       message("Error: Timecourse data must be provided in row or column format.")
       showModal(modalDialog(title = "Error", "Timecourse data must be provided in row or column format.", easyClose = TRUE ))
