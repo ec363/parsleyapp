@@ -16,6 +16,19 @@
 app_ui <- function(request) { # shiny as package requires ui as function
   navbarPage(
 
+    # Custom CSS that colours selected DT table cells blue.
+    # This used to be automatic with selection, but after I updated all packages (incl DT to 0.33) on 20240414, selection became 'invisible'.
+    # This fixes the problem.
+    # NB. This code doesn't work outside of navbarPage() but gives warning within it. Adding 'header =' removes the warning.
+    header = tags$head(
+      tags$style(HTML("
+    .selected {
+      background-color: #d5f2ed !important;
+      color: #149c82 !important;
+    }
+  "))
+    ),
+
   # ui <- navbarPage(
 
   title = "Parsley",
