@@ -56,6 +56,10 @@ Create a new spreadsheet with Excel or similar. Create a column called 'well' (c
 
 This cannot be undone, unfortunately. Reload the page and start again.
 
+**Reading names do not match up with the data in the parsed data file**
+
+If you find that your absorbance data looks like fluorescence data or vice versa, your readings may have been labelled incorrectly. This will occur if you selected Reading names in Step 2 from the Raw Data file but didn't pay attention to the order in which you selected cells. The first cell selected will label the first Reading, the second cell will label the second Reading, and so on. This is also true if you manually provided Reading names in Step 2, as well as when selecting Reading locations in Step 4 (for unevenly spaced data).
+
 <br>
 
 ##### <a name="errormessages00"> Error messages: Data upload errors </a>

@@ -306,7 +306,7 @@ app_ui <- function(request) { # shiny as package requires ui as function
                        p(icon("circle-info"), "Readings from a plate reader are typically absorbance or fluorescence measurements.
                        The reading names are the labels you want to give each reading. These will become column names in the parsed data.
                      As such, it's important that the names are unique (no duplicates), and that they do not contain spaces or punctuation, although underscores (_) are OK."),
-
+                       p(icon("triangle-exclamation"), "The order of selection matters: the first selected cell will be used for first reading, and so on."),
                        numericInput("channel_number", label = "# Readings", value = 1, min = 1, max = NA), # reading notation changed (but only for ui text, haven't changed server objects)
 
                        selectInput("channel_names_input", label = "Reading names specification",
@@ -505,6 +505,7 @@ app_ui <- function(request) { # shiny as package requires ui as function
                      conditionalPanel(
                        condition = "input.channeldataspacing_input == 'channeldataspacing_select'",
                        p(icon("hand-pointer"), "Select the first cell from every reading, in order from first to last."),
+                       p(icon("triangle-exclamation"), "The order of selection matters: the first selected cell will be used for first reading, and so on."),
                        p(icon("circle-info"), "Selections on large data files can be slow.")
                      ),
 
