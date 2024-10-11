@@ -176,6 +176,14 @@ Section 3 has been marked complete (Lock icon) without being completed.
 
 Though the numeric input box accepts fractions, the app does not.
 
+**Error: Number of selected cells does not match number of readings specified.**
+
+If you have stated there are X readings, and you choose to specify reading locations by cell selection, you must select X cells to correspond to the reading locations.
+
+**Error: Selected cells should be from unique rows/columns.**
+
+When choosing to specify reading locations by cell selection, for row (or matrix)/column formatted data, each reading must result from a distinct row/column, respectively.
+
 **Error: Do not request data from outside range of file.**
 
 <!-- You have requested row or column numbers that do not exist in your data. The details within the error message should help fix the problem. Probably the channel spacing number is too high. -->
