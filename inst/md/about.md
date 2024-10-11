@@ -87,10 +87,14 @@ It even has applications in data storage and reuse. Tidy data joined to relevant
 
 Parsley has been verified to work with the following data formats exported from the following plate readers:
 
--   <font color='18BC9C'>**Tecan Spark plate reader** (SparkControl Magellan software)</font>
+-   <font color='18BC9C'>**Tecan Spark plate reader** (Magellan software)</font>
     -   **Standard** - direction horizontal/vertical, well data in rows/columns/matrixseparated/matrixXfluor
     -   **Spectrum** - direction horizontal/vertical, well data in rows/columns/matrixseparated/matrixXfluor/matrixnested
     -   **Timecourse** - direction horizontal/vertical, well data in rows/columns
+-   <font color='18BC9C'>**Tecan Spark plate reader** (SparkControl software)</font>
+    -   **Standard** - (matrix format, even/uneven spacing)
+    -   **Spectrum** - (row format)
+    -   **Timecourse** - (row format)
 -   <font color='18BC9C'>**BMG LabTech Clariostar Plus plate reader** (MARS software)</font>
     -   **Standard** - default export format, -/+unused wells, -/+metadata, wellformats as A1 or A01, -/+transpose
     -   **Spectrum** - default export format, -/+unused wells, -/+metadata, wellformats as A1 or A01, -/+transpose
@@ -101,7 +105,8 @@ Parsley has been verified to work with the following data formats exported from 
 -   <font color='18BC9C'>**BioTek Synergy Neo2 plate reader** (Gen5 software)</font>
     -   **Timecourse** - (row format)
 -   <font color='18BC9C'>**Molecular Devices SpectraMax iD5 plate reader**</font>
-    -   **Standard** - (matrix format)
+    -   **Standard** - (matrix format, even/uneven spacing)
+    -   **Timecourse** - (matrix format, even/uneven spacing)
 -   <font color='18BC9C'>**Beckman Coulter BioLector Microbioreactor**</font>
     -   **Timecourse** - (column format)
 -   <font color='18BC9C'>**Enzyscreen GrowthProfiler plate reader**</font>
