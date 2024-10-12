@@ -121,6 +121,16 @@ run_app()
 
 <br>
 
+## Citing Parsley
+
+If you use Parsley as a web application or R package and find it helpful, we'd be grateful if you could cite both the paper and package in your manuscript.
+
+Csibra E and Stan GB. 2023. Parsley: a web app for parsing data from plate readers. _Bioinformatics_ 39, 12. doi: 10.1093/bioinformatics/btad733
+
+Csibra E. 2024. parsleyapp v1.1.0. _Zenodo_. doi: 10.5281/zenodo.13921218
+
+<br>
+
 ## Contact
 
 Questions, suggestions or bug reports? Please [contact me](mailto:e.csibra@leeds.ac.uk).
