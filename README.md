@@ -124,7 +124,7 @@ run_app()
 ## Guide
 
 The app contains a Guide, Demo videos, and a Help section. However, this information may be more easily browsed outside the app context.
-A bookdown format version is therefore provided here: [https://ec363.github.io/parsleyapp_guide/](https://ec363.github.io/parsleyapp_guide/).
+A standalone Parsley Guide is therefore provided here: [https://ec363.github.io/parsleyapp_guide/](https://ec363.github.io/parsleyapp_guide/).
 
 <br>
 
