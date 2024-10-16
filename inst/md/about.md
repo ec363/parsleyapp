@@ -130,6 +130,37 @@ https://www.moleculardevices.com/products/microplate-readers/multi-mode-readers
 
 <br>
 
+##### <a name="guide"> Guide Book </a>
+
+<hr>
+
+The app contains a Guide, Demos, and a Help section. However, this information may be more easily browsed outside the app context.
+
+A standalone Parsley Guide is therefore provided here: [https://ec363.github.io/parsleyapp_guide/](https://ec363.github.io/parsleyapp_guide/).
+
+<br>
+
+##### <a name="cite"> Citing Parsley </a>
+
+<hr>
+
+If you use Parsley as a web application or R package and find it helpful, we'd be grateful if you could cite _both_ the paper and package in your manuscript.
+
+_Citing the paper:_
+
+Csibra E and Stan GB. 2023. Parsley: a web app for parsing data from plate readers. _Bioinformatics_ 39, 12. doi: 10.1093/bioinformatics/btad733
+
+_Citing the software package:_
+
+Best practice in citing software is to cite the version of the software that has been used, along with a DOI that represents the code in that version. The current Parsley version number can be found in the app's About page or README file, and the News page details when versions were updated. To find the DOI of a given version, follow [this link](https://zenodo.org/search?q=parent.id%3A8065738&f=allversions%3Atrue&l=list&p=1&s=10&sort=version). The citation can then be added in the format:
+
+Csibra E. \[Year of version release\]. parsleyapp v\[version number\]. _Zenodo_. doi: \[DOI of version release\]
+
+For version 1.1.0, this would be:\
+Csibra E. 2024. parsleyapp v1.1.0. _Zenodo_. doi: 10.5281/zenodo.13921218
+
+<br>
+
 ##### <a name="me"> Contact </a>
 
 <hr>
